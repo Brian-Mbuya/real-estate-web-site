@@ -59,10 +59,17 @@ Listings ordered based on relevance to user preferences.
 
 ---
 
-### Property Details View (Optional)
-Example of an individual property detail page.
+### Index Page
+Overview of the platform landing page.
 
-![Property Details](screenshots/property-details.png)
+![Index Page](screenshots/index-page.png)
+
+---
+
+### Favorites Page
+Example of saved or starred property listings.
+
+![Favorites Page](screenshots/favorites-page.png)
 
 ---
 
