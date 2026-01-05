@@ -1,0 +1,104 @@
+<html>
+    <head>
+        <title>Real Estate Login</title>
+        <style>
+           body {
+    background: #f5f6fa;
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+        .login-container {
+            background: #fff;
+            padding: 2rem 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 350px;
+        }
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #2d3436;
+        }
+        .login-container label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #636e72;
+        }
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            width: 100%;
+            padding: 0.7rem;
+            margin-bottom: 1.2rem;
+            border: 1px solid #dfe6e9;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 0.7rem;
+            background: #0984e3;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .login-container button:hover {
+            background: #74b9ff;
+        }
+        .login-container .register-link {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            color: #636e72;
+            font-size: 0.95rem;
+        }
+        .login-container .register-link a {
+            color:  #0984e3;
+            text-decoration: none;
+        }
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #0984e3;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        </style>
+    </head>
+    <body>
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="login-container">
+            <form id="form">
+                <h2>Reality Kisumu Hub</h2>
+                <p style="text-align: center; color: #636e72; margin-bottom: 1.5rem; font-size: 0.9rem;">Log in to your account</p>
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required><br>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required><br>
+                <button type="submit">Login</button>
+            </form>
+            <div class="register-link">
+            Don't have an account? <a href="signup.html">Register</a>
+        </div>
+        </div>
+        <script>
+           document.getElementById("form").onsubmit = function(e) {
+            e.preventDefault();
+            window.location.href = "index.html";
+           }
+        </script>
+    </body>
+</html>

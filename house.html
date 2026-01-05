@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Houses - Reality Kisumu Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .star {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #ffd166;
+            font-size: 2rem;
+            background: #fff;
+            border-radius: 50%;
+            padding: 2px 7px;
+            box-shadow: 0 2px 8px rgba(27,38,59,0.09);
+        }
+        .fav {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #1b263b;
+            font-size: 1.5rem;
+            background: #fff;
+            border-radius: 50%;
+            padding: 4px 7px;
+            box-shadow: 0 2px 8px rgba(27,38,59,0.09);
+            cursor: pointer;
+            border: none;
+        }
+        .house-slideshow-img {
+            width: 100%;
+            height: 270px;
+            object-fit: cover;
+            border-radius: 0;
+            display: block;
+            transition: opacity 0.4s;
+        }
+        .house-slideshow-controls {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+        .house-slideshow-btn {
+            background: rgba(0,0,0,0.4);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            font-size: 1.7rem;
+            cursor: pointer;
+            pointer-events: all;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.18s;
+        }
+        .house-slideshow-btn:hover {
+            background: #2471a3;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <header class="bg-dark text-white text-center py-4 mb-4">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div>
+                <a href="index.html" class="btn btn-secondary me-2">Home</a>
+                <a href="login.html" class="btn btn-info me-2">Login</a>
+                <a href="signup.html" class="btn btn-warning text-dark me-2">Sign Up</a>
+            </div>
+            <div>
+                <a href="liked.html" class="btn btn-success">Favorites</a>
+            </div>
+        </div>
+        <h1 class="mt-3 mb-1">Browse available listings</h1>
+        <p class="mb-2">Find your perfect home or investment in Kisumu. Use the filters below to narrow your search.</p>
+    </header>
+    <section class="container mb-4">
+        <form class="row g-2 justify-content-center" id="houseFilterForm" onsubmit="event.preventDefault(); filterHouses();">
+            <div class="col-md-2">
+                <select id="category" class="form-select">
+                    <option value="">Category</option>
+                    <optgroup label="Houses">
+                        <option value="Villa">– Villas</option>
+                        <option value="Apartment">– Apartment</option>
+                        <option value="Bungalow">– Bungalow</option>
+                        <option value="Townhome">Townhome</option>
+                        <option value="Multi-unit">Multi-unit</option>
+                    </optgroup>
+                    <option value="Bedsitter">Bedsitters</option>
+                    <optgroup label="Commercial Property">
+                        <option value="Office">– Offices</option>
+                        <option value="PetrolStation">– PetrolStation</option>
+                        <option value="Warehouse">– Warehouses</option>
+                    </optgroup>
+                    <option value="Favorite">Favorite</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input type="text" id="location" class="form-control" placeholder="Location (e.g. Milimani)">
+            </div>
+            <div class="col-md-2">
+                <select id="bedrooms" class="form-select">
+                    <option value="">Bedrooms</option>
+                    <option value="1">1+</option>
+                    <option value="2">2+</option>
+                    <option value="3">3+</option>
+                    <option value="4">4+</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select id="bathrooms" class="form-select">
+                    <option value="">Bathrooms</option>
+                    <option value="1">1+</option>
+                    <option value="2">2+</option>
+                    <option value="3">3+</option>
+                    <option value="4">4+</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input type="text" id="maxPrice" class="form-control" placeholder="Max Price">
+            </div>
+            <div class="col-md-2 d-grid">
+                <button class="btn btn-danger" type="submit">Search</button>
+            </div>
+        </form>
+    </section>
+    <section class="container" id="housesList">
+        <!-- Houses will be rendered here -->
+    </section>
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <h5 class="text-warning">Contact Us</h5>
+                    <p><strong>Reality Kisumu Hub</strong></p>
+                    <p>Email: <a href="mailto:info@kisumuhub.com" class="text-warning">info@kisumuhub.com</a></p>
+                    <p>Phone: <a href="tel:+254700000000" class="text-warning">+254 700 000 000</a></p>
+                    <p>Location: Kisumu, Kenya</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <h5 class="text-warning">Send a Message</h5>
+                    <form onsubmit="event.preventDefault();alert('Thank you for contacting us!');">
+                        <div class="mb-2">
+                            <input type="text" class="form-control" placeholder="Your Name" required>
+                        </div>
+                        <div class="mb-2">
+                            <input type="email" class="form-control" placeholder="Your Email" required>
+                        </div>
+                        <div class="mb-2">
+                            <textarea class="form-control" placeholder="Your Message" required rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-warning text-dark fw-bold">Send</button>
+                    </form>
+                </div>
+            </div>
+            <div class="text-center mt-3 text-secondary">
+                &copy; 2025 Reality Kisumu Hub. All rights reserved.
+            </div>
+        </div>
+    </footer>
+    <script>
+        // Example house data
+        const houses = [
+            {
+                title: "3 Bed Apartment in Kisumu",
+                category: "Apartment",
+                location: "Ondiek Highway",
+                price: 42000000,
+                bedrooms: 3,
+                bathrooms: 2,
+                img: "images/p.webp",
+                gallery: [
+                  "images/p4.webp",
+                  "images/p5.webp",
+                  "images/p6.webp",
+                  "images/p7.jpg",
+                ],
+                desc: "A new age of living, the first of its kind, Anderson Park Residence Kisumu featuring Piped Gas, Olympic Sized Swimming Pool, Gym, Club Hous",
+                isStarred: true,
+                isFav: false,
+                added: "04 October 2024"
+            },
+           {
+
+                title: "3 Bed Apartment in Kisumu",
+                category: "Appartment",
+                location: "Ondiek Highway",
+                price: 42000000,
+                bedrooms: 3,
+                bathrooms: 2,
+                img: "images/p.webp",
+                gallery: [
+                  "images/p4.webp",
+                  "images/p5.webp",
+                    "images/p6.webp",
+                    "images/p7.jpg",
+                ],
+                desc: "A new age of living, the first of its kind, Anderson Park Residence Kisumu featuring Piped Gas, Olympic Sized Swimming Pool, Gym, Club Hous",
+                isStarred: true,
+                isFav: false,
+                added: " 04 October 2024"
+            },
+            {
+                title: "1 Bed Apartment with En Suite at Ondiek Highway",
+                category: "Appartment",
+                location: "Ondiek Highway",
+                price: 42000000,
+                bedrooms: 1,
+                bathrooms: 1,
+                img: "images/p.webp",
+                gallery: [
+                  "images/p4.webp",
+                  "images/p5.webp",
+                    "images/p6.webp",
+                    "images/p7.jpg",
+                ],
+                desc: "A new age of living, the first of its kind, Anderson Park Residence Kisumu featuring Piped Gas, Olympic Sized Swimming Pool, Gym, Club Hous",
+                isStarred: true,
+                isFav: false,
+                added: " 04 October 2024"
+            },
+            {
+                title: "2 Bed Apartment with Parking in Kisumu",
+                category: "Appartment",
+                location: "Nubian Estate",
+                price: 23000000,
+                bedrooms: 5,
+                bathrooms: 5,
+                img: "images/e.jpg",
+                gallery: [
+                   "images/e4.jpg",
+                   "images/e5.jpg",
+                   "images/e6.jpg",
+                   "images/e7.webp",
+
+                ],
+                desc: "This is a strategically placed apartment building housing nine (9) units within Nubian Estate. Key features are electric fence, high perimeter wall and its witin an established estate",
+                isStarred: true,
+                isFav: false,
+                added: "4 hours ago"
+            },
+             {
+                title: "Residential Land at Riat",
+                category: "Land",
+                location: "Riat",
+                price: 2000000,
+                img: "images/c.jpeg",
+                gallery: [
+                    "images/c4.jpeg",
+                    "images/c5.jpeg",
+                ],
+                desc: "Discover our Riat hills plots in Kisumu, Located approximately 6.5km from Kisumu International Airport, In a serene environment with amazing views and growing value.",
+                isStarred: true,
+                isFav: false,
+            },
+            {
+                title: "Residential Land at Maseno",
+                category: "Land",
+                location: "Maseno",
+                price: 12000000,
+                img: "images/u.jpg",
+                gallery: [
+                   "images/u5.jpg",
+                   "images/u4.jpg",
+                   "images/u6.jpg",
+                ],
+                desc: "A quarter (1/4) acre plot of land with road frontage and developed with two (2) three (3) bedroom residential houses each with a detached staff quarters. The property is 700 metres from the Kisumu-Busia Road fronting Siriba Road. It is strategically placed opposite the Maseno University Siriba Campus and is ideal for both residential and commercial use. ",
+                isStarred: true,
+                isFav: false,
+            },
+            {
+                title: "5 Bed villa with swimming pool",
+                category: "Villa",
+                location: "Riat Hills",
+                price: 48000000,
+                bedrooms: 5,
+                bathrooms: 5,
+                img: "images/RiatV.jpeg",
+                gallery: [
+                    "images/RiatV2.jpeg",
+                    "images/RiatV.jpeg",
+                    "images/riat4.webp",
+                    "images/riat5.webp",
+                    "images/riat6.jpeg"
+                ],
+                desc: "Riat Hill Villas is a Scandinavian inspired gated community overlooking Kisumu’s Lake Victoria in the front and Nandi Hills in the back.A total of 31 Villas are being built with a common Club house and a large swimming pool",
+                isStarred: true,
+                isFav: false,
+                added: "4 hours ago"
+            },
+            {
+                title: "4 Bed House in Milimani",
+                category: "Bungalow",
+                location: "Milimani",
+                price: 20000000,
+                bedrooms: 4,
+                bathrooms: 1,
+                area: "101 m²",
+                img: "images/milimani/m6.jpg",
+                gallery: [
+                    "images/milimani/m.jpg",
+                    "images/milimani/m4.webp",
+                    "images/milimani/m5.webp"
+                ],
+                desc: "This is a property in the prime Milimani estate, behind St. Johns Manor Hotel. The bungalow features beautifully tiled floors in all main areas and ample parking space. The area is easily accessible by public and private means.",
+                isStarred: true,
+                isFav: true,
+                added: "1 day ago"
+            },
+            {
+                title: "10 Bed House with En Suite at Milimani",
+                category: "Multi-unit",
+                location: "Milimani",
+                price: 300000000,
+                bedrooms: 10,
+                bathrooms: 10,
+                area: "0.8 ha",
+                img: "images/milimani/suite.jpeg",
+                gallery: [
+                    "images/milimani/s.jpeg",
+                    "images/milimani/s4.jpeg",
+                    "images/milimani/s6.jpeg"
+                ],
+                desc: [
+                    "1st block -1 unit of four bedrooms , 3 units of two bedrooms and 2 units of one bedroom",
+                    "2nd block -1 unit of three bedrooms, 2 units of two bedrooms and 1 unit of one bedroom.",
+                    "3rd block - 1 unit of two bedrooms.",
+                    "All in one acre stone walled"
+                ].join("<br>"),
+                isStarred: false,
+                isFav: false,
+                added: "3 days ago"
+            },
+            {
+                title: "4 Bed House with Gym at Dairy Farm",
+                category: "Bungalow",
+                location: "Gem Yala",
+                price: 23000000,
+                bedrooms: 4,
+                bathrooms: 4,
+                area: "1.6 ha",
+                img: "images/dairy/3a4873e1-9856-459c-a240-e597e95665e9.webp",
+                gallery: [
+                    "images/dairy/d.jpeg",
+                    "images/dairy/d4.jpeg",
+                    "images/dairy/d5.webp",
+                    "images/dairy/d6.jpeg",
+                    "images/dairy/d7.jpeg"
+                ],
+                desc: "A very big dairy farm with 4 bedroomed house, gym and has all structures and equipments needed for dairy farming. Water and electricity also available",
+                isStarred: true,
+                isFav: true,
+                added: "1 day ago"
+            }
+        ];
+
+        function renderHouses(list) {
+            const container = document.getElementById('housesList');
+            container.innerHTML = '';
+            if (list.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">No houses found matching your criteria.</div>';
+                return;
+            }
+            list.forEach((house, idx) => {
+                const allImgs = [house.img, ...(house.gallery || [])];
+                const slideshowId = `slideshow-${idx}`;
+                const card = document.createElement('div');
+                card.className = 'card mb-4 position-relative shadow house-card';
+
+                card.innerHTML = `
+                    <span class="star" title="Featured">${house.isStarred ? '★' : ''}</span>
+                    <button class="fav" title="Add to favorites" data-idx="${idx}" aria-pressed="${house.isFav}">
+                        ${house.isFav ? '❤' : '🤍'}
+                    </button>
+                    <div class="row g-0">
+                        <div class="col-md-5 d-flex align-items-center justify-content-center bg-secondary-subtle position-relative">
+                            <img class="house-slideshow-img" id="${slideshowId}-img" src="${allImgs[0]}" alt="House">
+                            <div class="house-slideshow-controls">
+                                <button class="house-slideshow-btn" onclick="prevSlide('${slideshowId}', ${allImgs.length}); event.stopPropagation();">&#10094;</button>
+                                <button class="house-slideshow-btn" onclick="nextSlide('${slideshowId}', ${allImgs.length}); event.stopPropagation();">&#10095;</button>
+                            </div>
+                            <div style="position:absolute;bottom:8px;left:8px;color:#fff;background:rgba(0,0,0,0.4);padding:2px 10px;border-radius:8px;font-size:0.95rem;">
+                                Added ${house.added || ''}
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <h5 class="card-title mb-1">${house.title}</h5>
+                                        <div class="text-muted mb-2">📍 ${house.location}</div>
+                                    </div>
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013.png" alt="Agency" style="height:40px;width:auto;">
+                                </div>
+                                <div class="mb-2">
+                                    <span class="badge bg-light text-dark me-2">${house.bedrooms || ''} Bedrooms</span>
+                                    <span class="badge bg-light text-dark me-2">${house.bathrooms || ''} Bathrooms</span>
+                                    <span class="badge bg-light text-dark">${house.area ? house.area : ''}</span>
+                                </div>
+                                <p class="card-text mb-2">${house.desc}</p>
+                                <div class="d-flex align-items-center mt-2">
+                                    <span class="fs-5 fw-bold text-danger me-3">KSh ${house.price ? house.price.toLocaleString() : ''}</span>
+                                    <div class="btn-group" role="group">
+                                        <a href="https://wa.me/254746672821" target="_blank" class="btn btn-outline-success btn-sm" title="WhatsApp">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width:22px;height:22px;vertical-align:middle;border-radius:4px;">
+                                        </a>
+                                        <button class="btn btn-outline-primary btn-sm" title="Message">&#128172;</button>
+                                        <a href="tel:+254746672821" class="btn btn-outline-secondary btn-sm" title="Call">&#128222;</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                card.dataset.slideshowIdx = "0";
+                card.dataset.slideshowImgs = JSON.stringify(allImgs);
+                card.dataset.slideshowId = slideshowId;
+
+                const favBtn = card.querySelector('.fav');
+                favBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    houses[idx].isFav = !houses[idx].isFav;
+                    let favorites = JSON.parse(localStorage.getItem('favoriteHouses')) || [];
+                    if (houses[idx].isFav) {
+                        if (!favorites.some(h => h.title === houses[idx].title && h.location === houses[idx].location)) {
+                            favorites.push(houses[idx]);
+                        }
+                    } else {
+                        favorites = favorites.filter(h => !(h.title === houses[idx].title && h.location === houses[idx].location));
+                    }
+                    localStorage.setItem('favoriteHouses', JSON.stringify(favorites));
+                    renderHouses(list);
+                });
+                container.appendChild(card);
+            });
+        }
+
+        function filterHouses() {
+            const category = document.getElementById('category').value;
+            const location = document.getElementById('location').value.toLowerCase();
+            const maxPrice = parseInt(document.getElementById('maxPrice').value);
+            const bedrooms = parseInt(document.getElementById('bedrooms').value);
+            const bathrooms = parseInt(document.getElementById('bathrooms').value);
+
+            const filtered = houses.filter(house => {
+                const matchesFavorite = category === "Favorite" ? house.isFav : true;
+                const matchesCategory = !category || category === "Favorite" || house.category === category;
+                const matchesLocation = !location || house.location.toLowerCase().includes(location);
+                const matchesPrice = !maxPrice || house.price <= maxPrice;
+                const matchesBedrooms = !bedrooms || house.bedrooms >= bedrooms;
+                const matchesBathrooms = !bathrooms || house.bathrooms >= bathrooms;
+                return matchesFavorite && matchesCategory && matchesLocation && matchesPrice && matchesBedrooms && matchesBathrooms;
+            });
+            renderHouses(filtered);
+        }
+
+        // Slideshow logic
+        function nextSlide(slideshowId, total) {
+            const card = Array.from(document.querySelectorAll('.house-card'))
+                .find(c => c.dataset.slideshowId === slideshowId);
+            if (!card) return;
+            let idx = parseInt(card.dataset.slideshowIdx) || 0;
+            const imgs = JSON.parse(card.dataset.slideshowImgs);
+            idx = (idx + 1) % imgs.length;
+            card.dataset.slideshowIdx = idx;
+            document.getElementById(`${slideshowId}-img`).src = imgs[idx];
+        }
+        function prevSlide(slideshowId, total) {
+            const card = Array.from(document.querySelectorAll('.house-card'))
+                .find(c => c.dataset.slideshowId === slideshowId);
+            if (!card) return;
+            let idx = parseInt(card.dataset.slideshowIdx) || 0;
+            const imgs = JSON.parse(card.dataset.slideshowImgs);
+            idx = (idx - 1 + imgs.length) % imgs.length;
+            card.dataset.slideshowIdx = idx;
+            document.getElementById(`${slideshowId}-img`).src = imgs[idx];
+        }
+
+        // Initial render
+        renderHouses(houses);
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
