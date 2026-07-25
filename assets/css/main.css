@@ -52,7 +52,7 @@ h1, h2, h3, h4, h5, h6, .brand-font {
     color: #ffffff !important;
 }
 
-/* Professional Hero Banner */
+/* Hero Banner */
 .hero-banner {
     background-color: var(--brand-navy);
     background-image: linear-gradient(180deg, rgba(11,25,44,0.92) 0%, rgba(11,25,44,0.98) 100%), url('../images/RiatV.jpeg');
@@ -104,7 +104,7 @@ h1, h2, h3, h4, h5, h6, .brand-font {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* Search Filter Box */
+/* Search Card */
 .search-card-professional {
     background: #ffffff;
     border-radius: 0 var(--radius-card) var(--radius-card) var(--radius-card);
@@ -214,7 +214,7 @@ h1, h2, h3, h4, h5, h6, .brand-font {
     color: #ffffff;
 }
 
-/* SVG Fav Toggle */
+/* Fav Toggle */
 .fav-toggle-btn {
     position: absolute;
     top: 12px;
@@ -250,10 +250,37 @@ h1, h2, h3, h4, h5, h6, .brand-font {
     stroke: #ef4444;
 }
 
-/* SVG Icon Helper */
 .icon-svg {
     width: 18px;
     height: 18px;
     fill: currentColor;
     vertical-align: middle;
+}
+
+/* Interactive Map View Styling */
+#mapContainer {
+    height: 440px;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-subtle);
+    z-index: 1;
+}
+
+/* Floating Comparison Toolbar */
+.comparison-bar-floating {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--brand-navy);
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: var(--radius-pill);
+    box-shadow: 0 10px 30px rgba(11, 25, 44, 0.35);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
