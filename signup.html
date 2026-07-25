@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up - Reality Kisumu Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+       body {
+        background: #f5f6fa;
+        font-family: Arial, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+        .signup-container {
+            background: #fff;
+            padding: 2.5rem 2rem 2rem 2rem;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(27,38,59,0.13);
+            max-width: 350px;
+            width: 100%;
+        }
+        .signup-container h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #2471a3;
+        }
+        .signup-container label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+            color: #1b263b;
+        }
+        .signup-container input[type="text"],
+        .signup-container input[type="email"],
+        .signup-container input[type="password"] {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.1rem;
+            border: 1px solid #bcdff1;
+            border-radius: 12px;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.2s;
+            box-sizing: border-box;
+        }
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #2471a3;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .signup-container input:focus {
+            border: 1.5px solid #2471a3;
+        }
+        .signup-container button {
+            width: 100%;
+            background: #2471a3;
+            color: #fff;
+            border: none;
+            padding: 0.9rem;
+            border-radius: 12px;
+            font-size: 1.08rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .signup-container button:hover {
+            background: #1b263b;
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 1.2rem;
+            color: #1b263b;
+        }
+        .login-link a {
+            color: #2471a3;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">← Back to Home</a>
+    <div class="signup-container">
+        <form id="signup-form">
+            <h2>Create Account</h2>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+        <div class="login-link">
+            Already have an account? <a href="login.html">Login</a>
+        </div>
+    </div>
+    <script>
+        document.getElementById("signup-form").onsubmit = function(e) {
+            e.preventDefault();
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
