@@ -2,15 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login - Reality Kisumu Hub</title>
+    <title>Sign In | Reality Kisumu Hub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b192c">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
     <!-- Bootstrap CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Main Design System CSS -->
     <link rel="stylesheet" href="assets/css/main.css">
     <style>
         body {
-            background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), url('images/RiatV.jpeg');
+            background-color: var(--brand-navy);
+            background-image: linear-gradient(180deg, rgba(11,25,44,0.92) 0%, rgba(11,25,44,0.98) 100%), url('images/RiatV.jpeg');
             background-size: cover;
             background-position: center;
             min-height: 100vh;
@@ -19,11 +25,10 @@
             justify-content: center;
             padding: 1.5rem;
         }
-        .auth-card {
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(16px);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
+        .auth-card-clean {
+            background: #ffffff;
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-hover);
             width: 100%;
             max-width: 420px;
             padding: 2.5rem;
@@ -33,40 +38,40 @@
 <body>
 
     <a href="index.html" class="btn btn-outline-light btn-sm position-absolute top-0 start-0 m-4 fw-semibold">
-        ← Back to Home
+        &larr; Back to Marketplace
     </a>
 
-    <div class="auth-card">
+    <div class="auth-card-clean">
         <div class="text-center mb-4">
-            <span class="fs-1">🏠</span>
-            <h3 class="fw-bold mt-2 mb-1">Welcome Back</h3>
-            <p class="text-muted small">Log in to Reality Kisumu Hub</p>
+            <h3 class="fw-bold text-dark mb-1">Sign In</h3>
+            <p class="text-secondary small">Access your saved searches and account preferences</p>
         </div>
 
         <form id="loginForm" onsubmit="event.preventDefault(); handleLogin();">
             <div class="mb-3">
-                <label class="form-label small fw-bold text-muted">Email or Username</label>
-                <input type="text" class="form-control py-2" required placeholder="user@kisumuhub.com">
+                <label class="form-label small fw-bold text-secondary">Email Address or Username</label>
+                <input type="text" class="form-control form-control-lg fs-6" required placeholder="user@kisumuhub.com">
             </div>
 
             <div class="mb-4">
-                <label class="form-label small fw-bold text-muted">Password</label>
+                <label class="form-label small fw-bold text-secondary">Password</label>
                 <div class="input-group">
-                    <input type="password" id="loginPassword" class="form-control py-2" required placeholder="••••••••">
-                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('loginPassword')">👁️</button>
+                    <input type="password" id="loginPassword" class="form-control form-control-lg fs-6" required placeholder="Enter password">
+                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('loginPassword')">Show</button>
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary-custom w-100 fw-bold py-2 fs-6 mb-3">
-                Sign In ➔
+            <button type="submit" class="btn btn-brand btn-lg w-100 fw-bold fs-6 mb-3">
+                Sign In &rarr;
             </button>
         </form>
 
-        <div class="text-center small text-muted">
+        <div class="text-center small text-secondary">
             Don't have an account? <a href="signup.html" class="text-primary fw-bold text-decoration-none">Create Account</a>
         </div>
     </div>
 
+    <script src="assets/js/pwa.js"></script>
     <script>
         function togglePassword(id) {
             const input = document.getElementById(id);
@@ -74,7 +79,7 @@
         }
 
         function handleLogin() {
-            alert("Login successful! Welcome to Reality Kisumu Hub.");
+            alert("Signed in successfully. Redirecting to listings...");
             window.location.href = "house.html";
         }
     </script>

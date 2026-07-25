@@ -1,0 +1,21 @@
+{
+  "name": "Reality Kisumu Hub",
+  "short_name": "KisumuRealty",
+  "description": "Kenya's Premier Property & Real Estate Marketplace in Kisumu County",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0b192c",
+  "icons": [
+    {
+      "src": "images/p.webp",
+      "sizes": "192x192",
+      "type": "image/webp"
+    },
+    {
+      "src": "images/RiatV.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
