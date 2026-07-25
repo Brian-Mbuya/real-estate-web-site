@@ -2,172 +2,273 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Reality Kisumu Hub</title>
+    <title>Reality Kisumu Hub - Smart Property Platform</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .hero-bg {
-            background: linear-gradient(120deg, #2471a3 70%, #ffd166 100%);
-            color: #fff;
-            position: relative;
-        }
-        .hero-img {
-            border-radius: 1rem;
-            box-shadow: 0 4px 24px rgba(27,38,59,0.13);
-            object-fit: cover;
-            width: 100%;
-            height: 320px;
-        }
-        .hero-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(27,38,59,0.25);
-            border-radius: 1rem;
-        }
-        .hero-content {
-            position: relative;
-            z-index: 2;
-        }
-        .hero-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-        .hero-desc {
-            font-size: 1.25rem;
-            margin-bottom: 2rem;
-        }
-        .filter-card {
-            background: #fff;
-            border-radius: 1rem;
-            box-shadow: 0 2px 12px rgba(27,38,59,0.09);
-            padding: 2rem 1.5rem;
-            margin-top: -70px;
-            position: relative;
-            z-index: 3;
-        }
-        /* Add to your <style> section */
-.Slide {
-    display: none;
-    position: relative;
-}
-.active-slide {
-    display: block !important;
-}
-    </style>
+    <!-- Main Design System CSS -->
+    <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body class="bg-light">
-    <!-- Header -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="#">Reality Kisumu Hub</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
+
+    <!-- Header / Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <span class="fs-4">🏠</span>
+                <span>Reality Kisumu Hub</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="house.html">Buy</a></li>
-                    <li class="nav-item"><a class="nav-link" href="house.html">Rent</a></li>
-                    <li class="nav-item"><a class="nav-link" href="house.html">Houses</a></li>
-                    <li class="nav-item"><a class="nav-link text-warning" href="listing.php">Smart Search (PHP)</a></li>
-                    <li class="nav-item"><a class="nav-link" href="liked.html">Favorites</a></li>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 gap-lg-2">
+                    <li class="nav-item"><a class="nav-link active fw-medium" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link fw-medium" href="house.html">Browse Houses</a></li>
+                    <li class="nav-item"><a class="nav-link fw-medium text-warning" href="listing.php">Smart Search (PHP)</a></li>
+                    <li class="nav-item"><a class="nav-link fw-medium" href="liked.html">Favorites ❤️</a></li>
                 </ul>
-                <div class="d-flex">
-                    <a href="login.html" class="btn btn-primary me-2">Login</a>
-                    <a href="signup.html" class="btn btn-warning text-dark">Sign Up</a>
+                <div class="d-flex align-items-center gap-2">
+                    <a href="login.html" class="btn btn-outline-light btn-sm px-3 fw-semibold">Login</a>
+                    <a href="signup.html" class="btn btn-gold btn-sm px-3">Get Started</a>
                 </div>
             </div>
         </div>
     </nav>
+
     <!-- Hero Section -->
-   <section class="hero-bg py-5">
-    <div class="container position-relative">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 hero-content text-center mx-auto">
-                <h1 class="hero-title mb-3">Find Your Dream Home in Kisumu</h1>
-                <p class="hero-desc mb-4">Discover, compare, and filter the best houses and properties in Kisumu County. Start your journey to a new home or investment today.</p>
-                <a href="liked.html" class="btn btn-warning text-dark fw-bold me-2 mb-2">View Favorites</a>
-                <a href="house.html" class="btn btn-outline-light fw-bold mb-2">Browse All Houses</a>
-                <!-- Slideshow positioned below the text -->
-            
+    <section class="hero-gradient">
+        <div class="container position-relative z-2">
+            <div class="row align-items-center justify-content-center text-center">
+                <div class="col-lg-9">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-2 mb-3 fw-semibold">
+                        🧠 Explainable Multi-Signal Property Ranking
+                    </span>
+                    <h1 class="hero-title">Find Your Perfect Property in Kisumu County</h1>
+                    <p class="hero-subtitle">
+                        Discover top-rated apartments, luxury villas, bungalows, and plots across Milimani, Riat, Ondiek, and Mamboleo with intelligent match scoring.
+                    </p>
+                    
+                    <div class="d-flex flex-wrap justify-content-center gap-3 mb-5">
+                        <a href="house.html" class="btn btn-gold btn-lg shadow-sm">
+                            🔍 Explore Houses & Smart Ranking
+                        </a>
+                        <a href="liked.html" class="btn btn-outline-light btn-lg">
+                            ❤️ Saved Favorites
+                        </a>
+                    </div>
+
+                    <!-- Statistics Bar -->
+                    <div class="row g-3 justify-content-center">
+                        <div class="col-6 col-md-3">
+                            <div class="stat-box">
+                                <div class="stat-number">50+</div>
+                                <div class="stat-label">Verified Listings</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="stat-box">
+                                <div class="stat-number">4.9★</div>
+                                <div class="stat-label">Client Satisfaction</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="stat-box">
+                                <div class="stat-number">100%</div>
+                                <div class="stat-label">Transparent Scoring</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
+
+    <!-- Interactive Search Filter Bar -->
+    <div class="container">
+        <div class="filter-card-modern">
+            <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                <span>🎯</span>
+                <span>Set Your Preferences & Find Best Matches</span>
+            </h5>
+            <form class="row g-3" action="house.html" method="get">
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-muted">Category</label>
+                    <select class="form-select border-1" name="category">
+                        <option value="">All Categories</option>
+                        <optgroup label="Residential">
+                            <option value="Villa">Villa</option>
+                            <option value="Apartment">Apartment</option>
+                            <option value="Bungalow">Bungalow</option>
+                            <option value="Townhome">Townhome</option>
+                            <option value="Multi-unit">Multi-unit</option>
+                            <option value="Bedsitter">Bedsitter</option>
+                        </optgroup>
+                        <optgroup label="Commercial & Land">
+                            <option value="Land">Land / Plot</option>
+                            <option value="Office">Office</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-muted">Preferred Location</label>
+                    <input type="text" name="location" class="form-control" placeholder="e.g. Milimani, Riat, Ondiek">
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold text-muted">Min Bedrooms</label>
+                    <select class="form-select" name="bedrooms">
+                        <option value="">Any</option>
+                        <option value="1">1+</option>
+                        <option value="2">2+</option>
+                        <option value="3">3+</option>
+                        <option value="4">4+</option>
+                        <option value="5">5+</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold text-muted">Max Budget (KSh)</label>
+                    <input type="number" name="maxprice" class="form-control" placeholder="e.g. 30000000">
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end">
+                    <button class="btn btn-primary-custom w-100 fw-bold py-2" type="submit">
+                        Find Matches ➔
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-    <!-- Filter Card -->
-    <div class="container filter-card">
-        <form class="row g-3 justify-content-center" action="house.html" method="get">
-            <div class="col-md-2">
-                <select class="form-select" name="category">
-                    <option value="">Category</option>
-                    <optgroup label="Houses">
-                        <option value="Villa">– Villas</option>
-                        <option value="Apartment">– Apartment</option>
-                        <option value="Bungalow">– Bungalow</option>
-                        <option value="Townhome">Townhome</option>
-                        <option value="Multi-unit">Multi-unit</option>
-                    </optgroup>
-                    <option value="Bedsitter">Bedsitters</option>
-                    <optgroup label="Commercial Property">
-                        <option value="Office">– Offices</option>
-                        <option value="PetrolStation">– PetrolStation</option>
-                        <option value="Warehouse">– Warehouses</option>
-                    </optgroup>
-                    <option value="Favorite">Favorite</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <select class="form-select" name="bedrooms">
-                    <option value="">Bedrooms</option>
-                    <option value="1">1+</option>
-                    <option value="2">2+</option>
-                    <option value="3">3+</option>
-                    <option value="4">4+</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <select class="form-select" name="bathrooms">
-                    <option value="">Bathrooms</option>
-                    <option value="1">1+</option>
-                    <option value="2">2+</option>
-                    <option value="3">3+</option>
-                    <option value="4">4+</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <input type="text" name="location" class="form-control" placeholder="Location, Province, Town">
-            </div>
-            <div class="col-md-2">
-                <input type="text" name="maxprice" class="form-control" placeholder="Max. Price">
-            </div>
-            <div class="col-md-2 d-grid">
-                <button class="btn btn-danger fw-bold" type="submit">Filter Houses</button>
-            </div>
-        </form>
-    </div>
+
     <!-- Main Content -->
     <main class="container my-5">
+        
+        <!-- Live Featured Smart Picks -->
         <section class="mb-5">
-            <h3 class="mb-3">Recent Searches</h3>
-            <ul id="search-history-list" class="list-group list-group-horizontal flex-wrap"></ul>
+            <div class="d-flex justify-content-between align-items-end mb-4">
+                <div>
+                    <h3 class="fw-bold mb-1">🌟 Featured Kisumu Properties</h3>
+                    <p class="text-muted mb-0">Handpicked listings ranked by popularity and value</p>
+                </div>
+                <a href="house.html" class="btn btn-outline-primary btn-sm fw-semibold">View All Listings ➔</a>
+            </div>
+
+            <div class="row g-4" id="featured-properties-list">
+                <!-- Javascript will populate featured properties here -->
+            </div>
         </section>
+
+        <!-- Why Choose Us Features -->
+        <section class="mb-5 py-4 bg-white rounded-4 shadow-sm p-4">
+            <div class="text-center mb-4">
+                <h3 class="fw-bold">Why Reality Kisumu Hub?</h3>
+                <p class="text-muted">Built for transparent property evaluation and seamless home discovery</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4 text-center">
+                    <div class="fs-1 mb-2 text-primary">🧠</div>
+                    <h5 class="fw-bold">Smart Match Scoring</h5>
+                    <p class="text-muted small">Instead of strict filtering, properties are ranked using multi-signal weighted algorithms tailored to your exact budget and location.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="fs-1 mb-2 text-primary">📍</div>
+                    <h5 class="fw-bold">Kisumu Localized</h5>
+                    <p class="text-muted small">Specialized coverage of Kisumu County neighborhoods including Milimani Estates, Riat Hills, Ondiek Highway, and Maseno.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="fs-1 mb-2 text-primary">💬</div>
+                    <h5 class="fw-bold">Instant Agent Connect</h5>
+                    <p class="text-muted small">Connect directly with verified listing agents via WhatsApp or direct calls with one tap.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Latest Kisumu Projects & News -->
         <section>
-            <h3 class="mb-3">Latest Projects</h3>
-            <div class="row" id="latest-projects-list"></div>
+            <div class="d-flex justify-content-between align-items-end mb-4">
+                <div>
+                    <h3 class="fw-bold mb-1">📰 Kisumu Real Estate News & Projects</h3>
+                    <p class="text-muted mb-0">Stay updated with major housing developments in Kisumu County</p>
+                </div>
+            </div>
+            <div class="row g-4" id="latest-projects-list">
+                <!-- Javascript populates project cards -->
+            </div>
         </section>
+
     </main>
+
     <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-4 mt-5">
-        &copy; 2025 Reality Kisumu Hub. All rights reserved.
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-5">
+                    <h4 class="brand-font fw-bold text-white mb-3">Reality Kisumu Hub</h4>
+                    <p class="text-secondary small me-md-4">
+                        A modern data-driven real estate platform built to explore smart property ranking and explainable recommendation systems across Kisumu, Kenya.
+                    </p>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="fw-bold text-warning mb-3">Quick Navigation</h6>
+                    <ul class="list-unstyled small d-flex flex-column gap-2">
+                        <li><a href="index.html" class="text-secondary text-decoration-none">Home</a></li>
+                        <li><a href="house.html" class="text-secondary text-decoration-none">Browse All Listings</a></li>
+                        <li><a href="listing.php" class="text-secondary text-decoration-none">Smart Recommendation (PHP)</a></li>
+                        <li><a href="liked.html" class="text-secondary text-decoration-none">Favorites Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="fw-bold text-warning mb-3">Contact Support</h6>
+                    <p class="small text-secondary mb-1">📍 Kisumu City, Kenya</p>
+                    <p class="small text-secondary mb-1">📧 info@kisumuhub.com</p>
+                    <p class="small text-secondary">📞 +254 700 000 000</p>
+                </div>
+            </div>
+            <hr class="border-secondary my-4">
+            <div class="text-center text-secondary small">
+                &copy; 2026 Reality Kisumu Hub. All rights reserved.
+            </div>
+        </div>
     </footer>
+
+    <!-- Bootstrap JS Bundle CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Search history and projects
-        let searchHistory = [
-            { text: "3 Bedroom Apartments in Milimani", link: "#" },
-            { text: "Land for Sale in Riat Hills", link: "#" },
-            { text: "Houses for Rent in Mamboleo", link: "#" }
+        const featuredListings = [
+            {
+                title: "5 Bed Villa with Swimming Pool",
+                category: "Villa",
+                location: "Riat Hills",
+                price: 48000000,
+                bedrooms: 5,
+                bathrooms: 5,
+                img: "images/RiatV.jpeg",
+                desc: "Scandinavian inspired gated community overlooking Kisumu’s Lake Victoria and Nandi Hills with private club house."
+            },
+            {
+                title: "3 Bed Apartment in Kisumu",
+                category: "Apartment",
+                location: "Ondiek Highway",
+                price: 42000000,
+                bedrooms: 3,
+                bathrooms: 2,
+                img: "images/p.webp",
+                desc: "Modern luxury living featuring Piped Gas, Olympic Sized Swimming Pool, Gym, and Club House."
+            },
+            {
+                title: "4 Bed House in Milimani",
+                category: "Bungalow",
+                location: "Milimani",
+                price: 20000000,
+                bedrooms: 4,
+                bathrooms: 1,
+                img: "images/milimani/m6.jpg",
+                desc: "Prime Milimani estate bungalow with tiled floors, spacious garden, and ample parking."
+            }
         ];
+
         const latestProjects = [
             {
                 title: "President Ruto Launches Multi-Billion Housing Projects in Kisumu",
@@ -175,7 +276,7 @@
                 link: "https://www.kisumu.go.ke/president-ruto-launches-multi-billion-housing-projects-in-kisumu/"
             },
             {
-                title: "Jamii Jua Luxury affordable housin",
+                title: "Jamii Jua Luxury Affordable Housing",
                 img: "images/luxury.jpg",
                 link: "https://jamiijua.com/"
             },
@@ -186,88 +287,56 @@
             }
         ];
 
-        function renderSearchHistory() {
-            const ul = document.getElementById('search-history-list');
-            ul.innerHTML = '';
-            searchHistory.forEach(item => {
-                const li = document.createElement('li');
-                li.className = "list-group-item flex-fill mb-2";
-                li.innerHTML = `
-                    <a href="${item.link}" class="text-decoration-none text-dark">
-                        <span class="me-2">&#128269;</span> ${item.text}
-                    </a>
+        function renderFeatured() {
+            const container = document.getElementById('featured-properties-list');
+            container.innerHTML = '';
+            featuredListings.forEach(house => {
+                const col = document.createElement('div');
+                col.className = 'col-md-4';
+                col.innerHTML = `
+                    <div class="property-card-modern">
+                        <div class="position-relative">
+                            <img src="${house.img}" class="property-card-img" alt="${house.title}">
+                            <span class="badge bg-dark position-absolute bottom-0 start-0 m-3 opacity-90">${house.category}</span>
+                        </div>
+                        <div class="p-4">
+                            <h5 class="fw-bold mb-1">${house.title}</h5>
+                            <p class="text-muted small mb-2">📍 ${house.location}</p>
+                            <p class="small text-secondary mb-3">${house.desc}</p>
+                            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                                <span class="fs-5 fw-bold text-primary">KSh ${house.price.toLocaleString()}</span>
+                                <a href="house.html?category=${house.category}&location=${encodeURIComponent(house.location)}" class="btn btn-outline-primary btn-sm fw-semibold">View Details</a>
+                            </div>
+                        </div>
+                    </div>
                 `;
-                ul.appendChild(li);
+                container.appendChild(col);
             });
         }
 
         function renderProjects() {
-            const row = document.getElementById('latest-projects-list');
-            row.innerHTML = '';
+            const container = document.getElementById('latest-projects-list');
+            container.innerHTML = '';
             latestProjects.forEach(item => {
                 const col = document.createElement('div');
-                col.className = "col-md-4 mb-4";
+                col.className = 'col-md-4';
                 col.innerHTML = `
-                    <div class="card h-100 shadow-sm">
-                        <a href="${item.link}" target="_blank" class="text-decoration-none text-dark">
-                            <img src="${item.img}" class="card-img-top" alt="project" style="height:220px;object-fit:cover;">
-                            <div class="card-body">
-                                <h5 class="card-title">&#127969; ${item.title}</h5>
-                            </div>
-                        </a>
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                        <img src="${item.img}" style="height:200px;object-fit:cover;" alt="news">
+                        <div class="card-body p-4 d-flex flex-column justify-content-between">
+                            <h6 class="fw-bold mb-3">${item.title}</h6>
+                            <a href="${item.link}" target="_blank" class="text-primary fw-semibold small text-decoration-none">Read Full Article ➔</a>
+                        </div>
                     </div>
                 `;
-                row.appendChild(col);
+                container.appendChild(col);
             });
         }
 
-        // Slideshow logic
-        let slideIndex = 1;
-        let slideTimer = null;
-
-        document.addEventListener("DOMContentLoaded", function() {
-            renderSearchHistory();
+        document.addEventListener('DOMContentLoaded', () => {
+            renderFeatured();
             renderProjects();
-            showSlides(slideIndex);
         });
-
-        function plusSlides(n) {
-            showSlides(slideIndex += n, true);
-        }
-        function currentSlide(n) {
-            showSlides(slideIndex = n, true);
-        }
-        function showSlides(n, manual = false) {
-            let i;
-            let slides = document.getElementsByClassName("Slide");
-            let dotsContainer = document.getElementById("slideshowDots");
-            if (!slides.length) return;
-
-            for (i = 0; i < slides.length; i++) {
-                slides[i].classList.remove("active-slide");
-            }
-            if (n > slides.length) { slideIndex = 1; }
-            if (n < 1) { slideIndex = slides.length; }
-
-            slides[slideIndex - 1].classList.add("active-slide");
-
-            // Dots
-            dotsContainer.innerHTML = "";
-            for (i = 0; i < slides.length; i++) {
-                let dot = document.createElement("span");
-                dot.className = "slideshow-dot" + (i === slideIndex - 1 ? " active" : "");
-                dot.onclick = (function(idx) { return function() { currentSlide(idx + 1); }; })(i);
-                dotsContainer.appendChild(dot);
-            }
-
-            // Auto play
-            if (slideTimer) clearTimeout(slideTimer);
-            if (!manual) {
-                slideTimer = setTimeout(() => showSlides(slideIndex + 1), 4000);
-            } else {
-                slideTimer = setTimeout(() => showSlides(slideIndex + 1), 6000);
-            }
-        }
     </script>
 </body>
 </html>

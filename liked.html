@@ -2,62 +2,83 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Favorite Houses - Reality Kisumu Hub</title>
+    <title>Saved Favorites - Reality Kisumu Hub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .star {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            color: #ffd166;
-            font-size: 2rem;
-            background: #fff;
-            border-radius: 50%;
-            padding: 2px 7px;
-            box-shadow: 0 2px 8px rgba(27,38,59,0.09);
-        }
-        .fav {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            color: #1b263b;
-            font-size: 1.5rem;
-            background: #fff;
-            border-radius: 50%;
-            padding: 4px 7px;
-            box-shadow: 0 2px 8px rgba(27,38,59,0.09);
-            cursor: pointer;
-            border: none;
-        }
-        .house-slideshow-img {
-            width: 100%;
-            height: 270px;
-            object-fit: cover;
-            border-radius: 0;
-            display: block;
-            transition: opacity 0.4s;
-        }
-    </style>
+    <!-- Main Design System CSS -->
+    <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body class="bg-light">
-    <header class="bg-dark text-white text-center py-4 mb-4">
-        <div class="container d-flex justify-content-between align-items-center">
-            <div>
-                <a href="index.html" class="btn btn-secondary me-2">Home</a>
-                <a href="house.html" class="btn btn-info me-2">Browse Listings</a>
+
+    <!-- Header / Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <span class="fs-4">🏠</span>
+                <span>Reality Kisumu Hub</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 gap-lg-2">
+                    <li class="nav-item"><a class="nav-link fw-medium" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link fw-medium" href="house.html">Browse Houses</a></li>
+                    <li class="nav-item"><a class="nav-link fw-medium text-warning" href="listing.php">Smart Search (PHP)</a></li>
+                    <li class="nav-item"><a class="nav-link active fw-medium" href="liked.html">Favorites ❤️</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-2">
+                    <a href="login.html" class="btn btn-outline-light btn-sm px-3 fw-semibold">Login</a>
+                    <a href="signup.html" class="btn btn-gold btn-sm px-3">Sign Up</a>
+                </div>
             </div>
         </div>
-        <h1 class="mb-1">Your Favorite Houses</h1>
-        <p class="mb-2">All the houses you have marked as favorite are listed here.</p>
-        <a href="house.html" class="text-warning text-decoration-underline">Back to all houses</a>
+    </nav>
+
+    <!-- Header Banner -->
+    <header class="bg-dark text-white py-4 mb-4 border-bottom border-secondary">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                    <h1 class="h2 fw-bold mb-1">Your Favorite Properties ❤️</h1>
+                    <p class="text-secondary mb-0">All properties you've saved during your search.</p>
+                </div>
+                <a href="house.html" class="btn btn-gold btn-sm px-3 fw-bold">
+                    + Explore More Houses
+                </a>
+            </div>
+        </div>
     </header>
-    <div class="container">
-        <div class="row" id="favoritesList">
-            <!-- Favorite houses will be rendered here -->
+
+    <!-- Stats Summary & Favorites Grid -->
+    <div class="container mb-5">
+
+        <div id="statsSummary" class="card border-0 shadow-sm rounded-4 p-3 mb-4 d-none">
+            <div class="row align-items-center text-center">
+                <div class="col-md-6 border-end">
+                    <span class="small text-muted fw-bold">Total Saved Properties</span>
+                    <h3 id="totalSavedCount" class="fw-bold text-primary mb-0">0</h3>
+                </div>
+                <div class="col-md-6">
+                    <span class="small text-muted fw-bold">Average Price of Favorites</span>
+                    <h3 id="avgPriceDisplay" class="fw-bold text-emerald mb-0">KSh 0</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4" id="favoritesList">
+            <!-- JavaScript renders favorite items -->
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5 border-top border-secondary">
+        <div class="container text-center small text-secondary">
+            &copy; 2026 Reality Kisumu Hub. All rights reserved.
+        </div>
+    </footer>
+
     <!-- Bootstrap JS Bundle CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -69,72 +90,72 @@
             return houses;
         }
 
-        function renderFavorites(list) {
+        function renderFavorites() {
+            const list = getFavoriteHouses();
             const container = document.getElementById('favoritesList');
+            const statsSummary = document.getElementById('statsSummary');
             container.innerHTML = '';
+
             if (list.length === 0) {
-                container.innerHTML = '<div class="col-12"><div class="alert alert-info">No favorite houses yet. Go to <a href="house.html">all houses</a> and add some!</div></div>';
+                statsSummary.classList.add('d-none');
+                container.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <div class="fs-1 mb-3">💔</div>
+                        <h4 class="fw-bold mb-2">No Favorite Properties Saved Yet</h4>
+                        <p class="text-muted mb-4">Click the heart icon on any listing to save your top picks here!</p>
+                        <a href="house.html" class="btn btn-primary-custom fw-bold px-4">Browse Available Listings</a>
+                    </div>
+                `;
                 return;
             }
+
+            // Show Stats
+            statsSummary.classList.remove('d-none');
+            document.getElementById('totalSavedCount').innerText = list.length;
+            const totalPrice = list.reduce((sum, h) => sum + (h.price || 0), 0);
+            const avgPrice = Math.round(totalPrice / list.length);
+            document.getElementById('avgPriceDisplay').innerText = "KSh " + avgPrice.toLocaleString();
+
             list.forEach((house, idx) => {
-                const allImgs = [house.img, ...(house.gallery || [])];
-                const slideshowId = `fav-slideshow-${idx}`;
                 const col = document.createElement('div');
-                col.className = 'col-12 mb-4';
+                col.className = 'col-md-6 col-lg-4';
+
                 col.innerHTML = `
-                    <div class="card position-relative shadow-sm">
-                        <span class="star" title="Featured">${house.isStarred ? '★' : ''}</span>
-                        <button class="fav" title="Remove from favorites" data-idx="${idx}" aria-pressed="true">❤</button>
-                        <div class="row g-0">
-                            <div class="col-md-5 d-flex align-items-center justify-content-center bg-secondary-subtle">
-                                <img class="house-slideshow-img" id="${slideshowId}-img" src="${allImgs[0]}" alt="House">
-                                <div style="position:absolute;bottom:8px;left:8px;color:#fff;background:rgba(0,0,0,0.4);padding:2px 10px;border-radius:8px;font-size:0.95rem;">
-                                    Added ${house.added || ''}
-                                </div>
+                    <div class="property-card-modern h-100 position-relative d-flex flex-column justify-content-between">
+                        <button class="fav-btn-floating text-danger" title="Remove Favorite" onclick="removeFavorite(${idx})">
+                            ❤️
+                        </button>
+                        <div>
+                            <img src="${house.img}" class="property-card-img" alt="${house.title}">
+                            <div class="p-4">
+                                <span class="badge bg-dark mb-2">${house.category}</span>
+                                <h5 class="fw-bold mb-1">${house.title}</h5>
+                                <div class="text-muted small mb-2">📍 ${house.location}</div>
+                                <p class="small text-secondary mb-3">${house.desc}</p>
                             </div>
-                            <div class="col-md-7">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <div>
-                                            <h5 class="card-title mb-1">${house.title}</h5>
-                                            <div class="text-muted mb-2">📍 ${house.location}</div>
-                                        </div>
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013.png" alt="Agency" style="height:40px;width:auto;">
-                                    </div>
-                                    <div class="mb-2">
-                                        <span class="badge bg-light text-dark me-2">${house.bedrooms || ''} Bedrooms</span>
-                                        <span class="badge bg-light text-dark me-2">${house.bathrooms || ''} Bathrooms</span>
-                                        <span class="badge bg-light text-dark">${house.area ? house.area : ''}</span>
-                                    </div>
-                                    <p class="card-text mb-2">${house.desc}</p>
-                                    <div class="d-flex align-items-center mt-2">
-                                        <span class="fs-5 fw-bold text-danger me-3">KSh ${house.price ? house.price.toLocaleString() : ''}</span>
-                                        <div class="btn-group" role="group">
-                                            <a href="https://wa.me/254746672821" target="_blank" class="btn btn-outline-success btn-sm" title="WhatsApp">
-                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width:22px;height:22px;vertical-align:middle;border-radius:4px;">
-                                            </a>
-                                            <button class="btn btn-outline-primary btn-sm" title="Message">&#128172;</button>
-                                            <a href="tel:+254746672821" class="btn btn-outline-secondary btn-sm" title="Call">&#128222;</a>
-                                        </div>
-                                    </div>
-                                </div>
+                        </div>
+                        <div class="p-4 pt-0">
+                            <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                                <span class="fs-5 fw-bold text-primary">KSh ${house.price ? house.price.toLocaleString() : ''}</span>
+                                <a href="https://wa.me/254746672821?text=${encodeURIComponent('Hi, I am inquiring about saved property: ' + house.title)}" target="_blank" class="btn btn-success btn-sm fw-semibold">
+                                    💬 Contact Agent
+                                </a>
                             </div>
                         </div>
                     </div>
                 `;
-                // Remove favorite button event
-                const favBtn = col.querySelector('.fav');
-                favBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    list.splice(idx, 1);
-                    localStorage.setItem('favoriteHouses', JSON.stringify(list));
-                    renderFavorites(list);
-                });
                 container.appendChild(col);
             });
         }
 
-        renderFavorites(getFavoriteHouses());
+        function removeFavorite(idx) {
+            let list = getFavoriteHouses();
+            list.splice(idx, 1);
+            localStorage.setItem('favoriteHouses', JSON.stringify(list));
+            renderFavorites();
+        }
+
+        document.addEventListener('DOMContentLoaded', renderFavorites);
     </script>
 </body>
 </html>

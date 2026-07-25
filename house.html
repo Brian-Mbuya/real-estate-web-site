@@ -2,173 +2,180 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Houses - Reality Kisumu Hub</title>
+    <title>Browse Houses - Reality Kisumu Hub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .star {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: #ffd166;
-            font-size: 2rem;
-            background: #fff;
-            border-radius: 50%;
-            padding: 2px 7px;
-            box-shadow: 0 2px 8px rgba(27,38,59,0.09);
-        }
-        .fav {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            color: #1b263b;
-            font-size: 1.5rem;
-            background: #fff;
-            border-radius: 50%;
-            padding: 4px 7px;
-            box-shadow: 0 2px 8px rgba(27,38,59,0.09);
-            cursor: pointer;
-            border: none;
-        }
-        .house-slideshow-img {
-            width: 100%;
-            height: 270px;
-            object-fit: cover;
-            border-radius: 0;
-            display: block;
-            transition: opacity 0.4s;
-        }
-        .house-slideshow-controls {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            transform: translateY(-50%);
-            pointer-events: none;
-        }
-        .house-slideshow-btn {
-            background: rgba(0,0,0,0.4);
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
-            font-size: 1.7rem;
-            cursor: pointer;
-            pointer-events: all;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.18s;
-        }
-        .house-slideshow-btn:hover {
-            background: #2471a3;
-        }
-    </style>
+    <!-- Main Design System CSS -->
+    <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body class="bg-light">
-    <header class="bg-dark text-white text-center py-4 mb-4">
-        <div class="container d-flex justify-content-between align-items-center">
-            <div>
-                <a href="index.html" class="btn btn-secondary me-2">Home</a>
-                <a href="login.html" class="btn btn-info me-2">Login</a>
-                <a href="signup.html" class="btn btn-warning text-dark me-2">Sign Up</a>
-            </div>
-            <div>
-                <a href="liked.html" class="btn btn-success">Favorites</a>
+
+    <!-- Header / Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <span class="fs-4">🏠</span>
+                <span>Reality Kisumu Hub</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 gap-lg-2">
+                    <li class="nav-item"><a class="nav-link fw-medium" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active fw-medium" href="house.html">Browse Houses</a></li>
+                    <li class="nav-item"><a class="nav-link fw-medium text-warning" href="listing.php">Smart Search (PHP)</a></li>
+                    <li class="nav-item"><a class="nav-link fw-medium" href="liked.html">Favorites ❤️</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-2">
+                    <a href="login.html" class="btn btn-outline-light btn-sm px-3 fw-semibold">Login</a>
+                    <a href="signup.html" class="btn btn-gold btn-sm px-3">Sign Up</a>
+                </div>
             </div>
         </div>
-        <h1 class="mt-3 mb-1">Browse available listings</h1>
-        <p class="mb-2">Find your perfect home or investment in Kisumu. Use the filters below to narrow your search.</p>
-    </header>
-    <section class="container mb-4">
-        <form class="row g-2 justify-content-center" id="houseFilterForm" onsubmit="event.preventDefault(); filterHouses();">
-            <div class="col-md-2">
-                <select id="category" class="form-select">
-                    <option value="">Category</option>
-                    <optgroup label="Houses">
-                        <option value="Villa">– Villas</option>
-                        <option value="Apartment">– Apartment</option>
-                        <option value="Bungalow">– Bungalow</option>
-                        <option value="Townhome">Townhome</option>
-                        <option value="Multi-unit">Multi-unit</option>
-                    </optgroup>
-                    <option value="Bedsitter">Bedsitters</option>
-                    <optgroup label="Commercial Property">
-                        <option value="Office">– Offices</option>
-                        <option value="PetrolStation">– PetrolStation</option>
-                        <option value="Warehouse">– Warehouses</option>
-                    </optgroup>
-                    <option value="Favorite">Favorite</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <input type="text" id="location" class="form-control" placeholder="Location (e.g. Milimani)">
-            </div>
-            <div class="col-md-2">
-                <select id="bedrooms" class="form-select">
-                    <option value="">Bedrooms</option>
-                    <option value="1">1+</option>
-                    <option value="2">2+</option>
-                    <option value="3">3+</option>
-                    <option value="4">4+</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <select id="bathrooms" class="form-select">
-                    <option value="">Bathrooms</option>
-                    <option value="1">1+</option>
-                    <option value="2">2+</option>
-                    <option value="3">3+</option>
-                    <option value="4">4+</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <input type="text" id="maxPrice" class="form-control" placeholder="Max Price">
-            </div>
-            <div class="col-md-2 d-grid">
-                <button class="btn btn-danger" type="submit">Search</button>
-            </div>
-        </form>
-    </section>
-    <section class="container" id="housesList">
-        <!-- Houses will be rendered here -->
-    </section>
-    <footer class="bg-dark text-white py-4 mt-5">
+    </nav>
+
+    <!-- Header Banner -->
+    <header class="bg-dark text-white py-4 mb-4 border-bottom border-secondary">
         <div class="container">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <h5 class="text-warning">Contact Us</h5>
-                    <p><strong>Reality Kisumu Hub</strong></p>
-                    <p>Email: <a href="mailto:info@kisumuhub.com" class="text-warning">info@kisumuhub.com</a></p>
-                    <p>Phone: <a href="tel:+254700000000" class="text-warning">+254 700 000 000</a></p>
-                    <p>Location: Kisumu, Kenya</p>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                    <h1 class="h2 fw-bold mb-1">Explore Kisumu Properties</h1>
+                    <p class="text-secondary mb-0">Use multi-criteria preferences to rank houses by relevance score.</p>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <h5 class="text-warning">Send a Message</h5>
-                    <form onsubmit="event.preventDefault();alert('Thank you for contacting us!');">
-                        <div class="mb-2">
-                            <input type="text" class="form-control" placeholder="Your Name" required>
+                <div>
+                    <a href="liked.html" class="btn btn-outline-warning fw-semibold">
+                        ❤️ View Favorites Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Advanced Filter Bar -->
+    <section class="container mb-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <form id="houseFilterForm" onsubmit="event.preventDefault(); filterHouses();">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold text-muted">Category</label>
+                        <select id="category" class="form-select">
+                            <option value="">All Categories</option>
+                            <optgroup label="Houses">
+                                <option value="Villa">Villa</option>
+                                <option value="Apartment">Apartment</option>
+                                <option value="Bungalow">Bungalow</option>
+                                <option value="Townhome">Townhome</option>
+                                <option value="Multi-unit">Multi-unit</option>
+                                <option value="Bedsitter">Bedsitter</option>
+                            </optgroup>
+                            <optgroup label="Commercial & Land">
+                                <option value="Land">Land / Plot</option>
+                                <option value="Office">Office</option>
+                            </optgroup>
+                            <option value="Favorite">❤️ Saved Favorites Only</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold text-muted">Location Substring</label>
+                        <input type="text" id="location" class="form-control" placeholder="e.g. Milimani, Riat, Ondiek">
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold text-muted">Min Bedrooms</label>
+                        <select id="bedrooms" class="form-select">
+                            <option value="">Any</option>
+                            <option value="1">1+</option>
+                            <option value="2">2+</option>
+                            <option value="3">3+</option>
+                            <option value="4">4+</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold text-muted">Min Bathrooms</label>
+                        <select id="bathrooms" class="form-select">
+                            <option value="">Any</option>
+                            <option value="1">1+</option>
+                            <option value="2">2+</option>
+                            <option value="3">3+</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold text-muted">Sort Order</label>
+                        <select id="sortBy" class="form-select" onchange="filterHouses()">
+                            <option value="smart">🌟 Smart Relevance Score</option>
+                            <option value="priceAsc">Price: Low to High</option>
+                            <option value="priceDesc">Price: High to Low</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-9">
+                        <label class="form-label small fw-bold text-muted d-flex justify-content-between">
+                            <span>Max Budget (KSh)</span>
+                            <span id="maxPriceDisplay" class="text-primary fw-bold">No Limit</span>
+                        </label>
+                        <input type="range" class="form-range" id="maxPriceSlider" min="1000000" max="300000000" step="1000000" oninput="updatePriceSlider(this.value)">
+                        <input type="hidden" id="maxPrice" value="">
+                    </div>
+
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button class="btn btn-primary-custom w-100 fw-bold py-2" type="submit">
+                            Apply & Calculate Relevance
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Houses List Container -->
+    <section class="container mb-5" id="housesList">
+        <!-- Rendered by JS -->
+    </section>
+
+    <!-- Tour Schedule Modal -->
+    <div class="modal fade" id="tourModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="tourModalTitle">Schedule a Property Tour</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="tourForm" onsubmit="event.preventDefault(); submitTour();">
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold">Your Full Name</label>
+                            <input type="text" class="form-control" required placeholder="John Doe">
                         </div>
-                        <div class="mb-2">
-                            <input type="email" class="form-control" placeholder="Your Email" required>
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold">Phone Number / WhatsApp</label>
+                            <input type="tel" class="form-control" required placeholder="+254 700 000 000">
                         </div>
-                        <div class="mb-2">
-                            <textarea class="form-control" placeholder="Your Message" required rows="3"></textarea>
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold">Preferred Tour Date</label>
+                            <input type="date" class="form-control" required>
                         </div>
-                        <button type="submit" class="btn btn-warning text-dark fw-bold">Send</button>
+                        <button type="submit" class="btn btn-primary-custom w-100 fw-bold">Confirm Tour Booking</button>
                     </form>
                 </div>
             </div>
-            <div class="text-center mt-3 text-secondary">
-                &copy; 2025 Reality Kisumu Hub. All rights reserved.
-            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5 border-top border-secondary">
+        <div class="container text-center small text-secondary">
+            &copy; 2026 Reality Kisumu Hub. All rights reserved.
         </div>
     </footer>
+
+    <!-- Bootstrap JS Bundle CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Example house data
         const houses = [
             {
                 title: "3 Bed Apartment in Kisumu",
@@ -178,36 +185,11 @@
                 bedrooms: 3,
                 bathrooms: 2,
                 img: "images/p.webp",
-                gallery: [
-                  "images/p4.webp",
-                  "images/p5.webp",
-                  "images/p6.webp",
-                  "images/p7.jpg",
-                ],
-                desc: "A new age of living, the first of its kind, Anderson Park Residence Kisumu featuring Piped Gas, Olympic Sized Swimming Pool, Gym, Club Hous",
+                gallery: ["images/p4.webp", "images/p5.webp", "images/p6.webp", "images/p7.jpg"],
+                desc: "A new age of living, Anderson Park Residence Kisumu featuring Piped Gas, Swimming Pool, Gym, Club House.",
                 isStarred: true,
                 isFav: false,
                 added: "04 October 2024"
-            },
-           {
-
-                title: "3 Bed Apartment in Kisumu",
-                category: "Apartment",
-                location: "Ondiek Highway",
-                price: 42000000,
-                bedrooms: 3,
-                bathrooms: 2,
-                img: "images/p.webp",
-                gallery: [
-                  "images/p4.webp",
-                  "images/p5.webp",
-                    "images/p6.webp",
-                    "images/p7.jpg",
-                ],
-                desc: "A new age of living, the first of its kind, Anderson Park Residence Kisumu featuring Piped Gas, Olympic Sized Swimming Pool, Gym, Club Hous",
-                isStarred: true,
-                isFav: false,
-                added: " 04 October 2024"
             },
             {
                 title: "1 Bed Apartment with En Suite at Ondiek Highway",
@@ -217,16 +199,11 @@
                 bedrooms: 1,
                 bathrooms: 1,
                 img: "images/p.webp",
-                gallery: [
-                  "images/p4.webp",
-                  "images/p5.webp",
-                    "images/p6.webp",
-                    "images/p7.jpg",
-                ],
-                desc: "A new age of living, the first of its kind, Anderson Park Residence Kisumu featuring Piped Gas, Olympic Sized Swimming Pool, Gym, Club Hous",
+                gallery: ["images/p4.webp", "images/p5.webp", "images/p6.webp", "images/p7.jpg"],
+                desc: "1 bedroom luxury apartment with en-suite bath at Anderson Park Residence Kisumu.",
                 isStarred: true,
                 isFav: false,
-                added: " 04 October 2024"
+                added: "04 October 2024"
             },
             {
                 title: "2 Bed Apartment with Parking in Kisumu",
@@ -236,29 +213,20 @@
                 bedrooms: 5,
                 bathrooms: 5,
                 img: "images/e.jpg",
-                gallery: [
-                   "images/e4.jpg",
-                   "images/e5.jpg",
-                   "images/e6.jpg",
-                   "images/e7.webp",
-
-                ],
-                desc: "This is a strategically placed apartment building housing nine (9) units within Nubian Estate. Key features are electric fence, high perimeter wall and its witin an established estate",
+                gallery: ["images/e4.jpg", "images/e5.jpg", "images/e6.jpg", "images/e7.webp"],
+                desc: "Strategically placed apartment building housing 9 units within Nubian Estate. Features electric fence and perimeter wall.",
                 isStarred: true,
                 isFav: false,
                 added: "4 hours ago"
             },
-             {
+            {
                 title: "Residential Land at Riat",
                 category: "Land",
                 location: "Riat",
                 price: 2000000,
                 img: "images/c.jpeg",
-                gallery: [
-                    "images/c4.jpeg",
-                    "images/c5.jpeg",
-                ],
-                desc: "Discover our Riat hills plots in Kisumu, Located approximately 6.5km from Kisumu International Airport, In a serene environment with amazing views and growing value.",
+                gallery: ["images/c4.jpeg", "images/c5.jpeg"],
+                desc: "Discover our Riat hills plots in Kisumu, located 6.5km from Kisumu International Airport with serene views.",
                 isStarred: true,
                 isFav: false,
             },
@@ -268,31 +236,21 @@
                 location: "Maseno",
                 price: 12000000,
                 img: "images/u.jpg",
-                gallery: [
-                   "images/u5.jpg",
-                   "images/u4.jpg",
-                   "images/u6.jpg",
-                ],
-                desc: "A quarter (1/4) acre plot of land with road frontage and developed with two (2) three (3) bedroom residential houses each with a detached staff quarters. The property is 700 metres from the Kisumu-Busia Road fronting Siriba Road. It is strategically placed opposite the Maseno University Siriba Campus and is ideal for both residential and commercial use. ",
+                gallery: ["images/u5.jpg", "images/u4.jpg", "images/u6.jpg"],
+                desc: "1/4 acre plot fronting Siriba Road with 2 residential houses opposite Maseno University Siriba Campus.",
                 isStarred: true,
                 isFav: false,
             },
             {
-                title: "5 Bed villa with swimming pool",
+                title: "5 Bed Villa with Swimming Pool",
                 category: "Villa",
                 location: "Riat Hills",
                 price: 48000000,
                 bedrooms: 5,
                 bathrooms: 5,
                 img: "images/RiatV.jpeg",
-                gallery: [
-                    "images/RiatV2.jpeg",
-                    "images/RiatV.jpeg",
-                    "images/riat4.webp",
-                    "images/riat5.webp",
-                    "images/riat6.jpeg"
-                ],
-                desc: "Riat Hill Villas is a Scandinavian inspired gated community overlooking Kisumu’s Lake Victoria in the front and Nandi Hills in the back.A total of 31 Villas are being built with a common Club house and a large swimming pool",
+                gallery: ["images/RiatV2.jpeg", "images/RiatV.jpeg", "images/riat4.webp", "images/riat5.webp", "images/riat6.jpeg"],
+                desc: "Riat Hill Villas is a Scandinavian inspired gated community overlooking Lake Victoria in front and Nandi Hills in back.",
                 isStarred: true,
                 isFav: false,
                 added: "4 hours ago"
@@ -306,18 +264,14 @@
                 bathrooms: 1,
                 area: "101 m²",
                 img: "images/milimani/m6.jpg",
-                gallery: [
-                    "images/milimani/m.jpg",
-                    "images/milimani/m4.webp",
-                    "images/milimani/m5.webp"
-                ],
-                desc: "This is a property in the prime Milimani estate, behind St. Johns Manor Hotel. The bungalow features beautifully tiled floors in all main areas and ample parking space. The area is easily accessible by public and private means.",
+                gallery: ["images/milimani/m.jpg", "images/milimani/m4.webp", "images/milimani/m5.webp"],
+                desc: "Prime Milimani estate bungalow featuring tiled floors, ample parking, and peaceful residential surroundings.",
                 isStarred: true,
                 isFav: true,
                 added: "1 day ago"
             },
             {
-                title: "10 Bed House with En Suite at Milimani",
+                title: "10 Bed Multi-unit in Milimani",
                 category: "Multi-unit",
                 location: "Milimani",
                 price: 300000000,
@@ -325,17 +279,8 @@
                 bathrooms: 10,
                 area: "0.8 ha",
                 img: "images/milimani/suite.jpeg",
-                gallery: [
-                    "images/milimani/s.jpeg",
-                    "images/milimani/s4.jpeg",
-                    "images/milimani/s6.jpeg"
-                ],
-                desc: [
-                    "1st block -1 unit of four bedrooms , 3 units of two bedrooms and 2 units of one bedroom",
-                    "2nd block -1 unit of three bedrooms, 2 units of two bedrooms and 1 unit of one bedroom.",
-                    "3rd block - 1 unit of two bedrooms.",
-                    "All in one acre stone walled"
-                ].join("<br>"),
+                gallery: ["images/milimani/s.jpeg", "images/milimani/s4.jpeg", "images/milimani/s6.jpeg"],
+                desc: "Multi-unit property with 3 residential blocks in one acre stone walled plot in prime Milimani estate.",
                 isStarred: false,
                 isFav: false,
                 added: "3 days ago"
@@ -349,19 +294,26 @@
                 bathrooms: 4,
                 area: "1.6 ha",
                 img: "images/dairy/3a4873e1-9856-459c-a240-e597e95665e9.webp",
-                gallery: [
-                    "images/dairy/d.jpeg",
-                    "images/dairy/d4.jpeg",
-                    "images/dairy/d5.webp",
-                    "images/dairy/d6.jpeg",
-                    "images/dairy/d7.jpeg"
-                ],
-                desc: "A very big dairy farm with 4 bedroomed house, gym and has all structures and equipments needed for dairy farming. Water and electricity also available",
+                gallery: ["images/dairy/d.jpeg", "images/dairy/d4.jpeg", "images/dairy/d5.webp", "images/dairy/d6.jpeg"],
+                desc: "Dairy farm with 4 bedroom house, gym, and complete farming infrastructure.",
                 isStarred: true,
                 isFav: true,
                 added: "1 day ago"
             }
         ];
+
+        function updatePriceSlider(val) {
+            const display = document.getElementById('maxPriceDisplay');
+            const hidden = document.getElementById('maxPrice');
+            if (!val || val == "300000000") {
+                display.innerText = "No Limit";
+                hidden.value = "";
+            } else {
+                display.innerText = "KSh " + parseInt(val).toLocaleString();
+                hidden.value = val;
+            }
+            filterHouses();
+        }
 
         function calculateSmartScore(house, filters) {
             let score = 0;
@@ -407,68 +359,85 @@
                 }
             }
 
-            const maxPossible = (activeFiltersCount > 0) ? 100 : 0;
-            const percentage = maxPossible > 0 ? Math.min(100, Math.round((score / 120) * 100)) : 0;
+            const percentage = activeFiltersCount > 0 ? Math.min(100, Math.round((score / 120) * 100)) : 0;
             return { score, percentage, activeFiltersCount };
         }
 
         function renderHouses(list, activeFiltersCount = 0) {
             const container = document.getElementById('housesList');
             container.innerHTML = '';
+
             if (list.length === 0) {
-                container.innerHTML = '<div class="alert alert-info text-center p-4 fs-5">No houses found matching your criteria. Try adjusting your filters!</div>';
+                container.innerHTML = '<div class="alert alert-info text-center p-5 rounded-4 fs-5 shadow-sm">No properties found matching your criteria. Try adjusting your preferences!</div>';
                 return;
             }
+
             list.forEach((house, idx) => {
                 const allImgs = [house.img, ...(house.gallery || [])];
                 const slideshowId = `slideshow-${idx}`;
                 const card = document.createElement('div');
-                card.className = 'card mb-4 position-relative shadow house-card';
+                card.className = 'property-card-modern mb-4 position-relative';
 
-                const matchBadgeHTML = (activeFiltersCount > 0 && house.smartPercentage !== undefined) 
-                    ? `<span class="badge bg-primary me-2 fw-bold fs-6">🌟 ${house.smartPercentage}% Relevance Match</span>`
+                const matchProgressHTML = (activeFiltersCount > 0 && house.smartPercentage !== undefined)
+                    ? `
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center small fw-bold mb-1">
+                            <span class="text-primary">🌟 Match Relevance Score</span>
+                            <span class="text-emerald fw-extrabold">${house.smartPercentage}%</span>
+                        </div>
+                        <div class="match-progress-bar">
+                            <div class="match-progress-fill" style="width: ${house.smartPercentage}%;"></div>
+                        </div>
+                    </div>
+                    `
                     : '';
 
                 card.innerHTML = `
-                    <span class="star" title="Featured">${house.isStarred ? '★' : ''}</span>
-                    <button class="fav" title="Add to favorites" data-idx="${idx}" aria-pressed="${house.isFav}">
-                        ${house.isFav ? '❤' : '🤍'}
+                    <button class="fav-btn-floating" title="Toggle Favorite" data-idx="${idx}">
+                        ${house.isFav ? '❤️' : '🤍'}
                     </button>
                     <div class="row g-0">
-                        <div class="col-md-5 d-flex align-items-center justify-content-center bg-secondary-subtle position-relative">
-                            <img class="house-slideshow-img" id="${slideshowId}-img" src="${allImgs[0]}" alt="House">
-                            <div class="house-slideshow-controls">
-                                <button class="house-slideshow-btn" onclick="prevSlide('${slideshowId}', ${allImgs.length}); event.stopPropagation();">&#10094;</button>
-                                <button class="house-slideshow-btn" onclick="nextSlide('${slideshowId}', ${allImgs.length}); event.stopPropagation();">&#10095;</button>
+                        <div class="col-md-5 position-relative bg-secondary-subtle">
+                            <img class="property-card-img" id="${slideshowId}-img" src="${allImgs[0]}" alt="${house.title}">
+                            <div class="position-absolute top-50 start-0 end-0 translate-middle-y d-flex justify-content-between px-2 pointer-events-none">
+                                <button class="btn btn-dark btn-sm rounded-circle opacity-75" onclick="prevSlide('${slideshowId}', ${allImgs.length}); event.stopPropagation();">&#10094;</button>
+                                <button class="btn btn-dark btn-sm rounded-circle opacity-75" onclick="nextSlide('${slideshowId}', ${allImgs.length}); event.stopPropagation();">&#10095;</button>
                             </div>
-                            <div style="position:absolute;bottom:8px;left:8px;color:#fff;background:rgba(0,0,0,0.4);padding:2px 10px;border-radius:8px;font-size:0.95rem;">
-                                Added ${house.added || ''}
+                            <div class="position-absolute bottom-0 start-0 m-3">
+                                <span class="badge bg-dark opacity-90">${house.category}</span>
                             </div>
                         </div>
                         <div class="col-md-7">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div>
-                                        <h5 class="card-title mb-1">${house.title}</h5>
-                                        <div class="text-muted mb-2">📍 ${house.location}</div>
+                            <div class="p-4 d-flex flex-column justify-content-between h-100">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <h5 class="fw-bold mb-0">${house.title}</h5>
                                     </div>
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013.png" alt="Agency" style="height:40px;width:auto;">
+                                    <div class="text-muted small mb-3">📍 ${house.location}</div>
+
+                                    ${matchProgressHTML}
+
+                                    <div class="d-flex flex-wrap gap-2 mb-3">
+                                        <span class="badge-tag">🛏️ ${house.bedrooms || 0} Beds</span>
+                                        <span class="badge-tag">🚿 ${house.bathrooms || 0} Baths</span>
+                                        ${house.area ? `<span class="badge-tag">📐 ${house.area}</span>` : ''}
+                                    </div>
+
+                                    <p class="text-secondary small mb-3">${house.desc}</p>
                                 </div>
-                                <div class="mb-2 align-items-center d-flex flex-wrap gap-1">
-                                    ${matchBadgeHTML}
-                                    <span class="badge bg-light text-dark me-2">${house.bedrooms || 0} Bedrooms</span>
-                                    <span class="badge bg-light text-dark me-2">${house.bathrooms || 0} Bathrooms</span>
-                                    <span class="badge bg-light text-dark">${house.area ? house.area : ''}</span>
-                                </div>
-                                <p class="card-text mb-2">${house.desc}</p>
-                                <div class="d-flex align-items-center mt-2">
-                                    <span class="fs-5 fw-bold text-danger me-3">KSh ${house.price ? house.price.toLocaleString() : ''}</span>
-                                    <div class="btn-group" role="group">
-                                        <a href="https://wa.me/254746672821" target="_blank" class="btn btn-outline-success btn-sm" title="WhatsApp">
-                                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width:22px;height:22px;vertical-align:middle;border-radius:4px;">
+
+                                <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                                    <div>
+                                        <div class="small text-muted">Asking Price</div>
+                                        <div class="fs-4 fw-extrabold text-primary">KSh ${house.price.toLocaleString()}</div>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-outline-primary btn-sm fw-semibold" onclick="openTourModal('${house.title}')">
+                                            📅 Book Tour
+                                        </button>
+                                        <a href="https://wa.me/254746672821?text=${encodeURIComponent('Hi, I am interested in: ' + house.title)}" target="_blank" class="btn btn-success btn-sm fw-semibold">
+                                            💬 WhatsApp
                                         </a>
-                                        <button class="btn btn-outline-primary btn-sm" title="Message">&#128172;</button>
-                                        <a href="tel:+254746672821" class="btn btn-outline-secondary btn-sm" title="Call">&#128222;</a>
                                     </div>
                                 </div>
                             </div>
@@ -480,21 +449,22 @@
                 card.dataset.slideshowImgs = JSON.stringify(allImgs);
                 card.dataset.slideshowId = slideshowId;
 
-                const favBtn = card.querySelector('.fav');
+                const favBtn = card.querySelector('.fav-btn-floating');
                 favBtn.addEventListener('click', function(e) {
                     e.stopPropagation();
-                    houses[idx].isFav = !houses[idx].isFav;
+                    house.isFav = !house.isFav;
                     let favorites = JSON.parse(localStorage.getItem('favoriteHouses')) || [];
-                    if (houses[idx].isFav) {
-                        if (!favorites.some(h => h.title === houses[idx].title && h.location === houses[idx].location)) {
-                            favorites.push(houses[idx]);
+                    if (house.isFav) {
+                        if (!favorites.some(h => h.title === house.title && h.location === house.location)) {
+                            favorites.push(house);
                         }
                     } else {
-                        favorites = favorites.filter(h => !(h.title === houses[idx].title && h.location === houses[idx].location));
+                        favorites = favorites.filter(h => !(h.title === house.title && h.location === house.location));
                     }
                     localStorage.setItem('favoriteHouses', JSON.stringify(favorites));
                     filterHouses();
                 });
+
                 container.appendChild(card);
             });
         }
@@ -505,32 +475,38 @@
             const maxPrice = parseInt(document.getElementById('maxPrice').value);
             const bedrooms = parseInt(document.getElementById('bedrooms').value);
             const bathrooms = parseInt(document.getElementById('bathrooms').value);
+            const sortBy = document.getElementById('sortBy').value;
+
+            // Sync localStorage favorites
+            const favorites = JSON.parse(localStorage.getItem('favoriteHouses')) || [];
+            houses.forEach(h => {
+                h.isFav = favorites.some(fav => fav.title === h.title && fav.location === h.location);
+            });
 
             const filters = { category, location, maxPrice, bedrooms, bathrooms };
 
-            let scoredList = houses.map(house => {
+            let list = houses.filter(h => category === "Favorite" ? h.isFav : true);
+
+            let scoredList = list.map(house => {
                 const { score, percentage, activeFiltersCount } = calculateSmartScore(house, filters);
                 return { ...house, smartScore: score, smartPercentage: percentage, activeFiltersCount };
             });
 
             const activeCount = scoredList[0] ? scoredList[0].activeFiltersCount : 0;
 
-            if (activeCount > 0) {
-                // Smart Relevance Ranking: Order by match score descending, then price ascending
-                scoredList.sort((a, b) => {
-                    if (b.smartScore !== a.smartScore) {
-                        return b.smartScore - a.smartScore;
-                    }
-                    return a.price - b.price;
-                });
+            if (sortBy === 'priceAsc') {
+                scoredList.sort((a, b) => a.price - b.price);
+            } else if (sortBy === 'priceDesc') {
+                scoredList.sort((a, b) => b.price - a.price);
+            } else if (activeCount > 0) {
+                scoredList.sort((a, b) => b.smartScore - a.smartScore);
             }
 
             renderHouses(scoredList, activeCount);
         }
 
-        // Slideshow logic
         function nextSlide(slideshowId, total) {
-            const card = Array.from(document.querySelectorAll('.house-card'))
+            const card = Array.from(document.querySelectorAll('.property-card-modern'))
                 .find(c => c.dataset.slideshowId === slideshowId);
             if (!card) return;
             let idx = parseInt(card.dataset.slideshowIdx) || 0;
@@ -539,8 +515,9 @@
             card.dataset.slideshowIdx = idx;
             document.getElementById(`${slideshowId}-img`).src = imgs[idx];
         }
+
         function prevSlide(slideshowId, total) {
-            const card = Array.from(document.querySelectorAll('.house-card'))
+            const card = Array.from(document.querySelectorAll('.property-card-modern'))
                 .find(c => c.dataset.slideshowId === slideshowId);
             if (!card) return;
             let idx = parseInt(card.dataset.slideshowIdx) || 0;
@@ -550,7 +527,19 @@
             document.getElementById(`${slideshowId}-img`).src = imgs[idx];
         }
 
-        // On DOM Ready: Read URL Search Parameters from index.html & execute Smart Recommendation
+        function openTourModal(title) {
+            document.getElementById('tourModalTitle').innerText = "Schedule Tour: " + title;
+            const modal = new bootstrap.Modal(document.getElementById('tourModal'));
+            modal.show();
+        }
+
+        function submitTour() {
+            const modalEl = document.getElementById('tourModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal.hide();
+            alert("Thank you! Your property tour request has been submitted. Our agent will contact you shortly.");
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
             const category = params.get('category');
@@ -563,11 +552,13 @@
             if (location) document.getElementById('location').value = location;
             if (bedrooms) document.getElementById('bedrooms').value = bedrooms;
             if (bathrooms) document.getElementById('bathrooms').value = bathrooms;
-            if (maxPrice) document.getElementById('maxPrice').value = maxPrice;
-
-            filterHouses();
+            if (maxPrice) {
+                document.getElementById('maxPriceSlider').value = maxPrice;
+                updatePriceSlider(maxPrice);
+            } else {
+                filterHouses();
+            }
         });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
