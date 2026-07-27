@@ -10,9 +10,19 @@ if ('serviceWorker' in navigator) {
 }
 
 let deferredPrompt;
+let bannerAutoDismissTimer = null;
+const POPUP_DURATION_MS = 6000; // 6 seconds visible duration
+const REPEAT_INTERVAL_MS = 45000; // 45 seconds periodic interval
 
-// Create and show PWA Install Reminder Toast Banner on site startup
+// Check if user is currently viewing inside installed PWA app mode
+function isStandaloneApp() {
+    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+// Create and show temporary PWA Install Reminder Banner
 function showAppReminderBanner() {
+    // Never show if user is already inside the standalone Web App
+    if (isStandaloneApp()) return;
     if (document.getElementById('pwaReminderBanner')) return;
 
     const banner = document.createElement('div');
@@ -36,13 +46,14 @@ function showAppReminderBanner() {
         display: flex;
         align-items: center;
         gap: 14px;
+        transition: opacity 0.4s ease, transform 0.4s ease;
     `;
 
     banner.innerHTML = `
         <img src="images/pwa_icon.png" alt="Banana Real Estate App Icon" style="width:48px;height:48px;border-radius:14px;object-fit:cover;box-shadow:0 4px 12px rgba(0,0,0,0.15);flex-shrink:0">
         <div style="flex:1">
             <div style="font-weight:800;font-size:0.88rem;color:#1e293b;line-height:1.2">Reality Kisumu Hub</div>
-            <div style="font-size:0.76rem;color:#64748b;line-height:1.3;margin-top:2px">It's better as an app! Install on your home screen for a faster experience.</div>
+            <div style="font-size:0.76rem;color:#64748b;line-height:1.3;margin-top:2px">It's better as an app! Install for a smoother, faster experience.</div>
         </div>
         <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
             <button id="pwaBannerInstallBtn" style="background:linear-gradient(135deg, #6da2e4, #4a85d1);color:#fff;border:none;border-radius:9999px;padding:6px 14px;font-size:0.76rem;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(82,137,216,0.3)">Install App</button>
@@ -51,6 +62,16 @@ function showAppReminderBanner() {
     `;
 
     document.body.appendChild(banner);
+
+    const closeBanner = () => {
+        if (bannerAutoDismissTimer) clearTimeout(bannerAutoDismissTimer);
+        banner.style.opacity = '0';
+        banner.style.transform = 'translate(-50%, 20px)';
+        setTimeout(() => banner.remove(), 400);
+    };
+
+    // Auto-dismiss after POPUP_DURATION_MS (6 seconds)
+    bannerAutoDismissTimer = setTimeout(closeBanner, POPUP_DURATION_MS);
 
     // Bind Install Button
     document.getElementById('pwaBannerInstallBtn').addEventListener('click', () => {
@@ -65,13 +86,11 @@ function showAppReminderBanner() {
         } else {
             alert('To install on your home screen: Tap your browser Share/Menu button and select "Add to Home Screen"');
         }
-        banner.remove();
+        closeBanner();
     });
 
     // Bind Dismiss Button
-    document.getElementById('pwaBannerDismissBtn').addEventListener('click', () => {
-        banner.remove();
-    });
+    document.getElementById('pwaBannerDismissBtn').addEventListener('click', closeBanner);
 }
 
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -79,7 +98,10 @@ window.addEventListener('beforeinstallprompt', (e) => {
     deferredPrompt = e;
 });
 
-// Always trigger reminder banner on page load/restart
+// Initial popup on page start (after 1.5s), and periodic re-trigger every 45s if on website
 document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(showAppReminderBanner, 1000);
+    if (!isStandaloneApp()) {
+        setTimeout(showAppReminderBanner, 1500);
+        setInterval(showAppReminderBanner, REPEAT_INTERVAL_MS);
+    }
 });
