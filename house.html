@@ -39,12 +39,12 @@
         <div class="feed-inner">
 
             <!-- Greeting -->
-            <div class="feed-greeting">
+            <div class="feed-greeting animate-fade-up">
                 <h1 class="feed-greeting-title">Good morning, <strong>Alex</strong></h1>
             </div>
 
             <!-- Search Bar -->
-            <div class="feed-search-row">
+            <div class="feed-search-row animate-fade-up animate-delay-1">
                 <div class="feed-search-box">
                     <input type="text" id="searchInput" placeholder="Search location, price, property type..." oninput="filterHouses()">
                     <button type="button" class="feed-search-icon">
@@ -70,8 +70,8 @@
             </div>
 
             <!-- Featured Collections -->
-            <h3 class="feed-section-title">Featured Collections</h3>
-            <div class="feed-collections-slider">
+            <h3 class="feed-section-title animate-fade-up animate-delay-2">Featured Collections</h3>
+            <div class="feed-collections-slider animate-fade-up animate-delay-2">
                 <div class="feed-collection-card" onclick="filterByCategory('Villa')">
                     <img src="images/RiatV.jpeg" alt="Modern Villas">
                     <div class="feed-collection-label">
@@ -96,7 +96,7 @@
             </div>
 
             <!-- Property Feed -->
-            <h3 class="feed-section-title">Nearby Listings</h3>
+            <h3 class="feed-section-title animate-fade-up animate-delay-3">Nearby Listings</h3>
             <div id="housesList" class="feed-cards-list"></div>
         </div>
     </div>
@@ -217,9 +217,10 @@
                 el.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px 0">No properties match your search. Try different terms.</p>';
                 return;
             }
-            list.forEach(h => {
+            list.forEach((h, idx) => {
+                const delayClass = `animate-delay-${Math.min(idx + 1, 4)}`;
                 el.innerHTML += `
-                <article class="feed-property-card">
+                <article class="feed-property-card animate-fade-up ${delayClass}">
                     <div class="feed-card-img-wrap">
                         <img src="${h.img}" alt="${h.address}">
                         <div class="feed-badge-row">
