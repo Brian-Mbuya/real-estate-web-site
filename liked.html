@@ -126,30 +126,12 @@
     <script>
         const SUPPORT_PHONE = '+254746632821';
 
-        const defaultFavorites = [
-            {
-                id: "h1", title: "123 Maple Drive, Beverly Hills", price: "$1,250,000", priceNum: 1250000,
-                specs: "4 Beds | 3 Baths | 2,500 Sq Ft", address: "123 Maple Drive, Beverly Hills, CA",
-                category: "Villa", img: "images/luxury.jpg", agentName: "Sarah Jenkins",
-                agentPhone: SUPPORT_PHONE, agentImg: "images/u.jpg", isNew: true, isVerified: true
-            },
-            {
-                id: "h3", title: "789 Riat Hills Ridge, Kisumu", price: "$1,450,000", priceNum: 1450000,
-                specs: "5 Beds | 4 Baths | 3,200 Sq Ft", address: "789 Riat Hills Ridge, Kisumu",
-                category: "Waterfront", img: "images/riat6.jpeg", agentName: "Amina Otieno",
-                agentPhone: SUPPORT_PHONE, agentImg: "images/u5.jpg", isNew: true, isVerified: true
-            }
-        ];
-
         function getFavoriteHouses() {
             let houses = [];
             try {
                 houses = JSON.parse(localStorage.getItem('favoriteHouses'));
             } catch (e) {}
-            if (!houses || houses.length === 0) {
-                return defaultFavorites;
-            }
-            return houses;
+            return houses || [];
         }
 
         function renderFavorites() {

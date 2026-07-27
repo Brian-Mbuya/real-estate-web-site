@@ -151,43 +151,48 @@
     <script src="assets/js/supabase.js"></script>
     <script src="assets/js/auth.js"></script>
     <script src="assets/js/pwa.js"></script>
-    <script>
         const SUPPORT_PHONE = '+254746632821';
+        let allProperties = []; // To store fetched properties locally for filtering
 
-        const houses = [
-            {
-                id:"h1", title:"3 Bed Apartment in Beverly Hills", price:"$1,250,000", priceNum:1250000,
-                specs:"4 Beds | 3 Baths | 2,500 Sq Ft", beds:4, location:"Beverly Hills",
-                address:"123 Maple Drive, Beverly Hills, CA", category:"Villa",
-                img:"images/luxury.jpg", agentName:"Sarah Jenkins",
-                agentPhone:SUPPORT_PHONE, agentImg:"images/u.jpg",
-                isNew:true, isVerified:true
-            },
-            {
-                id:"h2", title:"Modern City Apartment", price:"$890,000", priceNum:890000,
-                specs:"3 Beds | 2 Baths | 1,800 Sq Ft", beds:3, location:"Austin",
-                address:"456 Oak Street, Austin, TX", category:"Apartment",
-                img:"images/e4.jpg", agentName:"Elena Vance",
-                agentPhone:SUPPORT_PHONE, agentImg:"images/u4.jpg",
-                isNew:true, isVerified:true
-            },
-            {
-                id:"h3", title:"5 Bed Villa with Lake Views", price:"$1,450,000", priceNum:1450000,
-                specs:"5 Beds | 4 Baths | 3,200 Sq Ft", beds:5, location:"Riat Hills",
-                address:"789 Riat Hills Ridge, Kisumu", category:"Waterfront",
-                img:"images/riat6.jpeg", agentName:"Amina Otieno",
-                agentPhone:SUPPORT_PHONE, agentImg:"images/u5.jpg",
-                isNew:true, isVerified:true
-            },
-            {
-                id:"h4", title:"Cozy Milimani Bungalow", price:"$650,000", priceNum:650000,
-                specs:"2 Beds | 2 Baths | 1,400 Sq Ft", beds:2, location:"Milimani",
-                address:"102 Milimani Heights, Kisumu", category:"Villa",
-                img:"images/makasembo.webp", agentName:"David Ochieng",
-                agentPhone:SUPPORT_PHONE, agentImg:"images/u6.jpg",
-                isNew:true, isVerified:true
+        // Fetch properties from Supabase
+        async function fetchPropertiesFromSupabase() {
+            if (!window.SupabaseHub || !SupabaseHub.client) {
+                console.warn("Supabase client not found.");
+                document.getElementById('housesList').innerHTML = '<p style="text-align:center;padding:40px 0;">Error connecting to database.</p>';
+                return; 
             }
-        ];
+            try {
+                const { data, error } = await SupabaseHub.client
+                    .from('properties')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                if (data && data.length > 0) {
+                    allProperties = data.map(dbRow => ({
+                        id: dbRow.id,
+                        title: dbRow.title,
+                        price: `$${Number(dbRow.price_usd).toLocaleString()}`,
+                        priceNum: Number(dbRow.price_usd),
+                        specs: `${dbRow.beds > 0 ? dbRow.beds + ' Beds | ' : ''}${dbRow.baths > 0 ? dbRow.baths + ' Baths | ' : ''}${dbRow.sqft} Sq Ft`,
+                        beds: dbRow.beds,
+                        location: dbRow.location,
+                        address: dbRow.location,
+                        category: dbRow.type,
+                        img: dbRow.image_url,
+                        agentName: 'Reality Agent', // Default agent name
+                        agentPhone: dbRow.agent_phone || SUPPORT_PHONE,
+                        agentImg: 'images/u.jpg',
+                        isNew: true,
+                        isVerified: true
+                    }));
+                }
+                renderHouses(allProperties);
+            } catch (err) {
+                console.error("Error fetching properties:", err);
+                document.getElementById('housesList').innerHTML = '<p style="text-align:center;padding:40px 0;">Failed to load properties. Check Supabase connection.</p>';
+            }
+        }
 
         /* Smart relevance scoring — always on, invisible to user */
         function smartScore(h, query) {
@@ -227,7 +232,7 @@
             btn.classList.toggle('inactive');
             try {
                 let favorites = JSON.parse(localStorage.getItem('favoriteHouses')) || [];
-                const existsIdx = favorites.findIndex(item => item.address === houseObj.address);
+                const existsIdx = favorites.findIndex(item => item.id === houseObj.id);
                 if (existsIdx > -1) {
                     favorites.splice(existsIdx, 1);
                 } else {
@@ -250,20 +255,19 @@
             try { favorites = JSON.parse(localStorage.getItem('favoriteHouses')) || []; } catch(e){}
 
             list.forEach((h, idx) => {
-                const delayClass = `animate-delay-${Math.min(idx + 1, 4)}`;
-                const isFav = favorites.some(fav => fav.address === h.address);
+                const isFav = favorites.some(fav => fav.id === h.id);
                 const waUrl = AuthHub.getWhatsAppLink(h.address || h.title, h.agentPhone);
                 const callUrl = AuthHub.getPhoneCallLink(h.agentPhone);
 
                 el.innerHTML += `
-                <article class="feed-property-card animate-fade-up ${delayClass}">
+                <article class="feed-property-card animate-fade-up">
                     <div class="feed-card-img-wrap">
-                        <img src="${h.img}" alt="${h.address}">
+                        <img src="${h.img}" alt="${h.title}" loading="lazy">
                         <div class="feed-badge-row">
                             ${h.isNew ? '<span class="feed-badge-new">New</span>' : ''}
                             ${h.isVerified ? '<span class="feed-badge-verified">Verified</span>' : ''}
                         </div>
-                        <button type="button" class="feed-card-fav ${isFav ? '' : 'inactive'}" onclick="toggleFavoriteProperty(this, ${JSON.stringify(h).replace(/"/g, '&quot;')})">
+                        <button type="button" class="feed-card-fav ${isFav ? '' : 'inactive'}" onclick='toggleFavoriteProperty(this, ${JSON.stringify(h).replace(/'/g, "&#39;")})'>
                             <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                         </button>
                     </div>
@@ -276,7 +280,7 @@
                             </div>
                         </div>
                         <div class="feed-card-specs">${h.specs}</div>
-                        <p class="feed-card-address mb-3">${h.address}</p>
+                        <p class="feed-card-address mb-3 fw-semibold text-dark">${h.title} <br><span class="fw-normal text-muted" style="font-size:0.85rem">${h.address}</span></p>
 
                         <!-- Explicit Contact Buttons -->
                         <div class="d-flex gap-2 pt-2 border-top">
@@ -294,9 +298,9 @@
 
         function filterHouses() {
             const q = (document.getElementById('searchInput')?.value || '').trim();
-            if (!q) { renderHouses(houses); return; }
+            if (!q) { renderHouses(allProperties); return; }
 
-            const scored = houses
+            const scored = allProperties
                 .map(h => ({ ...h, _score: smartScore(h, q) }))
                 .filter(h => h._score > 0)
                 .sort((a, b) => b._score - a._score);
@@ -306,7 +310,7 @@
 
         function filterByCategory(cat) {
             document.getElementById('searchInput').value = '';
-            renderHouses(houses.filter(h => h.category.toLowerCase() === cat.toLowerCase()));
+            renderHouses(allProperties.filter(h => h.category && h.category.toLowerCase() === cat.toLowerCase()));
         }
 
         function showAgent(name, phone, img) {
@@ -318,10 +322,14 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            renderHouses(houses);
+            document.getElementById('housesList').innerHTML = '<p style="text-align:center;color:var(--blue-primary);font-weight:600;padding:60px 0;"><i class="bi bi-arrow-repeat spin me-2"></i>Loading Properties from Database...</p>';
+            fetchPropertiesFromSupabase();
+
             // Subscribe to Supabase Realtime Table Changes if connected
             if (window.SupabaseHub && SupabaseHub.subscribeToTableChanges) {
-                SupabaseHub.subscribeToTableChanges('properties', () => filterHouses());
+                SupabaseHub.subscribeToTableChanges('properties', () => {
+                    fetchPropertiesFromSupabase();
+                });
             }
         });
     </script>

@@ -1,4 +1,5 @@
 -- Supabase Database Schema for Reality Kisumu Hub
+-- Massive DB Expansion (Booking.com Style)
 -- Run this script in the Supabase SQL Editor
 
 -- 1. Enable UUID Extension
@@ -6,72 +7,106 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- 2. User Profiles Table
 CREATE TABLE IF NOT EXISTS public.profiles (
-    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
     full_name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     avatar_url TEXT,
-    phone TEXT DEFAULT '+254746632821',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- 3. Properties Table
 CREATE TABLE IF NOT EXISTS public.properties (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     title TEXT NOT NULL,
-    category TEXT NOT NULL, -- Villa, Apartment, Waterfront, Bungalow
-    price NUMERIC NOT NULL,
-    price_formatted TEXT NOT NULL,
-    specs TEXT NOT NULL,
-    beds INTEGER DEFAULT 0,
-    baths INTEGER DEFAULT 0,
-    sqft INTEGER DEFAULT 0,
-    address TEXT NOT NULL,
     location TEXT NOT NULL,
+    price_usd NUMERIC NOT NULL,
+    price_ksh NUMERIC NOT NULL,
+    beds INTEGER,
+    baths INTEGER,
+    sqft INTEGER,
+    type TEXT, -- e.g. Villa, Apartment, Waterfront, Commercial, Land
     image_url TEXT NOT NULL,
-    agent_name TEXT DEFAULT 'Support Agent',
     agent_phone TEXT DEFAULT '+254746632821',
-    agent_img TEXT DEFAULT 'images/u.jpg',
-    is_new BOOLEAN DEFAULT true,
-    is_verified BOOLEAN DEFAULT true,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 4. User Favorites Table
+-- 4. User Favorites Table (Many-to-Many)
 CREATE TABLE IF NOT EXISTS public.user_favorites (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
-    property_id UUID REFERENCES public.properties(id) ON DELETE CASCADE NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    property_id UUID REFERENCES public.properties(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     UNIQUE(user_id, property_id)
 );
 
--- 5. Enable Row Level Security (RLS)
+-- 5. Row Level Security (RLS)
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.properties ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_favorites ENABLE ROW LEVEL SECURITY;
 
--- 6. RLS Policies
--- Profiles: Everyone can read, users can update own profile
-CREATE POLICY "Public profiles read" ON public.profiles FOR SELECT USING (true);
-CREATE POLICY "User update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
+-- Properties are universally readable
+CREATE POLICY "Properties are viewable by everyone" ON public.properties
+    FOR SELECT USING (true);
 
--- Properties: Everyone can read properties
-CREATE POLICY "Public properties read" ON public.properties FOR SELECT USING (true);
+-- Profiles are viewable/editable by the owner
+CREATE POLICY "Users can view own profile" ON public.profiles
+    FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Users can update own profile" ON public.profiles
+    FOR UPDATE USING (auth.uid() = id);
 
--- Favorites: Users can manage their own favorites
-CREATE POLICY "User read own favorites" ON public.user_favorites FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY "User insert own favorite" ON public.user_favorites FOR INSERT WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "User delete own favorite" ON public.user_favorites FOR DELETE USING (auth.uid() = user_id);
+-- Favorites are strictly isolated to the logged-in user
+CREATE POLICY "Users can manage their own favorites" ON public.user_favorites
+    FOR ALL USING (auth.uid() = user_id);
 
--- 7. Enable Realtime Subscriptions on Properties & Favorites
-ALTER PUBLICATION supabase_realtime ADD TABLE public.properties;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.user_favorites;
+-- 6. Realtime Configuration
+BEGIN;
+  DROP PUBLICATION IF EXISTS supabase_realtime;
+  CREATE PUBLICATION supabase_realtime;
+COMMIT;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.properties, public.user_favorites;
 
--- 8. Seed Initial Sample Properties
-INSERT INTO public.properties (title, category, price, price_formatted, specs, beds, address, location, image_url, agent_name, agent_phone, agent_img)
-VALUES 
-('3 Bed Apartment in Kisumu', 'Villa', 1250000, '$1,250,000', '4 Beds | 3 Baths | 2,500 Sq Ft', 4, '123 Maple Drive, Beverly Hills, CA', 'Beverly Hills', 'images/luxury.jpg', 'Sarah Jenkins', '+254746632821', 'images/u.jpg'),
-('Modern City Apartment', 'Apartment', 890000, '$890,000', '3 Beds | 2 Baths | 1,800 Sq Ft', 3, '456 Oak Street, Austin, TX', 'Austin', 'images/e4.jpg', 'Elena Vance', '+254746632821', 'images/u4.jpg'),
-('5 Bed Villa with Lake Views', 'Waterfront', 1450000, '$1,450,000', '5 Beds | 4 Baths | 3,200 Sq Ft', 5, '789 Riat Hills Ridge, Kisumu', 'Riat Hills', 'images/riat6.jpeg', 'Amina Otieno', '+254746632821', 'images/u5.jpg'),
-('Cozy Milimani Bungalow', 'Villa', 650000, '$650,000', '2 Beds | 2 Baths | 1,400 Sq Ft', 2, '102 Milimani Heights, Kisumu', 'Milimani', 'images/makasembo.webp', 'David Ochieng', '+254746632821', 'images/u6.jpg')
-ON CONFLICT DO NOTHING;
+-- 7. CLEAR EXISTING DATA FOR SEEDING
+TRUNCATE TABLE public.properties CASCADE;
+
+-- 8. MASSIVE SEED DATA (Booking.com style catalog expansion)
+INSERT INTO public.properties (title, location, price_usd, price_ksh, beds, baths, sqft, type, image_url) VALUES 
+-- Villas (Luxury & Standalone)
+('The Royal Riat Villa', 'Riat Hills, Kisumu', 1450000, 188500000, 5, 4, 3200, 'Villa', 'images/RiatV.jpeg'),
+('Beverly Hills Mansion', 'Beverly Hills, CA', 3250000, 422500000, 6, 7, 8500, 'Villa', 'images/luxury.jpg'),
+('Milimani Executive Villa', 'Milimani, Kisumu', 850000, 110500000, 4, 3, 2800, 'Villa', 'images/makasembo.webp'),
+('Nyali Beachfront Villa', 'Nyali, Mombasa', 1200000, 156000000, 5, 5, 4000, 'Villa', 'images/e4.jpg'),
+('Karen Leafy Suburb Home', 'Karen, Nairobi', 950000, 123500000, 4, 4, 3100, 'Villa', 'images/p1.webp'),
+('Malibu Ocean View Villa', 'Malibu, CA', 4150000, 539500000, 5, 6, 6200, 'Villa', 'images/luxury.jpg'),
+('Diani Serenity Villa', 'Diani Beach, Kwale', 1100000, 143000000, 4, 4, 3500, 'Villa', 'images/e4.jpg'),
+('Muthaiga Diplomatic Residence', 'Muthaiga, Nairobi', 2100000, 273000000, 6, 5, 5200, 'Villa', 'images/p4.webp'),
+('Kitisuru Modern Villa', 'Kitisuru, Nairobi', 1350000, 175500000, 5, 5, 4100, 'Villa', 'images/RiatV.jpeg'),
+
+-- City Apartments
+('Kisumu Heights Apartment', 'CBD, Kisumu', 120000, 15600000, 2, 2, 950, 'Apartment', 'images/c.jpeg'),
+('Kilimani Skyline Penthouse', 'Kilimani, Nairobi', 350000, 45500000, 3, 3, 2100, 'Apartment', 'images/makasembo.webp'),
+('Westlands Executive Suite', 'Westlands, Nairobi', 280000, 36400000, 2, 2, 1400, 'Apartment', 'images/c.jpeg'),
+('Kileleshwa Smart Apartment', 'Kileleshwa, Nairobi', 210000, 27300000, 2, 2, 1200, 'Apartment', 'images/makasembo.webp'),
+('New York Central Penthouse', 'Manhattan, NY', 2500000, 325000000, 3, 3, 2800, 'Apartment', 'images/luxury.jpg'),
+('London Canary Wharf Flat', 'Canary Wharf, London', 1150000, 149500000, 2, 2, 1100, 'Apartment', 'images/p1.webp'),
+('Mombasa CBD Apartment', 'Mombasa CBD', 95000, 12350000, 2, 1, 850, 'Apartment', 'images/c.jpeg'),
+('Dubai Marina Condo', 'Marina, Dubai', 850000, 110500000, 2, 2, 1600, 'Apartment', 'images/e4.jpg'),
+('Downtown Toronto Condo', 'Toronto, ON', 720000, 93600000, 2, 1, 950, 'Apartment', 'images/makasembo.webp'),
+('Upperhill Corporate Apartment', 'Upperhill, Nairobi', 310000, 40300000, 3, 2, 1800, 'Apartment', 'images/p4.webp'),
+
+-- Waterfront Homes
+('Dunga Lakefront Retreat', 'Dunga, Kisumu', 650000, 84500000, 3, 2, 2200, 'Waterfront', 'images/p4.webp'),
+('Vipingo Ridge Ocean Home', 'Vipingo, Kilifi', 1850000, 240500000, 5, 5, 4800, 'Waterfront', 'images/e4.jpg'),
+('Miami Biscayne Bay House', 'Miami, FL', 5200000, 676000000, 6, 7, 7100, 'Waterfront', 'images/luxury.jpg'),
+('Lamu Island Swahili House', 'Lamu Island', 420000, 54600000, 4, 3, 2500, 'Waterfront', 'images/RiatV.jpeg'),
+('Naivasha Lakeview Lodge', 'Lake Naivasha', 890000, 115700000, 4, 4, 3200, 'Waterfront', 'images/p1.webp'),
+('Watamu Beach House', 'Watamu, Kilifi', 1350000, 175500000, 5, 4, 3900, 'Waterfront', 'images/e4.jpg'),
+('Sydney Harbour View Home', 'Sydney, AUS', 4500000, 585000000, 4, 4, 4100, 'Waterfront', 'images/luxury.jpg'),
+
+-- Commercial / Land
+('Kisumu CBD Office Space', 'Oginga Odinga Rd, Kisumu', 450000, 58500000, 0, 2, 3500, 'Commercial', 'images/c.jpeg'),
+('Westlands Business Tower', 'Waiyaki Way, Nairobi', 12000000, 1560000000, 0, 20, 45000, 'Commercial', 'images/p4.webp'),
+('Kibos Prime Land Plot', 'Kibos, Kisumu', 85000, 11050000, 0, 0, 10890, 'Land', 'images/p1.webp'),
+('Runda Half Acre Plot', 'Runda, Nairobi', 450000, 58500000, 0, 0, 21780, 'Land', 'images/RiatV.jpeg');
+
+-- Add text search index for fast filtering
+CREATE INDEX IF NOT EXISTS properties_search_idx ON public.properties USING GIN (to_tsvector('english', title || ' ' || location || ' ' || type));
