@@ -612,14 +612,24 @@ a { color: var(--deep); }
     padding: 0 20px;
 }
 
-/* Hairline drawn from the centre outward on load. */
+/* Hairline drawn outward on load.
+
+   The colour must reach full strength within a few percent of each
+   edge: the search box covers the middle, so the only part ever seen
+   is the sliver either side of it. A gradient that faded in at 18%
+   made the line invisible on phones entirely. */
 .hero-waterline::before {
     content: '';
     position: absolute;
     left: 0; right: 0;
     top: 50%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(232,150,60,0.85) 18%, rgba(232,150,60,0.85) 82%, transparent);
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(232, 150, 60, 0.95) 4%,
+        rgba(232, 150, 60, 0.95) 96%,
+        transparent 100%);
+    box-shadow: 0 0 14px rgba(232, 150, 60, 0.55);
     transform: scaleX(0);
     animation: drawLine 1.1s var(--ease) 0.6s both;
 }
@@ -629,12 +639,13 @@ a { color: var(--deep); }
     display: flex;
     align-items: center;
     gap: 8px;
-    width: 100%;
+    /* Always leave the horizon showing on both sides. */
+    width: calc(100% - 52px);
     max-width: 620px;
     padding: 7px 7px 7px 20px;
     background: rgba(255, 255, 255, 0.97);
     border-radius: var(--r-pill);
-    box-shadow: 0 14px 40px rgba(12, 27, 35, 0.34);
+    box-shadow: 0 14px 40px rgba(12, 27, 35, 0.4);
     animation: riseIn 0.7s var(--ease) 1.15s both;
 }
 
