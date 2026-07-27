@@ -167,6 +167,8 @@
                 const delayClass = `animate-delay-${Math.min(idx + 1, 4)}`;
                 const card = document.createElement('article');
                 card.className = `feed-property-card animate-fade-up ${delayClass}`;
+                card.style.cursor = 'pointer';
+                card.onclick = () => window.location.href = `listing.html?id=${h.id}`;
                 const waUrl = AuthHub.getWhatsAppLink(h.address || h.title, h.agentPhone || SUPPORT_PHONE);
                 const callUrl = AuthHub.getPhoneCallLink(h.agentPhone || SUPPORT_PHONE);
 
@@ -177,14 +179,14 @@
                             <span class="feed-badge-new">${h.category || 'Featured'}</span>
                             <span class="feed-badge-verified">Saved</span>
                         </div>
-                        <button type="button" class="feed-card-fav" onclick="removeFavorite(${idx})" title="Remove from favorites">
+                        <button type="button" class="feed-card-fav" onclick="removeFavorite(${idx}, event)" title="Remove from favorites">
                             <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                         </button>
                     </div>
                     <div class="feed-card-body">
                         <div class="feed-card-price-row">
                             <div class="feed-card-price">${h.price || ''}</div>
-                            <div class="feed-agent-mini" onclick="showAgent('${h.agentName || 'Support Agent'}','${h.agentPhone || SUPPORT_PHONE}','${h.agentImg || 'images/u.jpg'}')">
+                            <div class="feed-agent-mini" onclick="event.stopPropagation(); showAgent('${h.agentName || 'Support Agent'}','${h.agentPhone || SUPPORT_PHONE}','${h.agentImg || 'images/u.jpg'}')">
                                 <img src="${h.agentImg || 'images/u.jpg'}" alt="${h.agentName || 'Agent'}" class="feed-agent-avatar">
                                 <div class="feed-agent-label"><span>Listing</span><strong>Agent</strong></div>
                             </div>
@@ -194,10 +196,10 @@
 
                         <!-- Explicit Contact Buttons -->
                         <div class="d-flex gap-2 pt-2 border-top">
-                            <a href="${waUrl}" target="_blank" class="btn btn-sm rounded-pill flex-fill fw-bold py-2 d-flex align-items-center justify-content-center gap-1" style="background:#25D366;color:#fff;border:none">
+                            <a href="${waUrl}" target="_blank" onclick="event.stopPropagation()" class="btn btn-sm rounded-pill flex-fill fw-bold py-2 d-flex align-items-center justify-content-center gap-1" style="background:#25D366;color:#fff;border:none">
                                 <i class="bi bi-whatsapp"></i> WhatsApp
                             </a>
-                            <a href="${callUrl}" class="btn btn-sm rounded-pill px-3 fw-bold py-2 d-flex align-items-center justify-content-center gap-1" style="background:var(--blue-soft);color:var(--blue-primary);border:1px solid var(--blue-soft-border)">
+                            <a href="${callUrl}" onclick="event.stopPropagation()" class="btn btn-sm rounded-pill px-3 fw-bold py-2 d-flex align-items-center justify-content-center gap-1" style="background:var(--blue-soft);color:var(--blue-primary);border:1px solid var(--blue-soft-border)">
                                 <i class="bi bi-telephone-fill"></i> Call
                             </a>
                         </div>
@@ -207,7 +209,8 @@
             });
         }
 
-        function removeFavorite(idx) {
+        function removeFavorite(idx, event) {
+            if (event) event.stopPropagation();
             let list = getFavoriteHouses();
             list.splice(idx, 1);
             localStorage.setItem('favoriteHouses', JSON.stringify(list));

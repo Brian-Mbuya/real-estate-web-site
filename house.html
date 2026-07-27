@@ -228,7 +228,8 @@
             return score;
         }
 
-        function toggleFavoriteProperty(btn, houseObj) {
+        function toggleFavoriteProperty(btn, event, houseObj) {
+            event.stopPropagation();
             btn.classList.toggle('inactive');
             try {
                 let favorites = JSON.parse(localStorage.getItem('favoriteHouses')) || [];
@@ -260,21 +261,21 @@
                 const callUrl = AuthHub.getPhoneCallLink(h.agentPhone);
 
                 el.innerHTML += `
-                <article class="feed-property-card animate-fade-up">
+                <article class="feed-property-card animate-fade-up" style="cursor:pointer;" onclick="window.location.href='listing.html?id=${h.id}'">
                     <div class="feed-card-img-wrap">
                         <img src="${h.img}" alt="${h.title}" loading="lazy">
                         <div class="feed-badge-row">
                             ${h.isNew ? '<span class="feed-badge-new">New</span>' : ''}
                             ${h.isVerified ? '<span class="feed-badge-verified">Verified</span>' : ''}
                         </div>
-                        <button type="button" class="feed-card-fav ${isFav ? '' : 'inactive'}" onclick='toggleFavoriteProperty(this, ${JSON.stringify(h).replace(/'/g, "&#39;")})'>
+                        <button type="button" class="feed-card-fav ${isFav ? '' : 'inactive'}" onclick='toggleFavoriteProperty(this, event, ${JSON.stringify(h).replace(/'/g, "&#39;")})'>
                             <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                         </button>
                     </div>
                     <div class="feed-card-body">
                         <div class="feed-card-price-row">
                             <div class="feed-card-price">${h.price}</div>
-                            <div class="feed-agent-mini" onclick="showAgent('${h.agentName}','${h.agentPhone}','${h.agentImg}')">
+                            <div class="feed-agent-mini" onclick="event.stopPropagation(); showAgent('${h.agentName}','${h.agentPhone}','${h.agentImg}')">
                                 <img src="${h.agentImg}" alt="${h.agentName}" class="feed-agent-avatar">
                                 <div class="feed-agent-label"><span>Listing</span><strong>Agent</strong></div>
                             </div>

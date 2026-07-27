@@ -2,11 +2,284 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Redirecting... | Reality Kisumu Hub</title>
-    <meta http-equiv="refresh" content="0; url=house.html">
-    <script>window.location.replace('house.html');</script>
+    <title>Property Details | Reality Kisumu Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#5B93D3">
+    <link rel="icon" type="image/png" href="images/pwa_icon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <style>
+        .details-hero {
+            position: relative;
+            width: 100%;
+            height: 50vh;
+            background-color: #eee;
+            overflow: hidden;
+        }
+        .details-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .details-back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--text-main);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-decoration: none;
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+        .details-back-btn:hover {
+            transform: scale(1.05);
+            background: #fff;
+            color: var(--blue-primary);
+        }
+        .details-content {
+            padding: 30px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 24px 24px 0 0;
+            margin-top: -30px;
+            position: relative;
+            z-index: 5;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+        }
+        .details-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            color: var(--text-main);
+        }
+        .details-location {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        .details-price {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--blue-primary);
+            margin-bottom: 25px;
+        }
+        .details-specs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        .spec-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .spec-item i {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        .details-description {
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+        .agent-card {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 100px; /* Space for fixed bottom bar */
+        }
+        .agent-card img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .agent-card-info h4 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .agent-card-info p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        .fixed-action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            padding: 15px 20px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+        .fixed-action-bar a {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .fixed-action-bar a:hover { opacity: 0.9; }
+        
+        #loader {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            color: var(--blue-primary);
+        }
+        #content-wrapper { display: none; }
+    </style>
 </head>
 <body>
-    <p>Redirecting to <a href="house.html">Explore</a>...</p>
+
+    <div id="loader">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <strong>Loading Property...</strong>
+    </div>
+
+    <div id="content-wrapper">
+        <div class="details-hero animate-fade-up">
+            <a href="house.html" class="details-back-btn"><i class="bi bi-arrow-left"></i></a>
+            <img id="propImage" src="" alt="Property Image">
+        </div>
+
+        <div class="details-content animate-fade-up animate-delay-1">
+            <h1 id="propTitle" class="details-title">Loading...</h1>
+            <div class="details-location"><i class="bi bi-geo-alt"></i> <span id="propLocation">Loading...</span></div>
+            <div id="propPrice" class="details-price">$0</div>
+
+            <div class="details-specs">
+                <div class="spec-item"><i class="bi bi-house-door"></i> <span id="propBeds">0</span> Beds</div>
+                <div class="spec-item"><i class="bi bi-droplet"></i> <span id="propBaths">0</span> Baths</div>
+                <div class="spec-item"><i class="bi bi-aspect-ratio"></i> <span id="propSqft">0</span> Sq Ft</div>
+            </div>
+
+            <h4 class="fw-bold mb-3">Description</h4>
+            <p class="details-description">
+                Experience unparalleled luxury and comfort in this stunning <span id="descType">property</span> located in the heart of <span id="descLoc">the city</span>. Featuring modern architecture, expansive living spaces, and top-of-the-line finishes throughout. This home offers the perfect blend of elegance and functionality, making it an ideal choice for families and professionals alike. Don't miss this rare opportunity to own a piece of paradise.
+            </p>
+
+            <h4 class="fw-bold mb-3">Listing Agent</h4>
+            <div class="agent-card">
+                <img src="images/u.jpg" alt="Agent">
+                <div class="agent-card-info">
+                    <h4>Reality Agent</h4>
+                    <p>Verified Partner</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="fixed-action-bar animate-fade-up animate-delay-2">
+            <a id="btnCall" href="#" class="btn-call" style="background:var(--blue-soft);color:var(--blue-primary);">
+                <i class="bi bi-telephone-fill"></i> Call
+            </a>
+            <a id="btnWa" href="#" target="_blank" class="btn-wa" style="background:#25D366;color:#fff;">
+                <i class="bi bi-whatsapp"></i> WhatsApp
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script>
+        async function loadProperty() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const propId = urlParams.get('id');
+
+            if (!propId) {
+                alert("Invalid property link.");
+                window.location.href = 'house.html';
+                return;
+            }
+
+            try {
+                const { data, error } = await SupabaseHub.client
+                    .from('properties')
+                    .select('*')
+                    .eq('id', propId)
+                    .single();
+
+                if (error || !data) throw error || new Error("Property not found");
+
+                // Populate UI
+                document.getElementById('propImage').src = data.image_url;
+                document.getElementById('propTitle').innerText = data.title;
+                document.getElementById('propLocation').innerText = data.location;
+                document.getElementById('propPrice').innerText = `$${Number(data.price_usd).toLocaleString()}`;
+                
+                document.getElementById('propBeds').innerText = data.beds;
+                document.getElementById('propBaths').innerText = data.baths;
+                document.getElementById('propSqft').innerText = Number(data.sqft).toLocaleString();
+                
+                document.getElementById('descType').innerText = data.type || 'property';
+                document.getElementById('descLoc').innerText = data.location;
+
+                // Contact Buttons
+                const phone = data.agent_phone || window.AuthHub?.getPhoneCallLink ? '+254746632821' : '+254746632821';
+                
+                document.getElementById('btnCall').href = `tel:${phone}`;
+                document.getElementById('btnWa').href = `https://wa.me/${phone.replace('+', '')}?text=Hi, I am interested in your property: ${data.title}`;
+
+                // Show content
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('content-wrapper').style.display = 'block';
+
+            } catch(e) {
+                console.error(e);
+                alert("Could not load property details.");
+                window.location.href = 'house.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.SupabaseHub && SupabaseHub.client) {
+                loadProperty();
+            } else {
+                // Wait briefly for supabase.js to initialize if deferred
+                setTimeout(loadProperty, 500);
+            }
+        });
+    </script>
 </body>
 </html>
