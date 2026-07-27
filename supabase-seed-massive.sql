@@ -1,8 +1,12 @@
 -- Reality Kisumu Hub - Massive Kenyan Property Seed Data
 -- Run this in your Supabase SQL Editor to instantly add ~50+ properties!
 
--- 1. Ensure the properties table has the correct schema!
-CREATE TABLE IF NOT EXISTS public.properties (
+-- 1. DROP old tables to prevent schema conflicts from earlier versions
+DROP TABLE IF EXISTS public.user_favorites CASCADE;
+DROP TABLE IF EXISTS public.properties CASCADE;
+
+-- 2. CREATE the correct properties table schema
+CREATE TABLE public.properties (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     title TEXT NOT NULL,
     location TEXT NOT NULL,
@@ -17,19 +21,23 @@ CREATE TABLE IF NOT EXISTS public.properties (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- If the table existed from before, let's force add the new columns just in case:
-ALTER TABLE public.properties ADD COLUMN IF NOT EXISTS price_usd NUMERIC DEFAULT 0;
-ALTER TABLE public.properties ADD COLUMN IF NOT EXISTS price_ksh NUMERIC DEFAULT 0;
-ALTER TABLE public.properties ADD COLUMN IF NOT EXISTS beds INTEGER DEFAULT 0;
-ALTER TABLE public.properties ADD COLUMN IF NOT EXISTS baths INTEGER DEFAULT 0;
-ALTER TABLE public.properties ADD COLUMN IF NOT EXISTS sqft INTEGER DEFAULT 0;
-ALTER TABLE public.properties ADD COLUMN IF NOT EXISTS type TEXT DEFAULT 'Villa';
+-- 3. CREATE the user_favorites table
+CREATE TABLE public.user_favorites (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    property_id UUID REFERENCES public.properties(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    UNIQUE(user_id, property_id)
+);
 
--- 2. Clear existing data to prevent duplicates
-TRUNCATE TABLE public.properties CASCADE;
+-- 4. Enable Row Level Security (RLS)
+ALTER TABLE public.properties ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_favorites ENABLE ROW LEVEL SECURITY;
 
--- 3. Insert Massive Catalog with ONLINE IMAGES
--- (Using LoremFlickr which safely pulls high quality real estate images from the web)
+CREATE POLICY "Properties are viewable by everyone" ON public.properties FOR SELECT USING (true);
+CREATE POLICY "Users can manage their own favorites" ON public.user_favorites FOR ALL USING (auth.uid() = user_id);
+
+-- 5. Insert Massive Catalog with ONLINE IMAGES
 INSERT INTO public.properties (title, location, price_usd, price_ksh, beds, baths, sqft, type, image_url) VALUES 
 
 -- NAIROBI REGION
