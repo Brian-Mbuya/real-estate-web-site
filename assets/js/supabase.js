@@ -2,7 +2,7 @@
 // Configured for Reality Kisumu Hub
 
 const SUPABASE_URL = window.SUPABASE_URL || 'https://stuhxibojfgxuqtiiuus.supabase.co';
-const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY';
+const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'sb_publishable_g7tv_Ip8rBa8-UOddOjreg_jhdn9E6e';
 
 let supabaseClient = null;
 
