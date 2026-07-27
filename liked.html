@@ -147,10 +147,12 @@
         return saved.filter(function (p) { return String(p.id) === String(id); })[0];
     }
 
+    /* Short form — "KSh 28M" rather than "KSh 28,000,000". The stat
+       cells are a third of a phone screen wide and the full figure
+       wrapped onto two lines. */
     function money(value) {
         var usd = RK.getCurrency() === 'USD';
-        // Reuse the shared formatter by handing it a minimal property.
-        return RK.formatPrice({ priceUsd: usd ? value : 0, priceKsh: usd ? 0 : value });
+        return RK.formatPriceShort({ priceUsd: usd ? value : 0, priceKsh: usd ? 0 : value });
     }
 
     function renderStats() {

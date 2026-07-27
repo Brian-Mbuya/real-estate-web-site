@@ -68,7 +68,10 @@
     /* ── Text ramp ── */
     --text:       #0c1b23;
     --text-mid:   #4d6670;
-    --text-soft:  #7f979f;
+    /* Lightest blue-grey that still clears WCAG AA (4.5:1) on all
+       three surfaces — page 4.87, white 5.30, sunken 4.60. It carries
+       eyebrows, stat labels and spec captions, which are small text. */
+    --text-soft:  #52707b;
 
     /* Radii — softened, not pill-obsessed */
     --r-lg: 20px;

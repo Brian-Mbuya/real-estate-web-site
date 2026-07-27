@@ -190,12 +190,16 @@
 
         renderPrices();
 
+        /* No "Category" cell — the type is already stated in the
+           eyebrow badge directly above the title. */
         var specs = '';
         if (property.beds > 0)  specs += specCell('bi-door-open', property.beds, property.beds === 1 ? 'Bedroom' : 'Bedrooms');
         if (property.baths > 0) specs += specCell('bi-droplet', property.baths, property.baths === 1 ? 'Bathroom' : 'Bathrooms');
         if (property.sqft > 0)  specs += specCell('bi-rulers', property.sqft.toLocaleString(), 'Sq ft');
-        specs += specCell('bi-tag', property.type, 'Category');
-        document.getElementById('propSpecs').innerHTML = specs;
+
+        var specsEl = document.getElementById('propSpecs');
+        specsEl.innerHTML = specs;
+        specsEl.hidden = specs === '';
 
         document.getElementById('propDescription').textContent =
             'This ' + property.type.toLowerCase() + ' in ' + property.location +
