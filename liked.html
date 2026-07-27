@@ -119,21 +119,25 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase.js"></script>
+    <script src="assets/js/auth.js"></script>
     <script src="assets/js/pwa.js"></script>
     <script>
-        // Sample default fallback favorites if localStorage is empty to show beautiful cards
+        const SUPPORT_PHONE = '+254746632821';
+
         const defaultFavorites = [
             {
                 id: "h1", title: "123 Maple Drive, Beverly Hills", price: "$1,250,000", priceNum: 1250000,
                 specs: "4 Beds | 3 Baths | 2,500 Sq Ft", address: "123 Maple Drive, Beverly Hills, CA",
                 category: "Villa", img: "images/luxury.jpg", agentName: "Sarah Jenkins",
-                agentPhone: "+254712345678", agentImg: "images/u.jpg", isNew: true, isVerified: true
+                agentPhone: SUPPORT_PHONE, agentImg: "images/u.jpg", isNew: true, isVerified: true
             },
             {
                 id: "h3", title: "789 Riat Hills Ridge, Kisumu", price: "$1,450,000", priceNum: 1450000,
                 specs: "5 Beds | 4 Baths | 3,200 Sq Ft", address: "789 Riat Hills Ridge, Kisumu",
                 category: "Waterfront", img: "images/riat6.jpeg", agentName: "Amina Otieno",
-                agentPhone: "+254700112233", agentImg: "images/u5.jpg", isNew: true, isVerified: true
+                agentPhone: SUPPORT_PHONE, agentImg: "images/u5.jpg", isNew: true, isVerified: true
             }
         ];
 
@@ -181,6 +185,9 @@
                 const delayClass = `animate-delay-${Math.min(idx + 1, 4)}`;
                 const card = document.createElement('article');
                 card.className = `feed-property-card animate-fade-up ${delayClass}`;
+                const waUrl = AuthHub.getWhatsAppLink(h.address || h.title, h.agentPhone || SUPPORT_PHONE);
+                const callUrl = AuthHub.getPhoneCallLink(h.agentPhone || SUPPORT_PHONE);
+
                 card.innerHTML = `
                     <div class="feed-card-img-wrap">
                         <img src="${h.img || 'images/luxury.jpg'}" alt="${h.address || h.title}">
@@ -195,13 +202,23 @@
                     <div class="feed-card-body">
                         <div class="feed-card-price-row">
                             <div class="feed-card-price">${h.price || ''}</div>
-                            <div class="feed-agent-mini" onclick="showAgent('${h.agentName || 'Sarah Jenkins'}','${h.agentPhone || '+254712345678'}','${h.agentImg || 'images/u.jpg'}')">
+                            <div class="feed-agent-mini" onclick="showAgent('${h.agentName || 'Support Agent'}','${h.agentPhone || SUPPORT_PHONE}','${h.agentImg || 'images/u.jpg'}')">
                                 <img src="${h.agentImg || 'images/u.jpg'}" alt="${h.agentName || 'Agent'}" class="feed-agent-avatar">
                                 <div class="feed-agent-label"><span>Listing</span><strong>Agent</strong></div>
                             </div>
                         </div>
                         <div class="feed-card-specs">${h.specs || ''}</div>
-                        <p class="feed-card-address">${h.address || h.title || ''}</p>
+                        <p class="feed-card-address mb-3">${h.address || h.title || ''}</p>
+
+                        <!-- Explicit Contact Buttons -->
+                        <div class="d-flex gap-2 pt-2 border-top">
+                            <a href="${waUrl}" target="_blank" class="btn btn-sm rounded-pill flex-fill fw-bold py-2 d-flex align-items-center justify-content-center gap-1" style="background:#25D366;color:#fff;border:none">
+                                <i class="bi bi-whatsapp"></i> WhatsApp
+                            </a>
+                            <a href="${callUrl}" class="btn btn-sm rounded-pill px-3 fw-bold py-2 d-flex align-items-center justify-content-center gap-1" style="background:var(--blue-soft);color:var(--blue-primary);border:1px solid var(--blue-soft-border)">
+                                <i class="bi bi-telephone-fill"></i> Call
+                            </a>
+                        </div>
                     </div>
                 `;
                 container.appendChild(card);

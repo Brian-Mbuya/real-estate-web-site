@@ -89,6 +89,7 @@
         </div>
     </div>
 
+    <script src="assets/js/auth.js"></script>
     <script src="assets/js/pwa.js"></script>
     <script>
         function togglePassword(id) {
@@ -104,6 +105,15 @@
         }
 
         function handleSignup() {
+            const nameInput = document.querySelectorAll('input[type="text"]')[0].value || 'New User';
+            const emailInput = document.querySelector('input[type="email"]').value || 'user@example.com';
+            
+            AuthHub.setCurrentUser({
+                fullName: nameInput,
+                email: emailInput,
+                avatar: 'images/u.jpg'
+            });
+
             window.location.href = "house.html";
         }
     </script>

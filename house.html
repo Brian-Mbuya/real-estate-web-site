@@ -135,15 +135,20 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase.js"></script>
+    <script src="assets/js/auth.js"></script>
     <script src="assets/js/pwa.js"></script>
     <script>
+        const SUPPORT_PHONE = '+254746632821';
+
         const houses = [
             {
-                id:"h1", title:"3 Bed Apartment in Kisumu", price:"$1,250,000", priceNum:1250000,
+                id:"h1", title:"3 Bed Apartment in Beverly Hills", price:"$1,250,000", priceNum:1250000,
                 specs:"4 Beds | 3 Baths | 2,500 Sq Ft", beds:4, location:"Beverly Hills",
                 address:"123 Maple Drive, Beverly Hills, CA", category:"Villa",
                 img:"images/luxury.jpg", agentName:"Sarah Jenkins",
-                agentPhone:"+254712345678", agentImg:"images/u.jpg",
+                agentPhone:SUPPORT_PHONE, agentImg:"images/u.jpg",
                 isNew:true, isVerified:true
             },
             {
@@ -151,7 +156,7 @@
                 specs:"3 Beds | 2 Baths | 1,800 Sq Ft", beds:3, location:"Austin",
                 address:"456 Oak Street, Austin, TX", category:"Apartment",
                 img:"images/e4.jpg", agentName:"Elena Vance",
-                agentPhone:"+254722987654", agentImg:"images/u4.jpg",
+                agentPhone:SUPPORT_PHONE, agentImg:"images/u4.jpg",
                 isNew:true, isVerified:true
             },
             {
@@ -159,7 +164,7 @@
                 specs:"5 Beds | 4 Baths | 3,200 Sq Ft", beds:5, location:"Riat Hills",
                 address:"789 Riat Hills Ridge, Kisumu", category:"Waterfront",
                 img:"images/riat6.jpeg", agentName:"Amina Otieno",
-                agentPhone:"+254700112233", agentImg:"images/u5.jpg",
+                agentPhone:SUPPORT_PHONE, agentImg:"images/u5.jpg",
                 isNew:true, isVerified:true
             },
             {
@@ -167,7 +172,7 @@
                 specs:"2 Beds | 2 Baths | 1,400 Sq Ft", beds:2, location:"Milimani",
                 address:"102 Milimani Heights, Kisumu", category:"Villa",
                 img:"images/makasembo.webp", agentName:"David Ochieng",
-                agentPhone:"+254733445566", agentImg:"images/u6.jpg",
+                agentPhone:SUPPORT_PHONE, agentImg:"images/u6.jpg",
                 isNew:true, isVerified:true
             }
         ];
@@ -179,7 +184,6 @@
             const q = query.toLowerCase();
             const words = q.split(/\s+/).filter(Boolean);
 
-            // Searchable fields with weights
             const fields = [
                 { val: h.address, weight: 30 },
                 { val: h.category, weight: 25 },
@@ -193,12 +197,10 @@
                 fields.forEach(f => {
                     if (f.val && f.val.toLowerCase().includes(w)) score += f.weight;
                 });
-                // Bed count matching: "3 bed", "4bed"
                 const bedMatch = w.match(/^(\d+)\s*bed/i);
                 if (bedMatch && h.beds === parseInt(bedMatch[1])) score += 30;
             });
 
-            // Price proximity: if query looks like a number, boost nearby prices
             const numQ = parseFloat(q.replace(/[^0-9.]/g, ''));
             if (numQ > 1000) {
                 const diff = Math.abs(h.priceNum - numQ) / numQ;
@@ -209,6 +211,20 @@
             return score;
         }
 
+        function toggleFavoriteProperty(btn, houseObj) {
+            btn.classList.toggle('inactive');
+            try {
+                let favorites = JSON.parse(localStorage.getItem('favoriteHouses')) || [];
+                const existsIdx = favorites.findIndex(item => item.address === houseObj.address);
+                if (existsIdx > -1) {
+                    favorites.splice(existsIdx, 1);
+                } else {
+                    favorites.push(houseObj);
+                }
+                localStorage.setItem('favoriteHouses', JSON.stringify(favorites));
+            } catch(e) {}
+        }
+
         function renderHouses(list) {
             const el = document.getElementById('housesList');
             if (!el) return;
@@ -217,8 +233,16 @@
                 el.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px 0">No properties match your search. Try different terms.</p>';
                 return;
             }
+
+            let favorites = [];
+            try { favorites = JSON.parse(localStorage.getItem('favoriteHouses')) || []; } catch(e){}
+
             list.forEach((h, idx) => {
                 const delayClass = `animate-delay-${Math.min(idx + 1, 4)}`;
+                const isFav = favorites.some(fav => fav.address === h.address);
+                const waUrl = AuthHub.getWhatsAppLink(h.address || h.title, h.agentPhone);
+                const callUrl = AuthHub.getPhoneCallLink(h.agentPhone);
+
                 el.innerHTML += `
                 <article class="feed-property-card animate-fade-up ${delayClass}">
                     <div class="feed-card-img-wrap">
@@ -227,7 +251,7 @@
                             ${h.isNew ? '<span class="feed-badge-new">New</span>' : ''}
                             ${h.isVerified ? '<span class="feed-badge-verified">Verified</span>' : ''}
                         </div>
-                        <button type="button" class="feed-card-fav" onclick="this.classList.toggle('inactive')">
+                        <button type="button" class="feed-card-fav ${isFav ? '' : 'inactive'}" onclick="toggleFavoriteProperty(this, ${JSON.stringify(h).replace(/"/g, '&quot;')})">
                             <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                         </button>
                     </div>
@@ -240,7 +264,17 @@
                             </div>
                         </div>
                         <div class="feed-card-specs">${h.specs}</div>
-                        <p class="feed-card-address">${h.address}</p>
+                        <p class="feed-card-address mb-3">${h.address}</p>
+
+                        <!-- Explicit Contact Buttons -->
+                        <div class="d-flex gap-2 pt-2 border-top">
+                            <a href="${waUrl}" target="_blank" class="btn btn-sm rounded-pill flex-fill fw-bold py-2 d-flex align-items-center justify-content-center gap-1" style="background:#25D366;color:#fff;border:none">
+                                <i class="bi bi-whatsapp"></i> WhatsApp
+                            </a>
+                            <a href="${callUrl}" class="btn btn-sm rounded-pill px-3 fw-bold py-2 d-flex align-items-center justify-content-center gap-1" style="background:var(--blue-soft);color:var(--blue-primary);border:1px solid var(--blue-soft-border)">
+                                <i class="bi bi-telephone-fill"></i> Call
+                            </a>
+                        </div>
                     </div>
                 </article>`;
             });
@@ -250,7 +284,6 @@
             const q = (document.getElementById('searchInput')?.value || '').trim();
             if (!q) { renderHouses(houses); return; }
 
-            // Score every listing and sort by relevance
             const scored = houses
                 .map(h => ({ ...h, _score: smartScore(h, q) }))
                 .filter(h => h._score > 0)
@@ -267,12 +300,18 @@
         function showAgent(name, phone, img) {
             document.getElementById('modalAgentName').textContent = name;
             document.getElementById('modalAgentImg').src = img;
-            document.getElementById('modalAgentCall').href = 'tel:' + phone;
-            document.getElementById('modalAgentWhatsapp').href = 'https://wa.me/' + phone.replace(/[^0-9]/g, '');
+            document.getElementById('modalAgentCall').href = 'tel:' + (phone || SUPPORT_PHONE);
+            document.getElementById('modalAgentWhatsapp').href = AuthHub.getWhatsAppLink('general inquiry', phone || SUPPORT_PHONE);
             bootstrap.Modal.getOrCreateInstance(document.getElementById('agentModal')).show();
         }
 
-        document.addEventListener('DOMContentLoaded', () => renderHouses(houses));
+        document.addEventListener('DOMContentLoaded', () => {
+            renderHouses(houses);
+            // Subscribe to Supabase Realtime Table Changes if connected
+            if (window.SupabaseHub && SupabaseHub.subscribeToTableChanges) {
+                SupabaseHub.subscribeToTableChanges('properties', () => filterHouses());
+            }
+        });
     </script>
 </body>
 </html>
