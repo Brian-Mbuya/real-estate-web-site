@@ -2,189 +2,283 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Find Your Dream Home with Ease | Reality Kisumu Hub</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#5B93D3">
-    <link rel="icon" type="image/png" href="images/pwa_icon.png">
-    <link rel="apple-touch-icon" href="images/pwa_icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Reality Kisumu Hub | Property on Lake Victoria</title>
+    <meta name="description" content="Homes, land and commercial property across Kisumu County — on the water at Dunga, above the gulf in Riat Hills, and inland in Milimani. Prices in KSh and USD.">
+    <meta name="theme-color" content="#10454f">
+    <meta property="og:title" content="Reality Kisumu Hub">
+    <meta property="og:description" content="Property across Kisumu County, on Lake Victoria.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="images/riat6.jpeg">
+
+    <link rel="icon" type="image/png" href="images/favicon-32.png">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
     <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
 
-    <!-- Top Navbar (visible on desktop) -->
-    <nav class="navbar navbar-expand-lg app-navbar sticky-top py-2 d-none d-lg-flex">
-        <div class="container" style="max-width:1200px">
-            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5B93D3" stroke-width="2.5">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-                <span>Reality Kisumu Hub</span>
-            </a>
-            <ul class="navbar-nav mx-auto gap-1">
-                <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="house.html">Explore</a></li>
-                <li class="nav-item"><a class="nav-link" href="liked.html">Saved Favorites</a></li>
-            </ul>
-            <div class="d-flex align-items-center gap-2">
-                <a href="login.html" class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-bold">Sign In</a>
-                <a href="signup.html" class="btn btn-sm rounded-pill px-3 fw-bold" style="background:var(--blue-primary);color:#fff;border:none">Get Started</a>
-            </div>
-        </div>
-    </nav>
+<a class="skip-link" href="#main">Skip to content</a>
 
-    <!-- Landing Shell -->
-    <div class="landing-shell">
+<!-- ══ Navbar — transparent over the hero ══════════════════ -->
+<nav class="app-navbar on-hero" aria-label="Main">
+    <div class="nav-wrap">
+        <a class="navbar-brand" href="index.html">
+            <i class="bi bi-water brand-mark" aria-hidden="true"></i>
+            <span>Reality Kisumu Hub</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html" data-nav="index.html">Home</a></li>
+            <li><a href="house.html" data-nav="house.html">Explore</a></li>
+            <li><a href="liked.html" data-nav="liked.html">Saved <span class="nav-count" data-fav-count hidden>0</span></a></li>
+        </ul>
+        <div class="nav-auth" data-auth-area></div>
+    </div>
+</nav>
 
-        <!-- Hero Banner -->
-        <div class="landing-hero animate-fade-up">
-            <img src="images/luxury.jpg" alt="Dream Home" class="landing-hero-img">
-            <div class="landing-hero-overlay"></div>
-            <div class="landing-hero-text animate-fade-up animate-delay-1">
-                <h1 class="landing-hero-title">Find Your Dream<br>Home with Ease</h1>
-            </div>
+<main id="main">
+
+    <!-- ══ Hero — the waterline ════════════════════════════ -->
+    <header class="hero">
+        <div class="hero-media">
+            <img src="images/riat6.jpeg" alt="" class="hero-img" fetchpriority="high">
+            <div class="hero-grade"></div>
         </div>
 
-        <!-- Feature Icons -->
-        <div class="landing-features animate-fade-up animate-delay-2">
-            <a href="house.html" class="landing-feature-item">
-                <div class="landing-feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                </div>
-                <div class="landing-feature-name">Smart<br>Search</div>
-            </a>
-            <a href="house.html" class="landing-feature-item">
-                <div class="landing-feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                        <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
-                        <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
-                    </svg>
-                </div>
-                <div class="landing-feature-name">Virtual<br>Tours</div>
-            </a>
-            <a href="house.html" class="landing-feature-item">
-                <div class="landing-feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                    </svg>
-                </div>
-                <div class="landing-feature-name">Instant<br>Notifications</div>
-            </a>
+        <div class="hero-content">
+            <p class="hero-eyebrow">Kisumu County &middot; Lake Victoria</p>
+            <h1 class="hero-title">
+                <span class="line">Find your place</span>
+                <span class="line"><em>on the lake.</em></span>
+            </h1>
         </div>
 
-        <!-- Featured Listings -->
-        <div class="landing-inner">
-            <h3 class="landing-section-title animate-fade-up animate-delay-3">Featured Listings</h3>
-            <div id="featuredListings" class="landing-cards-row">
-                <p style="text-align:center;width:100%;color:var(--text-muted);padding:20px;">Loading Featured Properties...</p>
-            </div>
+        <!-- The search sits on the horizon. -->
+        <div class="hero-waterline">
+            <form class="waterline-search" role="search" action="house.html" method="get">
+                <i class="bi bi-search" aria-hidden="true"></i>
+                <label for="heroSearch" class="sr-only">Search Kisumu property</label>
+                <input type="search" id="heroSearch" name="q"
+                       placeholder="Milimani, Riat Hills, 3 bed, land&hellip;" autocomplete="off">
+                <button type="submit">Search<span class="label-long"> listings</span></button>
+            </form>
+        </div>
 
-            <!-- CTA Button -->
-            <div class="landing-cta animate-fade-up animate-delay-4">
-                <a href="house.html" class="landing-cta-btn">Start Your Search</a>
+        <p class="hero-foot">
+            <span><i class="bi bi-house-door-fill" aria-hidden="true"></i> <b data-stat="total">&mdash;</b>&nbsp;listings</span>
+            <span><i class="bi bi-patch-check-fill" aria-hidden="true"></i> Verified before listing</span>
+            <span><i class="bi bi-whatsapp" aria-hidden="true"></i> Talk to the agent direct</span>
+        </p>
+    </header>
+
+    <div class="page-inner">
+
+        <!-- ══ Shore rail — neighbourhoods by relation to water ══ -->
+        <div class="section-head">
+            <div>
+                <span class="eyebrow">Where to look</span>
+                <h2 class="section-title">From the shore, inland</h2>
+            </div>
+            <a class="section-link" href="house.html">All areas <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+        </div>
+
+        <!-- Ordered by distance from the lake, which is how buyers
+             here place a neighbourhood. Counts come from the database. -->
+        <div class="shore-rail" id="shoreRail" role="list"></div>
+
+        <!-- ══ Featured ═══════════════════════════════════════ -->
+        <div class="section-head">
+            <div>
+                <span class="eyebrow">Newest first</span>
+                <h2 class="section-title">Fresh on the market</h2>
+            </div>
+            <div class="currency-toggle" role="group" aria-label="Currency">
+                <button type="button" data-currency="KES" aria-pressed="true">KSh</button>
+                <button type="button" data-currency="USD" aria-pressed="false">USD</button>
             </div>
         </div>
 
-        <!-- Footer -->
-        <div class="landing-footer">
-            <div class="landing-social-row">
-                <a href="https://www.instagram.com/mbuya2.15?igsh=dXAxam9uNHh4NXg0" target="_blank" class="landing-social-icon"><i class="bi bi-instagram"></i></a>
-                <a href="https://x.com/mbuya98915" target="_blank" class="landing-social-icon"><i class="bi bi-twitter-x"></i></a>
-                <a href="https://www.linkedin.com/in/brian-mbuya-23225541b?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" class="landing-social-icon"><i class="bi bi-linkedin"></i></a>
-            </div>
-            <div class="landing-footer-links">
-                <a href="javascript:void(0)" onclick="openAboutModal()">About Us</a> | <a href="javascript:void(0)" onclick="openContactModal()">Contact</a> | <a href="javascript:void(0)" onclick="openPrivacyModal()">Privacy Policy</a>
-            </div>
+        <div id="featuredListings" class="prop-grid prop-grid-compact"></div>
+
+        <div class="text-center" style="padding:38px 0 8px">
+            <a href="house.html" class="btn-primary-pill" style="min-width:min(100%,320px)">
+                Browse every listing <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            </a>
         </div>
     </div>
+</main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="assets/js/supabase.js"></script>
-    <script src="assets/js/auth.js"></script>
-    <script src="assets/js/pwa.js"></script>
-    <script>
-        // Store favorites locally
-        function toggleFavoriteProperty(btn, event, houseObj) {
-            event.stopPropagation(); // Prevent card click
-            btn.classList.toggle('inactive');
-            try {
-                let favorites = JSON.parse(localStorage.getItem('favoriteHouses')) || [];
-                const existsIdx = favorites.findIndex(item => item.id === houseObj.id);
-                if (existsIdx > -1) {
-                    favorites.splice(existsIdx, 1);
-                } else {
-                    favorites.push(houseObj);
-                }
-                localStorage.setItem('favoriteHouses', JSON.stringify(favorites));
-            } catch(e) {}
+<!-- ══ Footer ══════════════════════════════════════════════ -->
+<footer class="app-footer">
+    <p class="footer-brand">Reality Kisumu Hub</p>
+    <p class="footer-tag">Property on the shores of Lake Victoria</p>
+    <div class="footer-social">
+        <a href="https://www.instagram.com/mbuya2.15?igsh=dXAxam9uNHh4NXg0" target="_blank" rel="noopener" aria-label="Instagram"><i class="bi bi-instagram" aria-hidden="true"></i></a>
+        <a href="https://x.com/mbuya98915" target="_blank" rel="noopener" aria-label="X"><i class="bi bi-twitter-x" aria-hidden="true"></i></a>
+        <a href="https://www.linkedin.com/in/brian-mbuya-23225541b" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="bi bi-linkedin" aria-hidden="true"></i></a>
+    </div>
+    <div class="footer-links">
+        <button type="button" data-open-modal="about">About us</button>
+        <span class="footer-sep" aria-hidden="true">&middot;</span>
+        <button type="button" data-open-modal="contact">Contact</button>
+        <span class="footer-sep" aria-hidden="true">&middot;</span>
+        <button type="button" data-open-modal="privacy">Privacy policy</button>
+    </div>
+    <p class="footer-legal">&copy; 2026 Reality Kisumu Hub. All rights reserved.</p>
+</footer>
+
+<!-- ══ Mobile bottom navigation ════════════════════════════ -->
+<nav class="mobile-bottom-nav" aria-label="Main">
+    <a href="index.html" class="mobile-nav-item" data-nav="index.html">
+        <i class="bi bi-house-door-fill" aria-hidden="true"></i>
+        <span class="mobile-nav-label">Home</span>
+    </a>
+    <a href="house.html" class="mobile-nav-item" data-nav="house.html">
+        <i class="bi bi-search" aria-hidden="true"></i>
+        <span class="mobile-nav-label">Explore</span>
+    </a>
+    <a href="liked.html" class="mobile-nav-item" data-nav="liked.html">
+        <i class="bi bi-heart" aria-hidden="true"></i>
+        <span class="nav-count" data-fav-count hidden>0</span>
+        <span class="mobile-nav-label">Saved</span>
+    </a>
+    <a href="login.html" class="mobile-nav-item" data-nav="login.html">
+        <i class="bi bi-person" aria-hidden="true"></i>
+        <span class="mobile-nav-label">Account</span>
+    </a>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/pwa.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    var listEl  = document.getElementById('featuredListings');
+    var railEl  = document.getElementById('shoreRail');
+    var featured = [];
+
+    /* Kisumu neighbourhoods ordered by their relationship to the
+       lake — the order is the information, so it is fixed here
+       rather than sorted by count. */
+    var SHORE = [
+        { name: 'Dunga Beach', match: 'Dunga',      relation: 'On the water',   rel: 'water'  },
+        { name: 'Hippo Point', match: 'Hippo',      relation: 'On the water',   rel: 'water'  },
+        { name: 'Riat Hills',  match: 'Riat',       relation: 'Above the gulf', rel: 'above'  },
+        { name: 'Milimani',    match: 'Milimani',   relation: 'Inland, leafy',  rel: 'inland' },
+        { name: 'Mamboleo',    match: 'Mamboleo',   relation: 'Inland',         rel: 'inland' },
+        { name: 'Kanyakwar',   match: 'Kanyakwar',  relation: 'Inland',         rel: 'inland' },
+        { name: 'Kondele',     match: 'Kondele',    relation: 'Inland',         rel: 'inland' },
+        { name: 'Kibos',       match: 'Kibos',      relation: 'Inland, rural',  rel: 'inland' }
+    ];
+
+    function byId(id) {
+        return featured.filter(function (p) { return String(p.id) === String(id); })[0];
+    }
+
+    function renderFeatured() {
+        if (!featured.length) return;
+        listEl.innerHTML = featured.map(function (p) {
+            return RK.propertyCardHTML(p, { variant: 'compact' });
+        }).join('');
+    }
+
+    /* Only shows areas that actually have listings, so the rail can
+       never advertise a neighbourhood with nothing in it. */
+    function renderShore(all) {
+        var cards = SHORE.map(function (area) {
+            var count = all.filter(function (p) {
+                return (p.location + ' ' + p.title).toLowerCase().indexOf(area.match.toLowerCase()) > -1;
+            }).length;
+            return { area: area, count: count };
+        }).filter(function (row) { return row.count > 0; });
+
+        if (!cards.length) { railEl.innerHTML = ''; return; }
+
+        railEl.innerHTML = cards.map(function (row) {
+            return '<a class="shore-card" role="listitem"' +
+                    ' data-relation="' + row.area.rel + '"' +
+                    ' href="house.html?q=' + encodeURIComponent(row.area.match) + '">' +
+                '<span class="shore-mark" aria-hidden="true"></span>' +
+                '<span>' +
+                    '<span class="shore-name">' + RK.escapeHtml(row.area.name) + '</span>' +
+                    '<span class="shore-relation">' + RK.escapeHtml(row.area.relation) + '</span>' +
+                '</span>' +
+                '<span class="shore-count">' + row.count + (row.count === 1 ? ' listing' : ' listings') + '</span>' +
+            '</a>';
+        }).join('');
+    }
+
+    function setStat(value) {
+        document.querySelectorAll('[data-stat="total"]').forEach(function (el) {
+            el.textContent = value;
+        });
+    }
+
+    async function load() {
+        listEl.innerHTML = RK.skeletonHTML(4, 'compact');
+
+        var client = window.SupabaseHub && SupabaseHub.client;
+        if (!client) {
+            listEl.innerHTML = RK.stateHTML({
+                icon: 'bi-cloud-slash',
+                title: 'Listings are offline',
+                body: 'We cannot reach the listings service. Check your connection and try again.',
+                retry: true
+            });
+            setStat('—');
+            return;
         }
 
-        async function fetchFeaturedProperties() {
-            if (!window.SupabaseHub || !SupabaseHub.client) {
-                document.getElementById('featuredListings').innerHTML = '<p style="text-align:center;width:100%;">Database disconnected.</p>';
+        try {
+            var all = await client.from('properties').select('*').order('created_at', { ascending: false });
+            if (all.error) throw all.error;
+
+            var rows = (all.data || []).map(RK.normalizeProperty).filter(Boolean);
+            setStat(rows.length);
+            renderShore(rows);
+
+            featured = rows.slice(0, 4);
+            if (!featured.length) {
+                listEl.innerHTML = RK.stateHTML({
+                    icon: 'bi-house-slash',
+                    title: 'No listings yet',
+                    body: 'New property is added regularly. Check back soon.',
+                    actionHref: 'house.html',
+                    actionLabel: 'Browse all'
+                });
                 return;
             }
-            try {
-                // Fetch top 4 properties randomly or latest
-                const { data, error } = await SupabaseHub.client
-                    .from('properties')
-                    .select('*')
-                    .limit(4);
-                
-                if (error) throw error;
-                
-                const container = document.getElementById('featuredListings');
-                container.innerHTML = '';
-                
-                let favorites = [];
-                try { favorites = JSON.parse(localStorage.getItem('favoriteHouses')) || []; } catch(e){}
-
-                data.forEach((dbRow, idx) => {
-                    const delayClass = `animate-delay-${Math.min(idx + 1, 4)}`;
-                    
-                    const h = {
-                        id: dbRow.id,
-                        title: dbRow.title,
-                        price: `$${Number(dbRow.price_usd).toLocaleString()}`,
-                        priceNum: Number(dbRow.price_usd),
-                        specs: `${dbRow.beds > 0 ? dbRow.beds + ' Beds &nbsp;|&nbsp; ' : ''}${dbRow.baths > 0 ? dbRow.baths + ' Baths &nbsp;|&nbsp; ' : ''}${dbRow.sqft} Sq Ft`,
-                        address: dbRow.location,
-                        img: dbRow.image_url,
-                    };
-                    
-                    const isFav = favorites.some(fav => fav.id === h.id);
-
-                    // We make the whole card clickable to route to the main feed
-                    container.innerHTML += `
-                    <div class="landing-property-card animate-fade-up ${delayClass}" style="cursor:pointer;" onclick="window.location.href='house.html'">
-                        <div class="landing-card-img-wrap">
-                            <img src="${h.img}" alt="${h.title}" loading="lazy">
-                            <button type="button" class="landing-card-fav ${isFav ? '' : 'inactive'}" onclick='toggleFavoriteProperty(this, event, ${JSON.stringify(h).replace(/'/g, "&#39;")})'>
-                                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                            </button>
-                        </div>
-                        <div class="landing-card-body">
-                            <div class="landing-card-price">${h.price}</div>
-                            <div class="landing-card-specs">${h.specs}</div>
-                            <p class="landing-card-address">${h.title} <br><span style="font-size:0.85em;color:var(--text-muted);">${h.address}</span></p>
-                        </div>
-                    </div>`;
-                });
-            } catch(e) {
-                console.error("Error fetching featured properties:", e);
-                document.getElementById('featuredListings').innerHTML = '<p style="text-align:center;width:100%;">Failed to load featured properties.</p>';
-            }
+            renderFeatured();
+        } catch (err) {
+            console.error('Landing page load failed:', err);
+            setStat('—');
+            listEl.innerHTML = RK.stateHTML({
+                icon: 'bi-exclamation-triangle',
+                title: 'Could not load listings',
+                body: (err && err.message) || 'An unexpected error occurred.',
+                retry: true
+            });
         }
+    }
 
-        document.addEventListener('DOMContentLoaded', fetchFeaturedProperties);
-    </script>
+    RK.mountCards(listEl, byId);
+    listEl.addEventListener('click', function (e) {
+        if (e.target.closest('[data-action="retry"]')) load();
+    });
+    window.addEventListener('rk:currencychange', renderFeatured);
+
+    load();
+})();
+</script>
 </body>
 </html>

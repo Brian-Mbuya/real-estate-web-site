@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Offline | Reality Kisumu Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#5B93D3">
+    <link rel="icon" type="image/png" href="images/favicon-32.png">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <style>
+        body {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            text-align: center;
+        }
+        .offline-card {
+            max-width: 420px;
+            background: #fff;
+            border-radius: var(--radius-xl);
+            padding: 40px 28px;
+            box-shadow: var(--shadow-card);
+        }
+        .offline-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: var(--blue-soft);
+            color: var(--blue-primary);
+            font-size: 2rem;
+        }
+        .offline-card h1 { font-size: 1.4rem; font-weight: 800; margin: 0 0 8px; }
+        .offline-card p { color: var(--text-muted); font-size: 0.95rem; margin: 0 0 24px; }
+    </style>
+</head>
+<body>
+    <main class="offline-card">
+        <div class="offline-icon" aria-hidden="true">&#9888;</div>
+        <h1>You&rsquo;re offline</h1>
+        <p>We can&rsquo;t reach the network right now. Pages you&rsquo;ve already opened and everything you&rsquo;ve saved are still available.</p>
+        <a href="liked.html" class="btn-primary-pill">View saved favorites</a>
+        <p style="margin:18px 0 0;font-size:0.85rem">
+            <a href="index.html" style="color:var(--blue-primary);text-decoration:none;font-weight:700">Try the home page again</a>
+        </p>
+    </main>
+    <script>
+        // Bounce back automatically the moment connectivity returns.
+        window.addEventListener('online', function () { window.location.replace('index.html'); });
+    </script>
+</body>
+</html>

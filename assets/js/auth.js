@@ -1,268 +1,344 @@
-// Centralized Authentication, Personalization & Professional Contact Engine
-// Reality Kisumu Hub
+/* ============================================================
+   Reality Kisumu Hub — Session, personalisation & global modals
+   ------------------------------------------------------------
+   Wrapped in an IIFE. The previous version declared bare
+   top-level `const`s (SUPPORT_PHONE), which collided with the
+   same declaration in page scripts and threw
+   "Identifier has already been declared" — a parse-time error
+   that silently killed entire pages.
+   ============================================================ */
+(function (window, document) {
+    'use strict';
 
-const SUPPORT_PHONE = '+254746632821';
-const DISPLAY_PHONE = '+254 746 632 821';
+    var SUPPORT_PHONE = '+254746632821';
+    var DISPLAY_PHONE = '+254 746 632 821';
+    var SUPPORT_EMAIL = 'mboyabrian994@gmail.com';
+    var USER_KEY = 'hub_user';
 
-// Calculate accurate greeting based on current local time
-function getTimeBasedGreeting() {
-    const hour = new Date().getHours();
-    if (hour >= 5 && hour < 12) {
-        return 'Good morning';
-    } else if (hour >= 12 && hour < 17) {
-        return 'Good afternoon';
-    } else {
-        return 'Good evening';
+    /* ---------------------------------------------------------
+       Session
+       --------------------------------------------------------- */
+
+    /* Returns the signed-in user, or null.
+
+       The old implementation returned a hardcoded "Alex" with
+       isLoggedIn:true whenever storage was empty — so a brand
+       new visitor was greeted by name and never shown the
+       Sign In button. Logged-out is now a real state. */
+    function getCurrentUser() {
+        try {
+            var stored = window.localStorage.getItem(USER_KEY);
+            if (!stored) return null;
+            var user = JSON.parse(stored);
+            if (user && user.isLoggedIn && user.fullName) return user;
+            return null;
+        } catch (e) {
+            return null;
+        }
     }
-}
 
-// Get current user profile (from localStorage or default)
-function getCurrentUser() {
-    try {
-        const stored = localStorage.getItem('hub_user');
-        if (stored) return JSON.parse(stored);
-    } catch(e) {}
-    return {
-        fullName: 'Alex',
-        email: 'alex@kisumuhub.com',
-        avatar: 'images/u.jpg',
-        isLoggedIn: true
+    function isLoggedIn() {
+        return getCurrentUser() !== null;
+    }
+
+    function setCurrentUser(userObj) {
+        var name = String(userObj.fullName || '').trim() || 'Guest';
+        var user = {
+            fullName: name,
+            email: userObj.email || '',
+            /* Generated initials avatar. The old default was
+               images/u.jpg — a photo of a house. */
+            avatar: userObj.avatar || avatarFor(name),
+            isLoggedIn: true
+        };
+        try {
+            window.localStorage.setItem(USER_KEY, JSON.stringify(user));
+        } catch (e) {
+            /* Storage unavailable — the session just won't persist. */
+        }
+        updatePersonalizedUI();
+        return user;
+    }
+
+    function logoutUser() {
+        try { window.localStorage.removeItem(USER_KEY); } catch (e) {}
+        window.location.href = 'index.html';
+    }
+
+    function firstName(user) {
+        return String(user.fullName || '').split(' ')[0] || 'there';
+    }
+
+    function getTimeBasedGreeting() {
+        var hour = new Date().getHours();
+        if (hour >= 5 && hour < 12) return 'Good morning';
+        if (hour >= 12 && hour < 17) return 'Good afternoon';
+        if (hour >= 17 && hour < 22) return 'Good evening';
+        return 'Good night';
+    }
+
+    /* Falls back to a neutral grey initial if app.js somehow isn't loaded. */
+    function avatarFor(name) {
+        if (window.RK && window.RK.avatarDataUri) return window.RK.avatarDataUri(name);
+        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96">' +
+            '<rect width="96" height="96" fill="#64748b"/></svg>');
+    }
+
+    function escapeHtml(value) {
+        if (window.RK && window.RK.escapeHtml) return window.RK.escapeHtml(value);
+        return String(value === null || value === undefined ? '' : value)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    /* ---------------------------------------------------------
+       Personalised chrome
+       --------------------------------------------------------- */
+    function updatePersonalizedUI() {
+        var user = getCurrentUser();
+
+        /* 1. Greeting headers — [data-greeting] instead of matching
+              on CSS utility classes. */
+        document.querySelectorAll('[data-greeting]').forEach(function (el) {
+            if (user) {
+                el.innerHTML = escapeHtml(getTimeBasedGreeting()) + ', <strong>' + escapeHtml(firstName(user)) + '</strong>';
+            } else {
+                el.innerHTML = 'Find your <strong>place in Kisumu</strong>';
+            }
+        });
+
+        document.querySelectorAll('[data-greeting-sub]').forEach(function (el) {
+            el.textContent = user
+                ? 'Here are fresh listings picked for you today.'
+                : 'Browse verified homes, land and commercial space across the county.';
+        });
+
+        /* 2. Navbar auth area */
+        document.querySelectorAll('[data-auth-area]').forEach(function (area) {
+            area.innerHTML = user ? loggedInMenuHTML(user) : loggedOutButtonsHTML();
+        });
+
+        /* 3. Mobile bottom-nav account tab.
+
+           Both branches are required: without the `else`, signing out
+           without a full page load left the tab still showing the old
+           user's name and still pointing at their saved list. */
+        document.querySelectorAll('[data-nav="login.html"]').forEach(function (link) {
+            var label = link.querySelector('.mobile-nav-label');
+            var icon = link.querySelector('i');
+
+            if (user) {
+                link.setAttribute('href', 'liked.html');
+                link.setAttribute('aria-label', 'Your account, signed in as ' + user.fullName);
+                if (label) label.textContent = firstName(user);
+                if (icon) icon.className = 'bi bi-person-fill';
+            } else {
+                link.setAttribute('href', 'login.html');
+                link.setAttribute('aria-label', 'Sign in');
+                if (label) label.textContent = 'Account';
+                if (icon) icon.className = 'bi bi-person';
+            }
+        });
+
+        if (window.RK && window.RK.markActiveNav) window.RK.markActiveNav();
+    }
+
+    function loggedOutButtonsHTML() {
+        return '' +
+            '<a href="login.html" class="btn-ghost-pill">Sign in</a>' +
+            '<a href="signup.html" class="btn-primary-pill btn-sm-pill">Get started</a>';
+    }
+
+    function loggedInMenuHTML(user) {
+        return '' +
+        '<div class="dropdown">' +
+            '<button class="btn-user-chip" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
+                '<img src="' + escapeHtml(user.avatar || avatarFor(user.fullName)) + '" alt="">' +
+                '<span>' + escapeHtml(firstName(user)) + '</span>' +
+                '<i class="bi bi-chevron-down" aria-hidden="true"></i>' +
+            '</button>' +
+            '<ul class="dropdown-menu dropdown-menu-end rk-dropdown">' +
+                '<li class="rk-dropdown-head">' +
+                    '<strong>' + escapeHtml(user.fullName) + '</strong>' +
+                    '<span>' + escapeHtml(user.email || 'Signed in') + '</span>' +
+                '</li>' +
+                '<li><hr class="dropdown-divider"></li>' +
+                '<li><a class="dropdown-item" href="liked.html"><i class="bi bi-heart" aria-hidden="true"></i> Saved favorites</a></li>' +
+                '<li><a class="dropdown-item" href="house.html"><i class="bi bi-compass" aria-hidden="true"></i> Explore listings</a></li>' +
+                '<li><button type="button" class="dropdown-item" data-open-modal="contact"><i class="bi bi-headset" aria-hidden="true"></i> Contact support</button></li>' +
+                '<li><hr class="dropdown-divider"></li>' +
+                '<li><button type="button" class="dropdown-item text-danger" data-logout><i class="bi bi-box-arrow-right" aria-hidden="true"></i> Sign out</button></li>' +
+            '</ul>' +
+        '</div>';
+    }
+
+    /* ---------------------------------------------------------
+       Contact links (kept for callers that still use them)
+       --------------------------------------------------------- */
+    function getWhatsAppLink(propertyTitle, customPhone) {
+        if (window.RK && window.RK.whatsappLink) return window.RK.whatsappLink(customPhone, propertyTitle);
+        var phone = String(customPhone || SUPPORT_PHONE).replace(/[^0-9]/g, '');
+        return 'https://wa.me/' + phone;
+    }
+
+    function getPhoneCallLink(customPhone) {
+        if (window.RK && window.RK.telLink) return window.RK.telLink(customPhone);
+        return 'tel:' + (customPhone || SUPPORT_PHONE);
+    }
+
+    /* ---------------------------------------------------------
+       Global modals
+
+       Built once, lazily, then reused. Bootstrap's JS bundle is
+       required — pages that omitted it (login/signup) used to
+       throw a ReferenceError here.
+       --------------------------------------------------------- */
+    function buildModal(id, bodyHTML) {
+        var existing = document.getElementById(id);
+        if (existing) return existing;
+        var wrapper = document.createElement('div');
+        wrapper.id = id;
+        wrapper.className = 'modal fade rk-modal';
+        wrapper.tabIndex = -1;
+        wrapper.setAttribute('aria-hidden', 'true');
+        wrapper.innerHTML =
+            '<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">' +
+                '<div class="modal-content">' + bodyHTML + '</div>' +
+            '</div>';
+        document.body.appendChild(wrapper);
+        return wrapper;
+    }
+
+    function showModal(el) {
+        if (!window.bootstrap || !window.bootstrap.Modal) {
+            /* Graceful fallback rather than a hard crash. */
+            if (window.RK && window.RK.toast) {
+                window.RK.toast('Call ' + DISPLAY_PHONE + ' for support', 'info');
+            }
+            return;
+        }
+        window.bootstrap.Modal.getOrCreateInstance(el).show();
+    }
+
+    function modalHeader(icon, title, subtitle) {
+        return '' +
+        '<div class="modal-header rk-modal-header">' +
+            '<div class="rk-modal-heading">' +
+                '<span class="rk-modal-icon"><i class="bi ' + icon + '" aria-hidden="true"></i></span>' +
+                '<div>' +
+                    '<h2 class="rk-modal-title">' + title + '</h2>' +
+                    '<p class="rk-modal-sub">' + subtitle + '</p>' +
+                '</div>' +
+            '</div>' +
+            '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>' +
+        '</div>';
+    }
+
+    function openContactModal() {
+        var el = buildModal('rkContactModal',
+            modalHeader('bi-headset', 'Contact &amp; support', 'We reply within business hours, Mon&ndash;Sat') +
+            '<div class="modal-body">' +
+                '<div class="rk-contact-actions">' +
+                    '<a href="' + escapeHtml(getWhatsAppLink()) + '" target="_blank" rel="noopener" class="rk-contact-btn rk-contact-wa">' +
+                        '<i class="bi bi-whatsapp" aria-hidden="true"></i>' +
+                        '<span><strong>WhatsApp</strong><small>' + DISPLAY_PHONE + '</small></span>' +
+                    '</a>' +
+                    '<a href="' + escapeHtml(getPhoneCallLink()) + '" class="rk-contact-btn rk-contact-call">' +
+                        '<i class="bi bi-telephone-fill" aria-hidden="true"></i>' +
+                        '<span><strong>Call us</strong><small>' + DISPLAY_PHONE + '</small></span>' +
+                    '</a>' +
+                    '<a href="mailto:' + SUPPORT_EMAIL + '" class="rk-contact-btn rk-contact-mail">' +
+                        '<i class="bi bi-envelope-fill" aria-hidden="true"></i>' +
+                        '<span><strong>Email</strong><small>' + SUPPORT_EMAIL + '</small></span>' +
+                    '</a>' +
+                '</div>' +
+                '<div class="rk-info-card">' +
+                    '<strong><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> Office</strong>' +
+                    'Reality Kisumu Hub HQ, Riat Hills, Kisumu, Kenya<br>' +
+                    '<span>Open Mon&ndash;Sat, 8:00 AM &ndash; 8:00 PM</span>' +
+                '</div>' +
+            '</div>');
+        showModal(el);
+    }
+
+    function openAboutModal() {
+        var el = buildModal('rkAboutModal',
+            modalHeader('bi-buildings', 'About Reality Kisumu Hub', "Kisumu's digital property marketplace") +
+            '<div class="modal-body rk-prose">' +
+                '<p><strong>Reality Kisumu Hub</strong> connects property seekers with verified villas, city apartments, waterfront homes, commercial space and land across Kisumu County and beyond.</p>' +
+                '<p>Every listing is checked before it goes live, prices are shown in both Kenyan Shillings and US Dollars, and you can reach the listing agent directly by call or WhatsApp &mdash; no middlemen, no signup wall.</p>' +
+                '<p class="mb-0">Save the listings you like and they stay on your device, even offline.</p>' +
+            '</div>');
+        showModal(el);
+    }
+
+    function openPrivacyModal() {
+        var el = buildModal('rkPrivacyModal',
+            modalHeader('bi-shield-check', 'Privacy &amp; data', 'What we store and what we never share') +
+            '<div class="modal-body rk-prose">' +
+                '<p>We keep data collection to the minimum needed to run the marketplace.</p>' +
+                '<ul>' +
+                    '<li><strong>Saved favorites</strong> stay in your browser on this device. They are not uploaded.</li>' +
+                    '<li><strong>Your phone number and email</strong> are never sold or shared with third parties.</li>' +
+                    '<li><strong>Enquiries</strong> go straight to the listing agent over WhatsApp or a phone call.</li>' +
+                    '<li><strong>Listing data</strong> is served read-only and protected by row level security.</li>' +
+                '</ul>' +
+                '<p class="mb-0">Clearing your browser data removes everything this app has stored about you.</p>' +
+            '</div>');
+        showModal(el);
+    }
+
+    /* ---------------------------------------------------------
+       Delegated wiring for footer links, dropdown items, logout
+       --------------------------------------------------------- */
+    var MODALS = {
+        contact: openContactModal,
+        about: openAboutModal,
+        privacy: openPrivacyModal
     };
-}
 
-// Save logged in user profile
-function setCurrentUser(userObj) {
-    localStorage.setItem('hub_user', JSON.stringify({
-        ...userObj,
-        isLoggedIn: true
-    }));
-    updatePersonalizedUI();
-}
-
-// Logout user
-function logoutUser() {
-    localStorage.removeItem('hub_user');
-    window.location.href = 'index.html';
-}
-
-// Update dynamic greeting and navbar profile elements across pages
-function updatePersonalizedUI() {
-    const user = getCurrentUser();
-    const greetingText = getTimeBasedGreeting();
-
-    // 1. Update Greeting Headers
-    const greetingEls = document.querySelectorAll('.feed-greeting-title, .user-greeting-title');
-    greetingEls.forEach(el => {
-        el.innerHTML = `${greetingText}, <strong>${user.fullName.split(' ')[0]}</strong>`;
-    });
-
-    // 2. Update Navbars with polished dropdown
-    const navAuthAreas = document.querySelectorAll('.app-navbar .d-flex.align-items-center.gap-2, .app-navbar .d-flex.align-items-center.gap-3');
-    navAuthAreas.forEach(area => {
-        if (user.isLoggedIn && user.fullName) {
-            area.innerHTML = `
-                <div class="dropdown">
-                    <button class="btn btn-sm rounded-pill px-3 py-1.5 d-flex align-items-center gap-2 border-0 shadow-sm" type="button" data-bs-toggle="dropdown" style="background:var(--blue-soft);color:var(--text-dark);transition:all 0.2s ease">
-                        <img src="${user.avatar || 'images/u.jpg'}" alt="${user.fullName}" class="rounded-circle" style="width:28px;height:28px;object-fit:cover;border:1.5px solid var(--blue-primary)">
-                        <span class="fw-bold fs-6 me-1">${user.fullName.split(' ')[0]}</span>
-                        <i class="bi bi-chevron-down small text-muted"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end rounded-4 shadow-lg border-0 mt-2 p-2" style="min-width:210px">
-                        <li>
-                            <a class="dropdown-item rounded-3 py-2 fw-semibold d-flex align-items-center gap-2" href="liked.html">
-                                <i class="bi bi-heart-fill text-danger fs-6"></i>
-                                <span>Saved Favorites</span>
-                            </a>
-                        </li>
-                        <li>
-                            <button type="button" class="dropdown-item rounded-3 py-2 fw-semibold d-flex align-items-center gap-2" onclick="openContactModal()">
-                                <i class="bi bi-headset text-primary fs-6"></i>
-                                <span>Contact Support</span>
-                            </button>
-                        </li>
-                        <li><hr class="dropdown-divider my-1"></li>
-                        <li>
-                            <button type="button" class="dropdown-item rounded-3 py-2 fw-semibold text-danger d-flex align-items-center gap-2" onclick="logoutUser()">
-                                <i class="bi bi-box-arrow-right fs-6"></i>
-                                <span>Sign Out</span>
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            `;
+    document.addEventListener('click', function (event) {
+        var modalTrigger = event.target.closest('[data-open-modal]');
+        if (modalTrigger) {
+            event.preventDefault();
+            var opener = MODALS[modalTrigger.dataset.openModal];
+            if (opener) opener();
+            return;
+        }
+        if (event.target.closest('[data-logout]')) {
+            event.preventDefault();
+            logoutUser();
         }
     });
 
-    // 3. Bind footer links to open modals
-    document.querySelectorAll('.landing-footer-links a, .footer-links-row a').forEach(link => {
-        const text = link.textContent.trim().toLowerCase();
-        if (text.includes('contact')) {
-            link.href = 'javascript:void(0)';
-            link.onclick = (e) => { e.preventDefault(); openContactModal(); };
-        } else if (text.includes('about')) {
-            link.href = 'javascript:void(0)';
-            link.onclick = (e) => { e.preventDefault(); openAboutModal(); };
-        } else if (text.includes('privacy')) {
-            link.href = 'javascript:void(0)';
-            link.onclick = (e) => { e.preventDefault(); openPrivacyModal(); };
-        }
-    });
-}
-
-// Pre-filled WhatsApp link
-function getWhatsAppLink(propertyTitle, customPhone) {
-    const phone = (customPhone || SUPPORT_PHONE).replace(/[^0-9]/g, '');
-    const text = propertyTitle 
-        ? `Hi! I am inquiring about: ${propertyTitle}. Could you provide more details?`
-        : `Hi Reality Kisumu Hub Support! I need assistance with properties.`;
-    return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
-}
-
-// Phone call link
-function getPhoneCallLink(customPhone) {
-    const phone = customPhone || SUPPORT_PHONE;
-    return `tel:${phone}`;
-}
-
-// -------------------------------------------------------------
-// Interactive Professional Modals (Contact, About, Privacy)
-// -------------------------------------------------------------
-
-function openContactModal() {
-    let modalEl = document.getElementById('globalContactModal');
-    if (!modalEl) {
-        const div = document.createElement('div');
-        div.id = 'globalContactModal';
-        div.className = 'modal fade';
-        div.setAttribute('tabindex', '-1');
-        div.innerHTML = `
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content rounded-4 border-0 shadow-lg" style="overflow:hidden">
-                    <div class="modal-header border-0 pb-0 pt-4 px-4">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="p-3 rounded-circle" style="background:var(--blue-soft)">
-                                <i class="bi bi-headset fs-3" style="color:var(--blue-primary)"></i>
-                            </div>
-                            <div>
-                                <h5 class="modal-title fw-bold text-dark mb-0">Contact & Support</h5>
-                                <p class="text-muted small mb-0">We're available 24/7 to help you find your dream property</p>
-                            </div>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body p-4">
-                        <div class="d-grid gap-3 mb-4">
-                            <a href="${getWhatsAppLink()}" target="_blank" class="btn btn-lg rounded-pill fw-bold py-3 text-white d-flex align-items-center justify-content-center gap-2 shadow-sm" style="background:#25D366">
-                                <i class="bi bi-whatsapp fs-5"></i> Chat on WhatsApp (${DISPLAY_PHONE})
-                            </a>
-                            <a href="${getPhoneCallLink()}" class="btn btn-lg rounded-pill fw-bold py-3 d-flex align-items-center justify-content-center gap-2" style="background:var(--blue-soft);color:var(--blue-primary);border:1px solid var(--blue-soft-border)">
-                                <i class="bi bi-telephone-fill fs-5"></i> Call Support (${DISPLAY_PHONE})
-                            </a>
-                            <a href="mailto:mboyabrian994@gmail.com" class="btn btn-outline-secondary btn-lg rounded-pill fw-bold py-3 d-flex align-items-center justify-content-center gap-2">
-                                <i class="bi bi-envelope-fill fs-5"></i> Email Support (mboyabrian994@gmail.com)
-                            </a>
-                        </div>
-                        <div class="p-3 rounded-4 bg-light border text-center small text-muted">
-                            <div class="fw-bold text-dark mb-1"><i class="bi bi-geo-alt-fill text-danger me-1"></i> Office Location</div>
-                            Reality Kisumu Hub HQ, Riat Hills, Kisumu, Kenya<br>
-                            <span class="text-secondary fw-semibold">Operating Hours: Mon - Sat (8:00 AM - 8:00 PM)</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(div);
-        modalEl = div;
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', updatePersonalizedUI);
+    } else {
+        updatePersonalizedUI();
     }
-    bootstrap.Modal.getOrCreateInstance(modalEl).show();
-}
 
-function openAboutModal() {
-    let modalEl = document.getElementById('globalAboutModal');
-    if (!modalEl) {
-        const div = document.createElement('div');
-        div.id = 'globalAboutModal';
-        div.className = 'modal fade';
-        div.setAttribute('tabindex', '-1');
-        div.innerHTML = `
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content rounded-4 border-0 shadow-lg">
-                    <div class="modal-header border-0 pb-0 pt-4 px-4">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="p-3 rounded-circle" style="background:var(--blue-soft)">
-                                <i class="bi bi-building fs-3" style="color:var(--blue-primary)"></i>
-                            </div>
-                            <div>
-                                <h5 class="modal-title fw-bold text-dark mb-0">About Reality Kisumu Hub</h5>
-                                <p class="text-muted small mb-0">Kisumu's Premier Digital Real Estate Platform</p>
-                            </div>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body p-4 text-muted">
-                        <p><strong>Reality Kisumu Hub</strong> is dedicated to seamlessly connecting property seekers with verified luxury villas, city apartments, waterfront homes, and prime land plots in Kisumu and beyond.</p>
-                        <p class="mb-0">Featuring intelligent preference ranking, instant agent messaging via WhatsApp, and real-time database synchronization, we redefine property exploration for modern buyers.</p>
-                    </div>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(div);
-        modalEl = div;
-    }
-    bootstrap.Modal.getOrCreateInstance(modalEl).show();
-}
+    /* Public API. Modal openers are also exposed as bare globals
+       because some markup still calls them from onclick. */
+    window.AuthHub = {
+        getCurrentUser: getCurrentUser,
+        isLoggedIn: isLoggedIn,
+        setCurrentUser: setCurrentUser,
+        logoutUser: logoutUser,
+        getTimeBasedGreeting: getTimeBasedGreeting,
+        getWhatsAppLink: getWhatsAppLink,
+        getPhoneCallLink: getPhoneCallLink,
+        openContactModal: openContactModal,
+        openAboutModal: openAboutModal,
+        openPrivacyModal: openPrivacyModal,
+        updatePersonalizedUI: updatePersonalizedUI,
+        SUPPORT_PHONE: SUPPORT_PHONE,
+        DISPLAY_PHONE: DISPLAY_PHONE,
+        SUPPORT_EMAIL: SUPPORT_EMAIL
+    };
 
-function openPrivacyModal() {
-    let modalEl = document.getElementById('globalPrivacyModal');
-    if (!modalEl) {
-        const div = document.createElement('div');
-        div.id = 'globalPrivacyModal';
-        div.className = 'modal fade';
-        div.setAttribute('tabindex', '-1');
-        div.innerHTML = `
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content rounded-4 border-0 shadow-lg">
-                    <div class="modal-header border-0 pb-0 pt-4 px-4">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="p-3 rounded-circle" style="background:var(--blue-soft)">
-                                <i class="bi bi-shield-check fs-3" style="color:var(--blue-primary)"></i>
-                            </div>
-                            <div>
-                                <h5 class="modal-title fw-bold text-dark mb-0">Privacy & Data Policy</h5>
-                                <p class="text-muted small mb-0">Your trust and data security are our top priority</p>
-                            </div>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body p-4 text-muted">
-                        <p>At <strong>Reality Kisumu Hub</strong>, your personal data is protected under strict Row Level Security (RLS) standards.</p>
-                        <ul class="mb-0">
-                            <li>We never share or sell your phone number or email to third parties.</li>
-                            <li>Saved properties and account preferences are securely encrypted.</li>
-                            <li>Inquiries are sent directly to verified listing agents via secure channels.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(div);
-        modalEl = div;
-    }
-    bootstrap.Modal.getOrCreateInstance(modalEl).show();
-}
-
-document.addEventListener('DOMContentLoaded', updatePersonalizedUI);
-
-window.AuthHub = {
-    getCurrentUser,
-    setCurrentUser,
-    logoutUser,
-    getTimeBasedGreeting,
-    getWhatsAppLink,
-    getPhoneCallLink,
-    openContactModal,
-    openAboutModal,
-    openPrivacyModal,
-    SUPPORT_PHONE,
-    DISPLAY_PHONE
-};
+    window.openContactModal = openContactModal;
+    window.openAboutModal = openAboutModal;
+    window.openPrivacyModal = openPrivacyModal;
+    window.logoutUser = logoutUser;
+})(window, document);

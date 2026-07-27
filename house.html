@@ -2,337 +2,516 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Browse Property Listings | Reality Kisumu Hub</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/png" href="images/pwa_icon.png">
-    <link rel="apple-touch-icon" href="images/pwa_icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Explore Listings | Reality Kisumu Hub</title>
+    <meta name="description" content="Search and filter verified property listings across Kisumu County by type, price and bedrooms.">
+    <meta name="theme-color" content="#5B93D3">
+
+    <link rel="icon" type="image/png" href="images/favicon-32.png">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
     <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
 
-    <!-- Top Navbar (visible on desktop) -->
-    <nav class="navbar navbar-expand-lg app-navbar sticky-top py-2 d-none d-lg-flex">
-        <div class="container" style="max-width:1200px">
-            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5B93D3" stroke-width="2.5">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-                <span>Reality Kisumu Hub</span>
-            </a>
-            <ul class="navbar-nav mx-auto gap-1">
-                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                <li class="nav-item"><a class="nav-link active" href="house.html">Explore</a></li>
-                <li class="nav-item"><a class="nav-link" href="liked.html">Saved Favorites</a></li>
-            </ul>
-            <div class="d-flex align-items-center gap-2">
-                <a href="login.html" class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-bold">Sign In</a>
-                <a href="signup.html" class="btn btn-sm rounded-pill px-3 fw-bold" style="background:var(--blue-primary);color:#fff;border:none">Get Started</a>
-            </div>
-        </div>
-    </nav>
+<a class="skip-link" href="#main">Skip to content</a>
 
-    <!-- Feed Shell -->
-    <div class="feed-shell">
-        <div class="feed-inner">
+<!-- ══ Desktop navbar ══════════════════════════════════ -->
+<nav class="app-navbar sticky-top" aria-label="Main">
+    <div class="nav-wrap">
+        <a class="navbar-brand" href="index.html">
+            <i class="bi bi-houses-fill" style="color:var(--blue-primary);font-size:1.35rem" aria-hidden="true"></i>
+            <span>Reality Kisumu Hub</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html" data-nav="index.html">Home</a></li>
+            <li><a href="house.html" data-nav="house.html">Explore</a></li>
+            <li>
+                <a href="liked.html" data-nav="liked.html">
+                    Saved <span class="nav-count" data-fav-count hidden>0</span>
+                </a>
+            </li>
+        </ul>
+        <div class="nav-auth" data-auth-area></div>
+    </div>
+</nav>
 
-            <!-- Greeting -->
-            <div class="feed-greeting animate-fade-up">
-                <h1 class="feed-greeting-title">Good morning, <strong>Alex</strong></h1>
-            </div>
+<div class="page-shell">
+    <main id="main" class="page-inner">
 
-            <!-- Search Bar -->
-            <div class="feed-search-row animate-fade-up animate-delay-1">
-                <div class="feed-search-box">
-                    <input type="text" id="searchInput" placeholder="Search location, price, property type..." oninput="filterHouses()">
-                    <button type="button" class="feed-search-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                    </button>
-                </div>
-                <button type="button" class="feed-filter-btn" title="Filters">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="4" y1="21" x2="4" y2="14"></line>
-                        <line x1="4" y1="10" x2="4" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="12"></line>
-                        <line x1="12" y1="8" x2="12" y2="3"></line>
-                        <line x1="20" y1="21" x2="20" y2="16"></line>
-                        <line x1="20" y1="12" x2="20" y2="3"></line>
-                        <line x1="1" y1="14" x2="7" y2="14"></line>
-                        <line x1="9" y1="8" x2="15" y2="8"></line>
-                        <line x1="17" y1="16" x2="23" y2="16"></line>
-                    </svg>
+        <!-- ══ Header ═════════════════════════════════════ -->
+        <header class="page-header animate-fade-up">
+            <h1 class="page-title" data-greeting>Find your <strong>place in Kisumu</strong></h1>
+            <p class="page-subtitle" data-greeting-sub>Browse verified homes, land and commercial space across the county.</p>
+        </header>
+
+        <!-- ══ Search + filter trigger ════════════════════ -->
+        <div class="search-row animate-fade-up animate-delay-1">
+            <div class="search-box" id="searchBox">
+                <i class="bi bi-search" aria-hidden="true"></i>
+                <label for="searchInput" class="sr-only">Search properties</label>
+                <input type="search" id="searchInput" placeholder="Try &ldquo;Milimani&rdquo;, &ldquo;3 bed villa&rdquo;, &ldquo;land&rdquo;&hellip;" autocomplete="off">
+                <button type="button" class="search-clear" id="searchClear" aria-label="Clear search">
+                    <i class="bi bi-x-lg" aria-hidden="true"></i>
                 </button>
             </div>
-
-            <!-- Featured Collections -->
-            <h3 class="feed-section-title animate-fade-up animate-delay-2">Featured Collections</h3>
-            <div class="feed-collections-slider animate-fade-up animate-delay-2">
-                <div class="feed-collection-card" onclick="filterByCategory('Villa')">
-                    <img src="images/RiatV.jpeg" alt="Modern Villas">
-                    <div class="feed-collection-label">
-                        <span>Modern Villas</span>
-                        <i class="bi bi-chevron-right"></i>
-                    </div>
-                </div>
-                <div class="feed-collection-card" onclick="filterByCategory('Apartment')">
-                    <img src="images/c.jpeg" alt="City Apartments">
-                    <div class="feed-collection-label">
-                        <span>City Apartments</span>
-                        <i class="bi bi-chevron-right"></i>
-                    </div>
-                </div>
-                <div class="feed-collection-card" onclick="filterByCategory('Waterfront')">
-                    <img src="images/p4.webp" alt="Waterfront Homes">
-                    <div class="feed-collection-label">
-                        <span>Waterfront Homes</span>
-                        <i class="bi bi-chevron-right"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Property Feed -->
-            <h3 class="feed-section-title animate-fade-up animate-delay-3">Nearby Listings</h3>
-            <div id="housesList" class="feed-cards-list"></div>
+            <button type="button" class="filter-btn" id="filterToggle" aria-expanded="false" aria-controls="filterPanel" aria-label="Filters">
+                <i class="bi bi-sliders" aria-hidden="true"></i>
+                <span class="filter-dot hidden" id="filterDot"></span>
+            </button>
         </div>
-    </div>
 
-    <!-- Bottom Navigation (mobile/tablet only, hidden on lg+) -->
-    <nav class="mobile-bottom-nav">
-        <a href="index.html" class="mobile-nav-item">
-            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-        </a>
-        <a href="house.html" class="mobile-nav-item active">
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        </a>
-        <a href="liked.html" class="mobile-nav-item">
-            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-        </a>
-        <a href="login.html" class="mobile-nav-item">
-            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-        </a>
-    </nav>
-
-    <!-- Agent Contact Modal -->
-    <div class="modal fade" id="agentModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content rounded-4 border-0 shadow">
-                <div class="modal-body text-center p-4">
-                    <img id="modalAgentImg" src="" alt="Agent" class="rounded-circle mb-3" style="width:72px;height:72px;object-fit:cover;border:2px solid var(--blue-primary)">
-                    <h5 id="modalAgentName" class="fw-bold mb-1"></h5>
-                    <p class="text-muted small mb-3">Licensed Listing Agent</p>
-                    <div class="d-grid gap-2">
-                        <a id="modalAgentCall" href="#" class="btn btn-primary rounded-pill btn-sm fw-bold py-2" style="background:var(--blue-primary);border:none"><i class="bi bi-telephone-fill me-2"></i>Call Agent</a>
-                        <a id="modalAgentWhatsapp" href="#" target="_blank" class="btn btn-success rounded-pill btn-sm fw-bold py-2"><i class="bi bi-whatsapp me-2"></i>WhatsApp</a>
+        <!-- ══ Filter panel ═══════════════════════════════ -->
+        <section class="filter-panel" id="filterPanel" aria-label="Filter listings">
+            <div class="filter-grid">
+                <div class="filter-field">
+                    <label for="fType">Property type</label>
+                    <select id="fType">
+                        <option value="">Any type</option>
+                        <option value="Villa">Villa</option>
+                        <option value="Apartment">Apartment</option>
+                        <option value="Waterfront">Waterfront</option>
+                        <option value="Commercial">Commercial</option>
+                        <option value="Land">Land</option>
+                    </select>
+                </div>
+                <div class="filter-field">
+                    <label for="fBeds">Bedrooms</label>
+                    <select id="fBeds">
+                        <option value="">Any</option>
+                        <option value="1">1+</option>
+                        <option value="2">2+</option>
+                        <option value="3">3+</option>
+                        <option value="4">4+</option>
+                        <option value="5">5+</option>
+                    </select>
+                </div>
+                <div class="filter-field">
+                    <label for="fMin">Min price (<span data-currency-label>KSh</span>)</label>
+                    <input type="number" id="fMin" min="0" step="100000" placeholder="No minimum" inputmode="numeric">
+                </div>
+                <div class="filter-field">
+                    <label for="fMax">Max price (<span data-currency-label>KSh</span>)</label>
+                    <input type="number" id="fMax" min="0" step="100000" placeholder="No maximum" inputmode="numeric">
+                </div>
+                <div class="filter-field">
+                    <label for="fSort">Sort by</label>
+                    <select id="fSort">
+                        <option value="newest">Newest first</option>
+                        <option value="price-asc">Price: low to high</option>
+                        <option value="price-desc">Price: high to low</option>
+                        <option value="beds-desc">Most bedrooms</option>
+                        <option value="size-desc">Largest area</option>
+                    </select>
+                </div>
+                <div class="filter-field">
+                    <label for="curToggle">Show prices in</label>
+                    <div class="currency-toggle" id="curToggle" role="group" aria-label="Currency">
+                        <button type="button" data-currency="KES" aria-pressed="true">KSh</button>
+                        <button type="button" data-currency="USD" aria-pressed="false">USD</button>
                     </div>
                 </div>
             </div>
+            <div class="filter-actions">
+                <button type="button" class="btn-ghost-pill btn-sm-pill" id="filterReset">Reset all</button>
+                <button type="button" class="btn-primary-pill btn-sm-pill" id="filterApply">Show results</button>
+            </div>
+        </section>
+
+        <!-- ══ Collections ════════════════════════════════ -->
+        <div class="section-head animate-fade-up animate-delay-2">
+            <h2 class="section-title">Browse by category</h2>
         </div>
-    <!-- Footer -->
-    <footer class="landing-footer border-top mt-5" style="background:#ffffff">
-        <div class="landing-social-row">
-            <a href="https://www.instagram.com/mbuya2.15?igsh=dXAxam9uNHh4NXg0" target="_blank" class="landing-social-icon"><i class="bi bi-instagram"></i></a>
-            <a href="https://x.com/mbuya98915" target="_blank" class="landing-social-icon"><i class="bi bi-twitter-x"></i></a>
-            <a href="https://www.linkedin.com/in/brian-mbuya-23225541b?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" class="landing-social-icon"><i class="bi bi-linkedin"></i></a>
+        <div class="collections-rail animate-fade-up animate-delay-2">
+            <!-- Each tile shows a photo of the category it filters to.
+                 These previously pointed at whatever was handy: "City
+                 apartments" showed a hillside and "Land" showed a
+                 groundbreaking ceremony. -->
+            <button type="button" class="collection-card" data-collection="Villa">
+                <img src="images/milimani/suite.jpeg" alt="" loading="lazy">
+                <span class="collection-label"><span>Villas &amp; homes</span><i class="bi bi-chevron-right" aria-hidden="true"></i></span>
+            </button>
+            <button type="button" class="collection-card" data-collection="Apartment">
+                <img src="images/p4.webp" alt="" loading="lazy">
+                <span class="collection-label"><span>City apartments</span><i class="bi bi-chevron-right" aria-hidden="true"></i></span>
+            </button>
+            <button type="button" class="collection-card" data-collection="Waterfront">
+                <img src="images/luxury.jpg" alt="" loading="lazy">
+                <span class="collection-label"><span>Lakefront homes</span><i class="bi bi-chevron-right" aria-hidden="true"></i></span>
+            </button>
+            <button type="button" class="collection-card" data-collection="Land">
+                <img src="images/c5.jpeg" alt="" loading="lazy">
+                <span class="collection-label"><span>Land &amp; plots</span><i class="bi bi-chevron-right" aria-hidden="true"></i></span>
+            </button>
+            <button type="button" class="collection-card" data-collection="Commercial">
+                <img src="images/e4.jpg" alt="" loading="lazy">
+                <span class="collection-label"><span>Commercial</span><i class="bi bi-chevron-right" aria-hidden="true"></i></span>
+            </button>
         </div>
-        <div class="landing-footer-links">
-            <a href="javascript:void(0)" onclick="openAboutModal()">About Us</a> | <a href="javascript:void(0)" onclick="openContactModal()">Contact</a> | <a href="javascript:void(0)" onclick="openPrivacyModal()">Privacy Policy</a>
+
+        <!-- ══ Results ════════════════════════════════════ -->
+        <div class="section-head">
+            <h2 class="section-title" id="resultsTitle">All listings</h2>
         </div>
-        <p class="small text-muted mt-2 mb-0">&copy; 2026 Reality Kisumu Hub. All rights reserved.</p>
+
+        <div class="chip-row hidden" id="chipRow" aria-label="Active filters"></div>
+        <p class="result-count" id="resultCount" role="status" aria-live="polite"></p>
+
+        <div id="housesList" class="prop-grid"></div>
+    </main>
+
+    <!-- ══ Footer ═════════════════════════════════════════ -->
+    <footer class="app-footer">
+        <div class="footer-social">
+            <a href="https://www.instagram.com/mbuya2.15?igsh=dXAxam9uNHh4NXg0" target="_blank" rel="noopener" aria-label="Instagram"><i class="bi bi-instagram" aria-hidden="true"></i></a>
+            <a href="https://x.com/mbuya98915" target="_blank" rel="noopener" aria-label="X"><i class="bi bi-twitter-x" aria-hidden="true"></i></a>
+            <a href="https://www.linkedin.com/in/brian-mbuya-23225541b" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="bi bi-linkedin" aria-hidden="true"></i></a>
+        </div>
+        <div class="footer-links">
+            <button type="button" data-open-modal="about">About us</button>
+            <span class="footer-sep" aria-hidden="true">&middot;</span>
+            <button type="button" data-open-modal="contact">Contact</button>
+            <span class="footer-sep" aria-hidden="true">&middot;</span>
+            <button type="button" data-open-modal="privacy">Privacy policy</button>
+        </div>
+        <p class="footer-legal">&copy; 2026 Reality Kisumu Hub. All rights reserved.</p>
     </footer>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="assets/js/supabase.js"></script>
-    <script src="assets/js/auth.js"></script>
-    <script src="assets/js/pwa.js"></script>
-        const SUPPORT_PHONE = '+254746632821';
-        let allProperties = []; // To store fetched properties locally for filtering
+<!-- ══ Mobile bottom navigation ═══════════════════════════ -->
+<nav class="mobile-bottom-nav" aria-label="Main">
+    <a href="index.html" class="mobile-nav-item" data-nav="index.html">
+        <i class="bi bi-house-door" aria-hidden="true"></i>
+        <span class="mobile-nav-label">Home</span>
+    </a>
+    <a href="house.html" class="mobile-nav-item" data-nav="house.html">
+        <i class="bi bi-search" aria-hidden="true"></i>
+        <span class="mobile-nav-label">Explore</span>
+    </a>
+    <a href="liked.html" class="mobile-nav-item" data-nav="liked.html">
+        <i class="bi bi-heart" aria-hidden="true"></i>
+        <span class="nav-count" data-fav-count hidden>0</span>
+        <span class="mobile-nav-label">Saved</span>
+    </a>
+    <a href="login.html" class="mobile-nav-item" data-nav="login.html">
+        <i class="bi bi-person" aria-hidden="true"></i>
+        <span class="mobile-nav-label">Account</span>
+    </a>
+</nav>
 
-        // Fetch properties from Supabase
-        async function fetchPropertiesFromSupabase() {
-            if (!window.SupabaseHub || !SupabaseHub.client) {
-                console.warn("Supabase client not found.");
-                document.getElementById('housesList').innerHTML = '<p style="text-align:center;padding:40px 0;">Error connecting to database.</p>';
-                return; 
-            }
-            try {
-                const { data, error } = await SupabaseHub.client
-                    .from('properties')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-                
-                if (error) throw error;
-                if (data && data.length > 0) {
-                    allProperties = data.map(dbRow => ({
-                        id: dbRow.id,
-                        title: dbRow.title,
-                        price: `$${Number(dbRow.price_usd).toLocaleString()}`,
-                        priceNum: Number(dbRow.price_usd),
-                        specs: `${dbRow.beds > 0 ? dbRow.beds + ' Beds | ' : ''}${dbRow.baths > 0 ? dbRow.baths + ' Baths | ' : ''}${dbRow.sqft} Sq Ft`,
-                        beds: dbRow.beds,
-                        location: dbRow.location,
-                        address: dbRow.location,
-                        category: dbRow.type,
-                        img: dbRow.image_url,
-                        agentName: 'Reality Agent', // Default agent name
-                        agentPhone: dbRow.agent_phone || SUPPORT_PHONE,
-                        agentImg: 'images/u.jpg',
-                        isNew: true,
-                        isVerified: true
-                    }));
-                }
-                renderHouses(allProperties);
-            } catch (err) {
-                console.error("Error fetching properties:", err);
-                document.getElementById('housesList').innerHTML = '<p style="text-align:center;padding:40px 0;">Failed to load properties. Check Supabase connection.</p>';
-            }
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/pwa.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    var listEl      = document.getElementById('housesList');
+    var countEl     = document.getElementById('resultCount');
+    var chipRow     = document.getElementById('chipRow');
+    var titleEl     = document.getElementById('resultsTitle');
+    var searchInput = document.getElementById('searchInput');
+    var searchBox   = document.getElementById('searchBox');
+    var panel       = document.getElementById('filterPanel');
+    var toggleBtn   = document.getElementById('filterToggle');
+    var filterDot   = document.getElementById('filterDot');
+
+    var all = [];       // every property, normalised
+    var visible = [];   // what is currently rendered
+
+    /* Filter state lives in one object so reset / chips / URL
+       sync are all trivially derived from it. */
+    var state = { q: '', type: '', beds: '', min: '', max: '', sort: 'newest' };
+
+    function byId(id) {
+        return all.filter(function (p) { return String(p.id) === String(id); })[0];
+    }
+
+    /* ---------- relevance scoring for free-text search ---------- */
+    function score(p, query) {
+        var q = query.toLowerCase().trim();
+        if (!q) return 1;
+        var words = q.split(/\s+/).filter(Boolean);
+        var total = 0;
+
+        words.forEach(function (w) {
+            if (p.location.toLowerCase().indexOf(w) > -1) total += 30;
+            if (p.type.toLowerCase().indexOf(w) > -1) total += 25;
+            if (p.title.toLowerCase().indexOf(w) > -1) total += 20;
+
+            // "3 bed", "4br", "2 bedroom"
+            var bed = w.match(/^(\d+)\s*(?:bed|br|bedroom)/);
+            if (bed && p.beds >= parseInt(bed[1], 10)) total += 28;
+        });
+
+        // A bare number is treated as a target price in the active currency.
+        var num = parseFloat(q.replace(/[^0-9.]/g, ''));
+        if (isFinite(num) && num > 1000) {
+            var price = RK.getCurrency() === 'USD' ? p.priceUsd : p.priceKsh;
+            var delta = Math.abs(price - num) / num;
+            if (delta <= 0.2) total += 40;
+            else if (delta <= 0.5) total += 18;
         }
+        return total;
+    }
 
-        /* Smart relevance scoring — always on, invisible to user */
-        function smartScore(h, query) {
-            if (!query) return 0;
-            let score = 0;
-            const q = query.toLowerCase();
-            const words = q.split(/\s+/).filter(Boolean);
+    /* ---------- apply filters ---------- */
+    function compute() {
+        var currency = RK.getCurrency();
+        var min = parseFloat(state.min);
+        var max = parseFloat(state.max);
+        var minBeds = parseInt(state.beds, 10);
 
-            const fields = [
-                { val: h.address, weight: 30 },
-                { val: h.category, weight: 25 },
-                { val: h.location, weight: 25 },
-                { val: h.title, weight: 20 },
-                { val: h.specs, weight: 15 },
-                { val: h.price, weight: 10 }
-            ];
+        var rows = all.filter(function (p) {
+            if (state.type && p.type.toLowerCase() !== state.type.toLowerCase()) return false;
+            if (isFinite(minBeds) && p.beds < minBeds) return false;
 
-            words.forEach(w => {
-                fields.forEach(f => {
-                    if (f.val && f.val.toLowerCase().includes(w)) score += f.weight;
-                });
-                const bedMatch = w.match(/^(\d+)\s*bed/i);
-                if (bedMatch && h.beds === parseInt(bedMatch[1])) score += 30;
+            var price = currency === 'USD' ? p.priceUsd : p.priceKsh;
+            if (isFinite(min) && price < min) return false;
+            if (isFinite(max) && max > 0 && price > max) return false;
+
+            if (state.q && score(p, state.q) <= 0) return false;
+            return true;
+        });
+
+        // Free-text search sorts by relevance; otherwise use the chosen sort.
+        if (state.q) {
+            rows.sort(function (a, b) { return score(b, state.q) - score(a, state.q); });
+        } else {
+            rows.sort(function (a, b) {
+                switch (state.sort) {
+                    case 'price-asc':  return a.priceKsh - b.priceKsh;
+                    case 'price-desc': return b.priceKsh - a.priceKsh;
+                    case 'beds-desc':  return b.beds - a.beds;
+                    case 'size-desc':  return b.sqft - a.sqft;
+                    default:
+                        return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+                }
             });
+        }
+        return rows;
+    }
 
-            const numQ = parseFloat(q.replace(/[^0-9.]/g, ''));
-            if (numQ > 1000) {
-                const diff = Math.abs(h.priceNum - numQ) / numQ;
-                if (diff <= 0.2) score += 40;
-                else if (diff <= 0.5) score += 20;
-            }
+    /* ---------- render ---------- */
+    function render() {
+        visible = compute();
 
-            return score;
+        // One innerHTML write instead of `+=` inside a loop.
+        listEl.innerHTML = visible.length
+            ? visible.map(function (p) { return RK.propertyCardHTML(p); }).join('')
+            : RK.stateHTML({
+                icon: 'bi-search',
+                title: 'No matching properties',
+                body: 'Try widening your price range, clearing the search box, or picking a different category.'
+              }) + '<div class="text-center" style="grid-column:1/-1;margin-top:-24px">' +
+                   '<button type="button" class="btn-ghost-pill btn-sm-pill" data-action="clear-all">Clear all filters</button></div>';
+
+        countEl.textContent = visible.length
+            ? visible.length + (visible.length === 1 ? ' property' : ' properties') + ' found'
+            : '';
+
+        titleEl.textContent = state.type ? state.type + ' listings' : 'All listings';
+
+        renderChips();
+        syncCollections();
+
+        document.querySelectorAll('[data-currency-label]').forEach(function (el) {
+            el.textContent = RK.getCurrency() === 'USD' ? 'USD' : 'KSh';
+        });
+    }
+
+    /* ---------- active filter chips ---------- */
+    function chipLabel(key) {
+        var money = function (v) { return Number(v).toLocaleString(); };
+        var unit = RK.getCurrency() === 'USD' ? '$' : 'KSh ';
+        switch (key) {
+            case 'q':    return 'Search: "' + state.q + '"';
+            case 'type': return state.type;
+            case 'beds': return state.beds + '+ beds';
+            case 'min':  return 'From ' + unit + money(state.min);
+            case 'max':  return 'Up to ' + unit + money(state.max);
+            case 'sort': return 'Sorted: ' + document.getElementById('fSort').selectedOptions[0].text;
+        }
+        return key;
+    }
+
+    function renderChips() {
+        var active = ['q', 'type', 'beds', 'min', 'max'].filter(function (k) { return state[k] !== ''; });
+        if (state.sort !== 'newest') active.push('sort');
+
+        filterDot.classList.toggle('hidden', active.length === 0);
+
+        if (!active.length) {
+            chipRow.classList.add('hidden');
+            chipRow.innerHTML = '';
+            return;
         }
 
-        function toggleFavoriteProperty(btn, event, houseObj) {
-            event.stopPropagation();
-            btn.classList.toggle('inactive');
-            try {
-                let favorites = JSON.parse(localStorage.getItem('favoriteHouses')) || [];
-                const existsIdx = favorites.findIndex(item => item.id === houseObj.id);
-                if (existsIdx > -1) {
-                    favorites.splice(existsIdx, 1);
-                } else {
-                    favorites.push(houseObj);
-                }
-                localStorage.setItem('favoriteHouses', JSON.stringify(favorites));
-            } catch(e) {}
+        chipRow.classList.remove('hidden');
+        chipRow.innerHTML = active.map(function (k) {
+            return '<span class="chip">' + RK.escapeHtml(chipLabel(k)) +
+                   '<button type="button" data-clear="' + k + '" aria-label="Remove filter">' +
+                   '<i class="bi bi-x-lg" aria-hidden="true"></i></button></span>';
+        }).join('') +
+        '<button type="button" class="chip" data-action="clear-all" style="cursor:pointer">Clear all</button>';
+    }
+
+    function syncCollections() {
+        document.querySelectorAll('[data-collection]').forEach(function (card) {
+            card.classList.toggle('is-active', card.dataset.collection === state.type);
+            card.setAttribute('aria-pressed', card.dataset.collection === state.type ? 'true' : 'false');
+        });
+    }
+
+    /* ---------- state <-> controls ---------- */
+    function pushControls() {
+        document.getElementById('fType').value = state.type;
+        document.getElementById('fBeds').value = state.beds;
+        document.getElementById('fMin').value  = state.min;
+        document.getElementById('fMax').value  = state.max;
+        document.getElementById('fSort').value = state.sort;
+        searchInput.value = state.q;
+        searchBox.classList.toggle('has-value', state.q !== '');
+    }
+
+    function pullControls() {
+        state.type = document.getElementById('fType').value;
+        state.beds = document.getElementById('fBeds').value;
+        state.min  = document.getElementById('fMin').value;
+        state.max  = document.getElementById('fMax').value;
+        state.sort = document.getElementById('fSort').value;
+    }
+
+    function clearOne(key) {
+        state[key] = key === 'sort' ? 'newest' : '';
+        pushControls();
+        render();
+    }
+
+    function clearAll() {
+        state = { q: '', type: '', beds: '', min: '', max: '', sort: 'newest' };
+        pushControls();
+        render();
+        RK.toast('Filters cleared', 'info');
+    }
+
+    /* ---------- events ---------- */
+    toggleBtn.addEventListener('click', function () {
+        var open = panel.classList.toggle('is-open');
+        toggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    document.getElementById('filterApply').addEventListener('click', function () {
+        pullControls();
+        render();
+        panel.classList.remove('is-open');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        document.getElementById('resultsTitle').scrollIntoView({ block: 'start' });
+    });
+
+    document.getElementById('filterReset').addEventListener('click', clearAll);
+
+    // Live search, debounced so we aren't re-rendering on every keystroke.
+    searchInput.addEventListener('input', RK.debounce(function () {
+        state.q = searchInput.value.trim();
+        searchBox.classList.toggle('has-value', searchInput.value !== '');
+        render();
+    }, 220));
+
+    document.getElementById('searchClear').addEventListener('click', function () {
+        state.q = '';
+        pushControls();
+        render();
+        searchInput.focus();
+    });
+
+    document.querySelectorAll('[data-collection]').forEach(function (card) {
+        card.addEventListener('click', function () {
+            // Clicking an active category toggles it off.
+            state.type = (state.type === card.dataset.collection) ? '' : card.dataset.collection;
+            pushControls();
+            render();
+            document.getElementById('resultsTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    chipRow.addEventListener('click', function (e) {
+        var clearBtn = e.target.closest('[data-clear]');
+        if (clearBtn) return clearOne(clearBtn.dataset.clear);
+        if (e.target.closest('[data-action="clear-all"]')) clearAll();
+    });
+
+    listEl.addEventListener('click', function (e) {
+        if (e.target.closest('[data-action="clear-all"]')) clearAll();
+        if (e.target.closest('[data-action="retry"]')) load();
+    });
+
+    window.addEventListener('rk:currencychange', render);
+
+    /* ---------- data ---------- */
+    async function load() {
+        listEl.innerHTML = RK.skeletonHTML(6);
+        countEl.textContent = '';
+
+        var client = window.SupabaseHub && SupabaseHub.client;
+        if (!client) {
+            listEl.innerHTML = RK.stateHTML({
+                icon: 'bi-cloud-slash',
+                title: 'Cannot reach the listings service',
+                body: 'Check your internet connection, then try again.',
+                retry: true
+            });
+            return;
         }
 
-        function renderHouses(list) {
-            const el = document.getElementById('housesList');
-            if (!el) return;
-            el.innerHTML = '';
-            if (list.length === 0) {
-                el.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px 0">No properties match your search. Try different terms.</p>';
+        try {
+            var res = await client.from('properties').select('*').order('created_at', { ascending: false });
+            if (res.error) throw res.error;
+
+            all = (res.data || []).map(RK.normalizeProperty).filter(Boolean);
+
+            if (!all.length) {
+                listEl.innerHTML = RK.stateHTML({
+                    icon: 'bi-house-slash',
+                    title: 'No listings published yet',
+                    body: 'Properties will appear here as soon as they are added.'
+                });
                 return;
             }
-
-            let favorites = [];
-            try { favorites = JSON.parse(localStorage.getItem('favoriteHouses')) || []; } catch(e){}
-
-            list.forEach((h, idx) => {
-                const isFav = favorites.some(fav => fav.id === h.id);
-                const waUrl = AuthHub.getWhatsAppLink(h.address || h.title, h.agentPhone);
-                const callUrl = AuthHub.getPhoneCallLink(h.agentPhone);
-
-                el.innerHTML += `
-                <article class="feed-property-card animate-fade-up" style="cursor:pointer;" onclick="window.location.href='listing.html?id=${h.id}'">
-                    <div class="feed-card-img-wrap">
-                        <img src="${h.img}" alt="${h.title}" loading="lazy">
-                        <div class="feed-badge-row">
-                            ${h.isNew ? '<span class="feed-badge-new">New</span>' : ''}
-                            ${h.isVerified ? '<span class="feed-badge-verified">Verified</span>' : ''}
-                        </div>
-                        <button type="button" class="feed-card-fav ${isFav ? '' : 'inactive'}" onclick='toggleFavoriteProperty(this, event, ${JSON.stringify(h).replace(/'/g, "&#39;")})'>
-                            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                        </button>
-                    </div>
-                    <div class="feed-card-body">
-                        <div class="feed-card-price-row">
-                            <div class="feed-card-price">${h.price}</div>
-                            <div class="feed-agent-mini" onclick="event.stopPropagation(); showAgent('${h.agentName}','${h.agentPhone}','${h.agentImg}')">
-                                <img src="${h.agentImg}" alt="${h.agentName}" class="feed-agent-avatar">
-                                <div class="feed-agent-label"><span>Listing</span><strong>Agent</strong></div>
-                            </div>
-                        </div>
-                        <div class="feed-card-specs">${h.specs}</div>
-                        <p class="feed-card-address mb-3 fw-semibold text-dark">${h.title} <br><span class="fw-normal text-muted" style="font-size:0.85rem">${h.address}</span></p>
-
-                        <!-- Explicit Contact Buttons -->
-                        <div class="d-flex gap-2 pt-2 border-top">
-                            <a href="${waUrl}" target="_blank" class="btn btn-sm rounded-pill flex-fill fw-bold py-2 d-flex align-items-center justify-content-center gap-1" style="background:#25D366;color:#fff;border:none">
-                                <i class="bi bi-whatsapp"></i> WhatsApp
-                            </a>
-                            <a href="${callUrl}" class="btn btn-sm rounded-pill px-3 fw-bold py-2 d-flex align-items-center justify-content-center gap-1" style="background:var(--blue-soft);color:var(--blue-primary);border:1px solid var(--blue-soft-border)">
-                                <i class="bi bi-telephone-fill"></i> Call
-                            </a>
-                        </div>
-                    </div>
-                </article>`;
+            render();
+        } catch (err) {
+            console.error('Listing fetch failed:', err);
+            listEl.innerHTML = RK.stateHTML({
+                icon: 'bi-exclamation-triangle',
+                title: 'Could not load listings',
+                body: (err && err.message) ? err.message : 'An unexpected error occurred.',
+                retry: true
             });
         }
+    }
 
-        function filterHouses() {
-            const q = (document.getElementById('searchInput')?.value || '').trim();
-            if (!q) { renderHouses(allProperties); return; }
+    /* Deep links like house.html?type=Waterfront from the landing page */
+    (function readUrl() {
+        var params = new URLSearchParams(window.location.search);
+        if (params.get('type')) state.type = params.get('type');
+        if (params.get('q')) state.q = params.get('q');
+        pushControls();
+    })();
 
-            const scored = allProperties
-                .map(h => ({ ...h, _score: smartScore(h, q) }))
-                .filter(h => h._score > 0)
-                .sort((a, b) => b._score - a._score);
+    RK.mountCards(listEl, byId);
+    load();
 
-            renderHouses(scored);
-        }
-
-        function filterByCategory(cat) {
-            document.getElementById('searchInput').value = '';
-            renderHouses(allProperties.filter(h => h.category && h.category.toLowerCase() === cat.toLowerCase()));
-        }
-
-        function showAgent(name, phone, img) {
-            document.getElementById('modalAgentName').textContent = name;
-            document.getElementById('modalAgentImg').src = img;
-            document.getElementById('modalAgentCall').href = 'tel:' + (phone || SUPPORT_PHONE);
-            document.getElementById('modalAgentWhatsapp').href = AuthHub.getWhatsAppLink('general inquiry', phone || SUPPORT_PHONE);
-            bootstrap.Modal.getOrCreateInstance(document.getElementById('agentModal')).show();
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('housesList').innerHTML = '<p style="text-align:center;color:var(--blue-primary);font-weight:600;padding:60px 0;"><i class="bi bi-arrow-repeat spin me-2"></i>Loading Properties from Database...</p>';
-            fetchPropertiesFromSupabase();
-
-            // Subscribe to Supabase Realtime Table Changes if connected
-            if (window.SupabaseHub && SupabaseHub.subscribeToTableChanges) {
-                SupabaseHub.subscribeToTableChanges('properties', () => {
-                    fetchPropertiesFromSupabase();
-                });
-            }
-        });
-    </script>
+    // Live updates when the properties table changes.
+    if (window.SupabaseHub && SupabaseHub.subscribeToTableChanges) {
+        SupabaseHub.subscribeToTableChanges('properties', function () { load(); });
+    }
+})();
+</script>
 </body>
 </html>

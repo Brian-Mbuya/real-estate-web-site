@@ -1,111 +1,203 @@
-// PWA Service Worker Registration & Installation Manager
-// Reality Kisumu Hub
+/* ============================================================
+   Reality Kisumu Hub — PWA lifecycle
+   ------------------------------------------------------------
+   Service worker registration, update prompt, connectivity
+   indicator and a non-hostile install invitation.
 
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-            .then(reg => reg.update())
-            .catch(err => console.error('ServiceWorker registration failed:', err));
-    });
-}
+   The previous version fired a full-screen blocking modal every
+   45 seconds, forever, on every page. It is now a dismissible
+   bottom sheet that appears at most once and stays gone for a
+   week after a decline.
+   ============================================================ */
+(function (window, document) {
+    'use strict';
 
-let deferredPrompt;
-let bannerAutoDismissTimer = null;
-const POPUP_DURATION_MS = 6000; // 6 seconds visible duration
-const REPEAT_INTERVAL_MS = 45000; // 45 seconds periodic interval
+    var DISMISS_KEY = 'rk_install_dismissed_until';
+    var DISMISS_DAYS = 7;
+    var SHOW_AFTER_MS = 12000;   /* give people time to actually look around first */
 
-// Check if user is currently viewing inside installed PWA app mode
-function isStandaloneApp() {
-    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-}
+    var deferredPrompt = null;
+    var bannerShown = false;
 
-// Create and show centered PWA Install Modal
-function showAppReminderBanner() {
-    // Never show if user is already inside the standalone Web App
-    if (isStandaloneApp()) return;
-    if (document.getElementById('pwaReminderModal')) return;
-
-    const overlay = document.createElement('div');
-    overlay.id = 'pwaReminderModal';
-    overlay.className = 'animate-fade-scale';
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        z-index: 1060;
-        background: rgba(11, 25, 44, 0.5);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: opacity 0.4s ease;
-    `;
-
-    const modalBox = document.createElement('div');
-    modalBox.style.cssText = `
-        background: #ffffff;
-        border-radius: 24px;
-        padding: 32px 24px;
-        width: 90%;
-        max-width: 380px;
-        text-align: center;
-        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
-    `;
-
-    modalBox.innerHTML = `
-        <img src="images/pwa_icon.png" alt="Reality Kisumu Hub App" style="width:72px;height:72px;border-radius:18px;object-fit:cover;box-shadow:0 8px 24px rgba(0,0,0,0.12);margin-bottom:20px">
-        <h4 style="font-weight:800;color:#1e293b;margin-bottom:8px">Reality Kisumu Hub</h4>
-        <p style="font-size:0.95rem;color:#64748b;line-height:1.5;margin-bottom:24px">Get the full experience! Install our app on your device for faster access and a smoother interface.</p>
-        <div style="display:flex;flex-direction:column;gap:12px">
-            <button id="pwaBannerInstallBtn" style="background:linear-gradient(135deg, #5B93D3, #3A73B3);color:#fff;border:none;border-radius:9999px;padding:14px;font-size:1.05rem;font-weight:700;cursor:pointer;box-shadow:0 8px 20px rgba(91,147,211,0.3);transition:transform 0.2s ease">Install App Now</button>
-            <button id="pwaBannerDismissBtn" style="background:transparent;color:#94a3b8;border:none;font-size:0.95rem;font-weight:600;cursor:pointer;padding:10px">Not Right Now</button>
-        </div>
-    `;
-
-    overlay.appendChild(modalBox);
-    document.body.appendChild(overlay);
-
-    const closeBanner = () => {
-        if (bannerAutoDismissTimer) clearTimeout(bannerAutoDismissTimer);
-        overlay.style.opacity = '0';
-        setTimeout(() => overlay.remove(), 400);
-    };
-
-    // Auto-dismiss after 15 seconds since it's a center modal
-    bannerAutoDismissTimer = setTimeout(closeBanner, 15000);
-
-    // Bind Install Button
-    document.getElementById('pwaBannerInstallBtn').addEventListener('click', () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('User accepted PWA install');
-                }
-                deferredPrompt = null;
+    /* ---------------------------------------------------------
+       Service worker
+       --------------------------------------------------------- */
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('sw.js').then(function (registration) {
+                /* A worker waiting to activate means new content is ready. */
+                registration.addEventListener('updatefound', function () {
+                    var incoming = registration.installing;
+                    if (!incoming) return;
+                    incoming.addEventListener('statechange', function () {
+                        if (incoming.state === 'installed' && navigator.serviceWorker.controller) {
+                            showUpdateBar(registration);
+                        }
+                    });
+                });
+            }).catch(function (err) {
+                console.warn('Service worker registration failed:', err);
             });
-        } else {
-            alert('To install: Tap your browser menu (⋮) or Share icon, then select "Add to Home Screen" or "Install App".');
+
+            /* Reload once the new worker takes over. */
+            var refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', function () {
+                if (refreshing) return;
+                refreshing = true;
+                window.location.reload();
+            });
+        });
+    }
+
+    function showUpdateBar(registration) {
+        if (document.getElementById('rkUpdateBar')) return;
+        var bar = document.createElement('div');
+        bar.id = 'rkUpdateBar';
+        bar.className = 'rk-update-bar';
+        bar.innerHTML =
+            '<span><i class="bi bi-arrow-clockwise" aria-hidden="true"></i> A new version is available.</span>' +
+            '<button type="button" class="rk-update-btn">Refresh</button>';
+        document.body.appendChild(bar);
+
+        bar.querySelector('.rk-update-btn').addEventListener('click', function () {
+            if (registration.waiting) registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+            bar.remove();
+        });
+    }
+
+    /* ---------------------------------------------------------
+       Connectivity indicator
+       --------------------------------------------------------- */
+    function setOfflineState(offline) {
+        document.documentElement.classList.toggle('is-offline', offline);
+        var bar = document.getElementById('rkOfflineBar');
+        if (offline && !bar) {
+            bar = document.createElement('div');
+            bar.id = 'rkOfflineBar';
+            bar.className = 'rk-offline-bar';
+            bar.setAttribute('role', 'status');
+            bar.innerHTML = '<i class="bi bi-wifi-off" aria-hidden="true"></i> You are offline &mdash; showing saved content';
+            document.body.appendChild(bar);
+        } else if (!offline && bar) {
+            bar.remove();
+            if (window.RK && window.RK.toast) window.RK.toast('Back online', 'success');
         }
-        closeBanner();
+    }
+
+    window.addEventListener('online', function () { setOfflineState(false); });
+    window.addEventListener('offline', function () { setOfflineState(true); });
+
+    /* ---------------------------------------------------------
+       Install invitation
+       --------------------------------------------------------- */
+    function isStandalone() {
+        return window.matchMedia('(display-mode: standalone)').matches ||
+               window.navigator.standalone === true;
+    }
+
+    function isDismissed() {
+        try {
+            var until = Number(window.localStorage.getItem(DISMISS_KEY));
+            return isFinite(until) && until > Date.now();
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function rememberDismissal() {
+        try {
+            window.localStorage.setItem(DISMISS_KEY, String(Date.now() + DISMISS_DAYS * 864e5));
+        } catch (e) {}
+    }
+
+    function isIos() {
+        return /iphone|ipad|ipod/i.test(window.navigator.userAgent) && !window.MSStream;
+    }
+
+    function showInstallBanner() {
+        if (bannerShown || isStandalone() || isDismissed()) return;
+        if (document.getElementById('rkInstallSheet')) return;
+        /* Only invite when we can actually install, or on iOS where
+           the browser never fires beforeinstallprompt. */
+        if (!deferredPrompt && !isIos()) return;
+
+        bannerShown = true;
+
+        var sheet = document.createElement('div');
+        sheet.id = 'rkInstallSheet';
+        sheet.className = 'rk-install-sheet';
+        sheet.setAttribute('role', 'dialog');
+        sheet.setAttribute('aria-label', 'Install Reality Kisumu Hub');
+        sheet.innerHTML =
+            '<img src="images/icon-192.png" alt="" class="rk-install-icon">' +
+            '<div class="rk-install-copy">' +
+                '<strong>Install Reality Kisumu Hub</strong>' +
+                '<span>' + (deferredPrompt
+                    ? 'Faster access and offline browsing from your home screen.'
+                    : 'Tap Share, then &ldquo;Add to Home Screen&rdquo;.') + '</span>' +
+            '</div>' +
+            '<div class="rk-install-actions">' +
+                (deferredPrompt ? '<button type="button" class="btn-primary-pill btn-sm-pill" data-install>Install</button>' : '') +
+                '<button type="button" class="rk-install-close" data-install-dismiss aria-label="Dismiss">' +
+                    '<i class="bi bi-x-lg" aria-hidden="true"></i>' +
+                '</button>' +
+            '</div>';
+
+        document.body.appendChild(sheet);
+        window.requestAnimationFrame(function () { sheet.classList.add('is-visible'); });
+
+        var closeSheet = function (remember) {
+            if (remember) rememberDismissal();
+            sheet.classList.remove('is-visible');
+            window.setTimeout(function () { sheet.remove(); }, 300);
+        };
+
+        var installBtn = sheet.querySelector('[data-install]');
+        if (installBtn) {
+            installBtn.addEventListener('click', function () {
+                if (!deferredPrompt) return closeSheet(true);
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(function (choice) {
+                    if (choice.outcome !== 'accepted') rememberDismissal();
+                    deferredPrompt = null;
+                });
+                closeSheet(false);
+            });
+        }
+
+        sheet.querySelector('[data-install-dismiss]').addEventListener('click', function () {
+            closeSheet(true);
+        });
+    }
+
+    window.addEventListener('beforeinstallprompt', function (event) {
+        event.preventDefault();
+        deferredPrompt = event;
+        window.setTimeout(showInstallBanner, SHOW_AFTER_MS);
     });
 
-    // Bind Dismiss Button
-    document.getElementById('pwaBannerDismissBtn').addEventListener('click', closeBanner);
-}
+    window.addEventListener('appinstalled', function () {
+        deferredPrompt = null;
+        rememberDismissal();
+        var sheet = document.getElementById('rkInstallSheet');
+        if (sheet) sheet.remove();
+        if (window.RK && window.RK.toast) window.RK.toast('App installed', 'success');
+    });
 
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-});
-
-// Initial popup on page start (after 1.5s), and periodic re-trigger every 45s if on website
-document.addEventListener('DOMContentLoaded', () => {
-    if (!isStandaloneApp()) {
-        setTimeout(showAppReminderBanner, 1500);
-        setInterval(showAppReminderBanner, REPEAT_INTERVAL_MS);
+    function boot() {
+        if (!navigator.onLine) setOfflineState(true);
+        /* iOS gets the hint on a delay since it has no install event. */
+        if (isIos()) window.setTimeout(showInstallBanner, SHOW_AFTER_MS);
     }
-});
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+    } else {
+        boot();
+    }
+
+    window.RKPwa = {
+        isStandalone: isStandalone,
+        showInstallBanner: showInstallBanner
+    };
+})(window, document);

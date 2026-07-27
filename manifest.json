@@ -1,21 +1,55 @@
 {
+  "id": "/reality-kisumu-hub",
   "name": "Reality Kisumu Hub",
-  "short_name": "KisumuRealty",
-  "description": "Kenya's Premier Property & Real Estate Marketplace in Kisumu County",
-  "start_url": "./index.html",
+  "short_name": "Kisumu Hub",
+  "description": "Browse verified homes, land and commercial property across Kisumu County. Prices in KSh and USD, with direct agent contact.",
+  "start_url": "index.html",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#edf1f7",
   "theme_color": "#5B93D3",
+  "lang": "en-KE",
+  "dir": "ltr",
+  "categories": ["business", "lifestyle", "shopping"],
   "icons": [
     {
-      "src": "images/pwa_icon.png",
+      "src": "images/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "images/pwa_icon.png",
+      "src": "images/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "images/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "images/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Explore listings",
+      "short_name": "Explore",
+      "url": "house.html",
+      "icons": [{ "src": "images/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Saved favorites",
+      "short_name": "Saved",
+      "url": "liked.html",
+      "icons": [{ "src": "images/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }

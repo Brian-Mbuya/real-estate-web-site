@@ -1,133 +1,117 @@
-# 🏠 Real Estate Listing Platform
+# 🏠 Reality Kisumu Hub
 
-A web-based real estate platform built to explore **data-driven property ranking** and explainable, AI-inspired recommendation logic using structured listing data.
+An installable **Progressive Web App** for browsing verified property listings across Kisumu County, Kenya — homes, apartments, waterfront property, land and commercial space.
 
----
-
-## 🚀 Overview
-
-This project began as a static real estate website and was later evolved into a **data-driven platform** capable of ranking property listings based on user preferences.
-
-Instead of relying on strict filters, the system evaluates how well each property matches a user’s criteria and **orders listings by relevance**, demonstrating a practical foundation for recommendation systems.
-
----
-
-## ✨ Key Features
-
-- Display property listings with essential details  
-- Support multiple property types (apartments, houses, land, villas, etc.)  
-- Simple user preference inputs (budget, location, property type)  
-- **Smart property ranking using multi-signal scoring**
-- Clean and explainable backend logic  
-
----
-
-## 🧠 Smart Property Recommendation (What Was Implemented)
-
-The platform includes a **content-based recommendation system** that ranks properties using a relevance score.
-
-Each property is evaluated using:
-- Price proximity to the user’s budget
-- Location match
-- Property type match
-- Property size indicators (e.g., number of bedrooms)
-
-Rather than filtering out non-matching properties, the system assigns each listing a score and **orders all results by relevance**.
-
-This approach:
-- Handles partial matches gracefully  
-- Produces ranked results instead of binary outcomes  
-- Keeps decision logic transparent and explainable  
-
-> The recommendation logic is intentionally heuristic-based and designed as a stepping stone toward future machine learning–driven ranking models.
-
----
-
-## 📸 Screenshots
-
-### Property Listings – Default View
-Shows property listings without intelligent ranking applied.
-
-![Default Listings View](screenshots/default-view.png)
-
----
-
-### Smart Property Ranking
-Listings ordered based on relevance to user preferences.
-
-![Smart Property Ranking](screenshots/smart-recommendation.png)
-
----
-
-### Index Page
-Overview of the platform landing page.
-
-![Index Page](screenshots/index-page.png)
-
----
-
-### Favorites Page
-Example of saved or starred property listings.
-
-![Favorites Page](screenshots/favorites-page.png)
+Prices are shown in **KSh or USD**, listings work **offline**, and buyers reach the listing agent directly by call or WhatsApp.
 
 ---
 
 ## ⚙️ Tech Stack
 
-- **Frontend:** HTML, CSS, JavaScript  
-- **Backend:** PHP  
-- **Database:** MySQL  
-- **Development Environment:** XAMPP  
+| Layer | Technology |
+|---|---|
+| Frontend | Vanilla HTML / CSS / JavaScript (no build step) |
+| UI kit | Bootstrap 5.3 + Bootstrap Icons (CDN) |
+| Data | Supabase (PostgreSQL + Realtime), read-only via RLS |
+| Offline | Service Worker with three-tier caching |
+| Install | Web App Manifest with maskable icons |
+
+There is **no backend to run and no build step**. It is a static site — open it with any HTTP server.
 
 ---
 
-## ⚙️ Setup
+## 🚀 Setup
 
-1. Clone the repository  
-2. Create a MySQL database (e.g., `real_estate`)  
-3. Import the provided SQL schema to create the properties table  
-4. Configure database connection in the PHP configuration file  
-5. Run the project using a local server (e.g., XAMPP)
+```bash
+python -m http.server 8127
+```
+
+Then open <http://localhost:8127>.
+
+> Service workers require `http://localhost` or HTTPS. Opening the files
+> directly with `file://` will disable offline support and the install prompt.
+
+To point at your own Supabase project, either edit the constants at the top of
+`assets/js/supabase.js`, or set `window.SUPABASE_URL` / `window.SUPABASE_ANON_KEY`
+before that script loads. Run `supabase-schema.sql` then `supabase-seed-massive.sql`
+in the Supabase SQL editor to create and populate the tables.
 
 ---
 
-## 🧪 Usage
+## 📂 Project Structure
 
-- Browse available property listings  
-- Enter basic preferences such as budget, location, and property type  
-- View listings ranked by relevance rather than simple filtering  
+```text
+├── index.html              Landing page — featured listings
+├── house.html              Explore — search, filters, categories
+├── listing.html            Property detail page
+├── liked.html              Saved favorites (works offline)
+├── login.html / signup.html
+├── offline.html            Shown when a page isn't cached
+├── manifest.json           PWA manifest
+├── sw.js                   Service worker
+├── assets/
+│   ├── css/main.css        Design system + all components
+│   └── js/
+│       ├── app.js          Shared kernel: cards, favorites, currency
+│       ├── auth.js         Session, personalisation, global modals
+│       ├── supabase.js     Database client + realtime
+│       ├── forms.js        Form validation
+│       └── pwa.js          Install prompt, updates, connectivity
+├── supabase-schema.sql     Tables + row level security
+└── supabase-seed-massive.sql
+```
+
+---
+
+## 🧠 Architecture Notes
+
+**One card component.** `RK.propertyCardHTML()` in `assets/js/app.js` renders every
+property card on every page. The landing page passes `{variant:'compact'}`.
+Changing card design means editing one function and one CSS block.
+
+**No inline event handlers.** Cards are wired by event delegation
+(`RK.mountCards`), so re-rendering a 500-item list attaches zero new listeners.
+The whole card is clickable via a stretched `::after` on a real `<a>`, which keeps
+middle-click, Ctrl+click and screen-reader behaviour intact.
+
+**Data is normalised once.** `RK.normalizeProperty()` converts a database row into
+the shape the UI uses, coercing every numeric field. Nothing downstream has to
+guess whether a price is a number or a `"$450,000"` string.
+
+**Everything is namespaced.** `app.js`, `auth.js`, `supabase.js`, `forms.js` and
+`pwa.js` each run inside an IIFE and export a single global (`RK`, `AuthHub`,
+`SupabaseHub`, `RKForms`, `RKPwa`). No bare top-level `const`s, which previously
+collided between files and threw parse-time errors that killed whole pages.
+
+### Caching strategy
+
+| Cache | Contents | Strategy |
+|---|---|---|
+| `rk-shell-*` | HTML, CSS, JS, icons | Precached on install, stale-while-revalidate |
+| `rk-runtime-*` | Images, CDN assets, fonts | Stale-while-revalidate |
+| `rk-data-*` | Supabase REST reads | Network-first, cache fallback |
+
+Because the shell is served cache-first, a deploy reaches users on their *second*
+load. The service worker detects the waiting update and shows a "Refresh" bar.
+Bump `VERSION` in `sw.js` on every release.
+
+---
+
+## ♿ Accessibility
+
+- Visible focus ring on every interactive element
+- Labelled bottom navigation (icons alone are not a label)
+- `aria-pressed` on favorite toggles, `aria-live` on result counts
+- Form errors wired via `aria-invalid` + `aria-describedby`
+- Full `prefers-reduced-motion` support
+- Skip-to-content link on every page
 
 ---
 
 ## 🔮 Future Improvements
 
-- User interaction tracking (views, favorites)
-- Machine learning–based ranking models
-- Price estimation and trend analysis
-- Personalized recommendations based on user behavior
-
----
-
-## 📌 Notes
-
-This project prioritizes **clarity and explainability** over black-box automation.  
-The goal is to demonstrate how intelligent behavior can emerge from structured data, weighted signals, and thoughtful system design.
-
----
-
-## 📂 Project Structure (Simplified)
-
-```text
-├── listings.php
-├── property.php
-├── db.php
-├── assets/
-│   ├── css/
-│   └── js/
-├── screenshots/
-│   ├── default-view.png
-│   ├── smart-recommendation.png
-│   └── property-details.png
-└── sql/
-    └── schema.sql
+- Real Supabase Auth instead of the current local demo session
+- Sync favorites to the `user_favorites` table for signed-in users
+- Multiple photos per listing with a gallery
+- Map view of listings
+- Server-side pagination (all listings are currently fetched at once)

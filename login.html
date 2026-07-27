@@ -2,116 +2,118 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Sign In | Reality Kisumu Hub</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Sign in to Reality Kisumu Hub to keep track of your saved property listings.">
     <meta name="theme-color" content="#5B93D3">
+
+    <link rel="icon" type="image/png" href="images/favicon-32.png">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
     <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/main.css">
-    <style>
-        body {
-            background-color: var(--bg-app);
-            background-image: radial-gradient(circle at 15% 20%, rgba(91, 147, 211, 0.12) 0%, transparent 40%),
-                              radial-gradient(circle at 85% 80%, rgba(91, 147, 211, 0.08) 0%, transparent 40%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1.5rem;
-        }
-        .auth-card-clean {
-            background: #ffffff;
-            border-radius: var(--radius-xl);
-            box-shadow: 0 16px 48px rgba(30, 41, 59, 0.08);
-            border: 1px solid #edf1f5;
-            width: 100%;
-            max-width: 420px;
-            padding: 2.5rem 2rem;
-        }
-        .form-control-custom {
-            border-radius: var(--radius-pill);
-            padding: 0.75rem 1.25rem;
-            border: 1px solid #e2e8f0;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-        }
-        .form-control-custom:focus {
-            border-color: var(--blue-primary);
-            box-shadow: 0 0 0 3px rgba(91, 147, 211, 0.18);
-        }
-    </style>
 </head>
-<body>
+<body class="auth-page">
 
-    <a href="index.html" class="btn btn-sm rounded-pill px-3 py-2 fw-bold position-absolute top-0 start-0 m-4 d-inline-flex align-items-center gap-2" style="background:#ffffff;color:var(--text-dark);box-shadow:0 4px 14px rgba(0,0,0,0.06);border:1px solid #e2e8f0">
-        <i class="bi bi-arrow-left"></i> Back to Home
-    </a>
+<a href="index.html" class="auth-back">
+    <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to home
+</a>
 
-    <div class="auth-card-clean animate-fade-scale">
-        <div class="text-center mb-4">
-            <div class="d-inline-flex align-items-center justify-content-center p-3 rounded-circle mb-3" style="background:var(--blue-soft)">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--blue-primary)" stroke-width="2.5">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-            </div>
-            <h3 class="fw-bold text-dark mb-1">Welcome Back</h3>
-            <p class="text-muted small">Sign in to access your saved properties and preferences</p>
-        </div>
-
-        <form id="loginForm" onsubmit="event.preventDefault(); handleLogin();">
-            <div class="mb-3">
-                <label class="form-label small fw-bold text-dark ms-2">Email Address or Username</label>
-                <input type="text" class="form-control form-control-custom" required placeholder="user@kisumuhub.com">
-            </div>
-
-            <div class="mb-4">
-                <label class="form-label small fw-bold text-dark ms-2">Password</label>
-                <div class="position-relative">
-                    <input type="password" id="loginPassword" class="form-control form-control-custom pe-5" required placeholder="Enter password">
-                    <button class="btn btn-link text-muted position-absolute end-0 top-50 translate-middle-y me-2 text-decoration-none small fw-bold" type="button" onclick="togglePassword('loginPassword')">Show</button>
-                </div>
-            </div>
-
-            <button type="submit" class="landing-cta-btn w-100 py-3 mb-3">
-                Sign In &rarr;
-            </button>
-        </form>
-
-        <div class="text-center small text-muted">
-            Don't have an account? <a href="signup.html" class="fw-bold text-decoration-none" style="color:var(--blue-primary)">Create Account</a>
-        </div>
+<main class="auth-card animate-fade-scale">
+    <div class="auth-head">
+        <div class="auth-logo"><i class="bi bi-houses-fill" aria-hidden="true"></i></div>
+        <h1>Welcome back</h1>
+        <p>Sign in to keep track of the properties you save</p>
     </div>
 
-    <script src="assets/js/auth.js"></script>
-    <script src="assets/js/pwa.js"></script>
-    <script>
-        function togglePassword(id) {
-            const input = document.getElementById(id);
-            const btn = event.currentTarget;
-            if (input.type === 'password') {
-                input.type = 'text';
-                btn.textContent = 'Hide';
-            } else {
-                input.type = 'password';
-                btn.textContent = 'Show';
-            }
+    <form id="loginForm" novalidate>
+        <div class="field">
+            <label for="loginEmail">Email address</label>
+            <input type="email" id="loginEmail" name="email" required
+                   placeholder="you@example.com" autocomplete="email"
+                   aria-describedby="loginEmailError">
+            <p class="field-error" id="loginEmailError">
+                <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+                <span></span>
+            </p>
+        </div>
+
+        <div class="field">
+            <label for="loginPassword">Password</label>
+            <div class="field-input-wrap">
+                <input type="password" id="loginPassword" name="password" required
+                       placeholder="Enter your password" autocomplete="current-password"
+                       aria-describedby="loginPasswordError">
+                <button type="button" class="field-toggle" data-toggle-password="loginPassword"
+                        aria-label="Show password">Show</button>
+            </div>
+            <p class="field-error" id="loginPasswordError">
+                <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+                <span></span>
+            </p>
+        </div>
+
+        <button type="submit" class="btn-primary-pill btn-block" id="submitBtn">
+            Sign in <i class="bi bi-arrow-right" aria-hidden="true"></i>
+        </button>
+    </form>
+
+    <p class="auth-alt">
+        Don&rsquo;t have an account? <a href="signup.html">Create one</a>
+    </p>
+    <p class="auth-alt" style="margin-top:8px">
+        <a href="house.html" style="color:var(--text-muted);font-weight:600">Continue browsing without an account</a>
+    </p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/pwa.js"></script>
+<script src="assets/js/forms.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    RKForms.bindPasswordToggles();
+
+    var form = document.getElementById('loginForm');
+    var submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        var email = document.getElementById('loginEmail');
+        var password = document.getElementById('loginPassword');
+
+        var ok = RKForms.validate([
+            { input: email,    rules: ['required', 'email'] },
+            { input: password, rules: ['required', 'minlength:6'] }
+        ]);
+
+        if (!ok) {
+            // Move focus to the first problem so keyboard and screen
+            // reader users are told what went wrong.
+            var firstBad = form.querySelector('[aria-invalid="true"]');
+            if (firstBad) firstBad.focus();
+            return;
         }
 
-        function handleLogin() {
-            const emailInput = document.querySelector('input[type="text"]').value;
-            const userName = emailInput.split('@')[0] || 'Alex';
-            const formattedName = userName.charAt(0).toUpperCase() + userName.slice(1);
-            
-            AuthHub.setCurrentUser({
-                fullName: formattedName,
-                email: emailInput.includes('@') ? emailInput : `${emailInput}@kisumuhub.com`,
-                avatar: 'images/u.jpg'
-            });
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="bi bi-arrow-repeat spin" aria-hidden="true"></i> Signing in…';
 
-            window.location.href = "house.html";
-        }
-    </script>
+        var handle = email.value.split('@')[0];
+        AuthHub.setCurrentUser({
+            fullName: handle.charAt(0).toUpperCase() + handle.slice(1),
+            email: email.value.trim()
+        });
+
+        RK.toast('Signed in successfully', 'success');
+        window.setTimeout(function () { window.location.href = 'house.html'; }, 500);
+    });
+})();
+</script>
 </body>
 </html>
