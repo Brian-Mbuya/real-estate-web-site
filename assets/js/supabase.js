@@ -1,7 +1,7 @@
 // Supabase Client & Realtime Subscription Engine
 // Configured for Reality Kisumu Hub
 
-const SUPABASE_URL = window.SUPABASE_URL || 'https://YOUR_SUPABASE_PROJECT_ID.supabase.co';
+const SUPABASE_URL = window.SUPABASE_URL || 'https://stuhxibojfgxuqtiiuus.supabase.co';
 const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY';
 
 let supabaseClient = null;
