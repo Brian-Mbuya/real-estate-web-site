@@ -158,8 +158,8 @@ function openContactModal() {
                             <a href="${getPhoneCallLink()}" class="btn btn-lg rounded-pill fw-bold py-3 d-flex align-items-center justify-content-center gap-2" style="background:var(--blue-soft);color:var(--blue-primary);border:1px solid var(--blue-soft-border)">
                                 <i class="bi bi-telephone-fill fs-5"></i> Call Support (${DISPLAY_PHONE})
                             </a>
-                            <a href="mailto:support@kisumuhub.com" class="btn btn-outline-secondary btn-lg rounded-pill fw-bold py-3 d-flex align-items-center justify-content-center gap-2">
-                                <i class="bi bi-envelope-fill fs-5"></i> Email Support (support@kisumuhub.com)
+                            <a href="mailto:mboyabrian994@gmail.com" class="btn btn-outline-secondary btn-lg rounded-pill fw-bold py-3 d-flex align-items-center justify-content-center gap-2">
+                                <i class="bi bi-envelope-fill fs-5"></i> Email Support (mboyabrian994@gmail.com)
                             </a>
                         </div>
                         <div class="p-3 rounded-4 bg-light border text-center small text-muted">
