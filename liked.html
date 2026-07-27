@@ -16,34 +16,32 @@
 </head>
 <body>
 
-    <!-- Header / Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3 sticky-top border-bottom border-secondary">
+    <!-- Header / Top Navbar -->
+    <nav class="navbar navbar-expand-lg app-navbar sticky-top py-3">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
-                <svg class="icon-svg fs-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5289d8" stroke-width="2.5">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
                 <span>Reality Kisumu Hub</span>
             </a>
             
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 gap-lg-1">
+            <div class="d-flex align-items-center gap-3 ms-auto me-2 me-lg-0 order-lg-3">
+                <a href="login.html" class="btn btn-outline-secondary btn-sm rounded-pill px-3 d-none d-sm-inline-block font-sans fw-bold">Sign In</a>
+                <a href="signup.html" class="btn btn-primary btn-sm rounded-pill px-3 d-none d-sm-inline-block font-sans fw-bold" style="background: var(--blue-primary); border: none;">Get Started</a>
+
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+
+            <div class="collapse navbar-collapse order-lg-2" id="navbarNav">
+                <ul class="navbar-nav mx-auto gap-lg-1 my-2 my-lg-0">
                     <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="house.html">Browse Listings</a></li>
-                    <li class="nav-item"><a class="nav-link" href="listing.html">Smart Search</a></li>
+                    <li class="nav-item"><a class="nav-link" href="house.html">Explore</a></li>
                     <li class="nav-item"><a class="nav-link active" href="liked.html">Saved Favorites</a></li>
                 </ul>
-                
-                <div class="d-flex align-items-center gap-2">
-                    <button id="pwaInstallBtn" class="btn btn-outline-light btn-sm d-none fw-semibold">Install App</button>
-                    <a href="login.html" class="btn btn-outline-light btn-sm px-3 fw-semibold">Sign In</a>
-                    <a href="signup.html" class="btn btn-amber btn-sm px-3">Create Account</a>
-                </div>
             </div>
         </div>
     </nav>
@@ -166,7 +164,24 @@
             renderFavorites();
         }
 
-        document.addEventListener('DOMContentLoaded', renderFavorites);
-    </script>
+    <!-- Sticky Mobile Bottom Navigation Bar -->
+    <nav class="mobile-bottom-nav">
+        <a href="index.html" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+            <span>Home</span>
+        </a>
+        <a href="house.html" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <span>Search</span>
+        </a>
+        <a href="liked.html" class="mobile-nav-item active">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <span>Favorites</span>
+        </a>
+        <a href="login.html" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>Profile</span>
+        </a>
+    </nav>
 </body>
 </html>

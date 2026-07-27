@@ -2,874 +2,276 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Property Listings & Map | Reality Kisumu Hub</title>
+    <title>Browse Property Listings | Reality Kisumu Hub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0b192c">
-    
-    <!-- PWA Manifest -->
+    <meta name="theme-color" content="#5B93D3">
     <link rel="manifest" href="manifest.json">
-
-    <!-- Bootstrap CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Leaflet.js Map CSS CDN -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <!-- Main Design System CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
 
-    <!-- Header / Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3 sticky-top border-bottom border-secondary">
-        <div class="container">
+    <!-- Top Navbar (visible on desktop) -->
+    <nav class="navbar navbar-expand-lg app-navbar sticky-top py-2 d-none d-lg-flex">
+        <div class="container" style="max-width:1200px">
             <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
-                <svg class="icon-svg fs-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5B93D3" stroke-width="2.5">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
                 <span>Reality Kisumu Hub</span>
             </a>
-            
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 gap-lg-1">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="house.html">Browse Listings</a></li>
-                    <li class="nav-item"><a class="nav-link" href="listing.html">Smart Search</a></li>
-                    <li class="nav-item"><a class="nav-link" href="liked.html">Saved Favorites</a></li>
-                </ul>
-                
-                <div class="d-flex align-items-center gap-2">
-                    <button id="pwaInstallBtn" class="btn btn-outline-light btn-sm d-none fw-semibold">Install App</button>
-                    <a href="login.html" class="btn btn-outline-light btn-sm px-3 fw-semibold">Sign In</a>
-                    <a href="signup.html" class="btn btn-amber btn-sm px-3">Create Account</a>
-                </div>
+            <ul class="navbar-nav mx-auto gap-1">
+                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link active" href="house.html">Explore</a></li>
+                <li class="nav-item"><a class="nav-link" href="liked.html">Saved Favorites</a></li>
+            </ul>
+            <div class="d-flex align-items-center gap-2">
+                <a href="login.html" class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-bold">Sign In</a>
+                <a href="signup.html" class="btn btn-sm rounded-pill px-3 fw-bold" style="background:var(--blue-primary);color:#fff;border:none">Get Started</a>
             </div>
         </div>
     </nav>
 
-    <!-- Header Title Bar & View Toggle -->
-    <header class="bg-dark text-white py-4 border-bottom border-secondary mb-4">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                <div>
-                    <h1 class="h2 fw-bold mb-1">Kisumu Real Estate & Map Explorer</h1>
-                    <p class="text-secondary small mb-0">Browse verified properties across Kisumu County with interactive map insights.</p>
-                </div>
-                
-                <!-- View Mode Toggle -->
-                <div class="btn-group" role="group">
-                    <button id="btnListView" class="btn btn-primary btn-sm fw-semibold active" onclick="switchView('list')">
-                        List View
+    <!-- Feed Shell -->
+    <div class="feed-shell">
+        <div class="feed-inner">
+
+            <!-- Greeting -->
+            <div class="feed-greeting">
+                <h1 class="feed-greeting-title">Good morning, <strong>Alex</strong></h1>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="feed-search-row">
+                <div class="feed-search-box">
+                    <input type="text" id="searchInput" placeholder="Search location, price, property type..." oninput="filterHouses()">
+                    <button type="button" class="feed-search-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
                     </button>
-                    <button id="btnMapView" class="btn btn-outline-light btn-sm fw-semibold" onclick="switchView('map')">
-                        📍 Interactive Map
-                    </button>
+                </div>
+                <button type="button" class="feed-filter-btn" title="Filters">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="4" y1="21" x2="4" y2="14"></line>
+                        <line x1="4" y1="10" x2="4" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12" y2="3"></line>
+                        <line x1="20" y1="21" x2="20" y2="16"></line>
+                        <line x1="20" y1="12" x2="20" y2="3"></line>
+                        <line x1="1" y1="14" x2="7" y2="14"></line>
+                        <line x1="9" y1="8" x2="15" y2="8"></line>
+                        <line x1="17" y1="16" x2="23" y2="16"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Featured Collections -->
+            <h3 class="feed-section-title">Featured Collections</h3>
+            <div class="feed-collections-slider">
+                <div class="feed-collection-card" onclick="filterByCategory('Villa')">
+                    <img src="images/RiatV.jpeg" alt="Modern Villas">
+                    <div class="feed-collection-label">
+                        <span>Modern Villas</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </div>
+                </div>
+                <div class="feed-collection-card" onclick="filterByCategory('Apartment')">
+                    <img src="images/c.jpeg" alt="City Apartments">
+                    <div class="feed-collection-label">
+                        <span>City Apartments</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </div>
+                </div>
+                <div class="feed-collection-card" onclick="filterByCategory('Waterfront')">
+                    <img src="images/p4.webp" alt="Waterfront Homes">
+                    <div class="feed-collection-label">
+                        <span>Waterfront Homes</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </div>
                 </div>
             </div>
+
+            <!-- Property Feed -->
+            <h3 class="feed-section-title">Nearby Listings</h3>
+            <div id="housesList" class="feed-cards-list"></div>
         </div>
-    </header>
-
-    <!-- Filter Bar -->
-    <section class="container mb-4">
-        <div class="card border-0 shadow-sm rounded-3 p-4">
-            <form id="houseFilterForm" onsubmit="event.preventDefault(); filterHouses();">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label small fw-bold text-secondary">Category</label>
-                        <select id="category" class="form-select">
-                            <option value="">All Categories</option>
-                            <optgroup label="Residential">
-                                <option value="Villa">Villa</option>
-                                <option value="Apartment">Apartment</option>
-                                <option value="Bungalow">Bungalow</option>
-                                <option value="Townhome">Townhome</option>
-                                <option value="Multi-unit">Multi-unit</option>
-                                <option value="Bedsitter">Bedsitter</option>
-                            </optgroup>
-                            <optgroup label="Commercial & Land">
-                                <option value="Land">Land / Plot</option>
-                                <option value="Office">Office</option>
-                            </optgroup>
-                            <option value="Favorite">Saved Favorites Only</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label small fw-bold text-secondary">Location</label>
-                        <input type="text" id="location" class="form-control" placeholder="e.g. Milimani, Riat, Ondiek">
-                    </div>
-
-                    <div class="col-md-2">
-                        <label class="form-label small fw-bold text-secondary">Min Bedrooms</label>
-                        <select id="bedrooms" class="form-select">
-                            <option value="">Any</option>
-                            <option value="1">1+</option>
-                            <option value="2">2+</option>
-                            <option value="3">3+</option>
-                            <option value="4">4+</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-2">
-                        <label class="form-label small fw-bold text-secondary">Min Bathrooms</label>
-                        <select id="bathrooms" class="form-select">
-                            <option value="">Any</option>
-                            <option value="1">1+</option>
-                            <option value="2">2+</option>
-                            <option value="3">3+</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-2">
-                        <label class="form-label small fw-bold text-secondary">Sort Order</label>
-                        <select id="sortBy" class="form-select" onchange="filterHouses()">
-                            <option value="smart">Relevance Score</option>
-                            <option value="priceAsc">Price: Low to High</option>
-                            <option value="priceDesc">Price: High to Low</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-9">
-                        <label class="form-label small fw-bold text-secondary d-flex justify-content-between">
-                            <span>Max Budget (KSh)</span>
-                            <span id="maxPriceDisplay" class="text-primary fw-bold">No Limit</span>
-                        </label>
-                        <input type="range" class="form-range" id="maxPriceSlider" min="1000000" max="300000000" step="1000000" oninput="updatePriceSlider(this.value)">
-                        <input type="hidden" id="maxPrice" value="">
-                    </div>
-
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button class="btn btn-brand w-100 fw-bold py-2" type="submit">Apply Filters</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </section>
-
-    <!-- Leaflet.js Interactive Neighborhood Map Container -->
-    <section class="container mb-4 d-none" id="mapSection">
-        <div class="card border-0 shadow-sm p-3">
-            <h5 class="fw-bold mb-2">📍 Kisumu Property Map View</h5>
-            <p class="text-secondary small mb-3">Click on any property marker to view details and location insights.</p>
-            <div id="mapContainer"></div>
-        </div>
-    </section>
-
-    <!-- Listings Container -->
-    <section class="container mb-5" id="housesList"></section>
-
-    <!-- Floating Property Comparison Toolbar -->
-    <div id="comparisonToolbar" class="comparison-bar-floating d-none">
-        <span class="fw-bold fs-6" id="comparisonCountText">0 Properties Selected</span>
-        <button class="btn btn-amber btn-sm fw-bold px-3" onclick="openComparisonModal()">
-            Compare Side-by-Side
-        </button>
-        <button class="btn btn-outline-light btn-sm" onclick="clearComparison()">Clear</button>
     </div>
 
-    <!-- Side-by-Side Comparison Modal -->
-    <div class="modal fade" id="comparisonModal" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content rounded-3 border-0 shadow">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold">Property Comparison Matrix</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4" id="comparisonModalBody">
-                    <!-- Rendered by JS -->
+    <!-- Bottom Navigation (mobile/tablet only, hidden on lg+) -->
+    <nav class="mobile-bottom-nav">
+        <a href="index.html" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        </a>
+        <a href="house.html" class="mobile-nav-item active">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </a>
+        <a href="liked.html" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        </a>
+        <a href="login.html" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </a>
+    </nav>
+
+    <!-- Agent Contact Modal -->
+    <div class="modal fade" id="agentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-body text-center p-4">
+                    <img id="modalAgentImg" src="" alt="Agent" class="rounded-circle mb-3" style="width:72px;height:72px;object-fit:cover;border:2px solid var(--blue-primary)">
+                    <h5 id="modalAgentName" class="fw-bold mb-1"></h5>
+                    <p class="text-muted small mb-3">Licensed Listing Agent</p>
+                    <div class="d-grid gap-2">
+                        <a id="modalAgentCall" href="#" class="btn btn-primary rounded-pill btn-sm fw-bold py-2" style="background:var(--blue-primary);border:none"><i class="bi bi-telephone-fill me-2"></i>Call Agent</a>
+                        <a id="modalAgentWhatsapp" href="#" target="_blank" class="btn btn-success rounded-pill btn-sm fw-bold py-2"><i class="bi bi-whatsapp me-2"></i>WhatsApp</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Full Property Details & Mortgage Modal -->
-    <div class="modal fade" id="detailsModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content rounded-3 border-0 shadow">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold" id="detailsModalTitle">Property Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4" id="detailsModalBody">
-                    <!-- Rendered by JS -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tour Schedule Modal -->
-    <div class="modal fade" id="tourModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-3 border-0 shadow">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold" id="tourModalTitle">Schedule a Tour</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <form id="tourForm" onsubmit="event.preventDefault(); submitTour();">
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold text-secondary">Full Name</label>
-                            <input type="text" class="form-control" required placeholder="John Doe">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold text-secondary">Phone Number / WhatsApp</label>
-                            <input type="tel" class="form-control" required placeholder="+254 700 000 000">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold text-secondary">Preferred Tour Date</label>
-                            <input type="date" class="form-control" required>
-                        </div>
-                        <button type="submit" class="btn btn-brand w-100 fw-bold">Confirm Booking Request</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-4 mt-5 border-top border-secondary">
-        <div class="container text-center small text-secondary">
-            &copy; 2026 Reality Kisumu Hub. All rights reserved.
-        </div>
-    </footer>
-
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Leaflet.js Map CDN -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="assets/js/pwa.js"></script>
     <script>
         const houses = [
             {
-                id: "h1",
-                title: "3 Bed Apartment in Kisumu",
-                category: "Apartment",
-                location: "Ondiek Highway",
-                price: 42000000,
-                bedrooms: 3,
-                bathrooms: 2,
-                area: "140 m²",
-                coords: [-0.0980, 34.7620],
-                img: "images/p.webp",
-                gallery: ["images/p4.webp", "images/p5.webp", "images/p6.webp", "images/p7.jpg"],
-                desc: "Anderson Park Residence Kisumu featuring piped gas, swimming pool, gym, and club house.",
-                features: ["Piped Gas", "Olympic Swimming Pool", "Gym", "Club House", "Backup Generator"],
-                isStarred: true,
-                isFav: false
+                id:"h1", title:"3 Bed Apartment in Kisumu", price:"$1,250,000", priceNum:1250000,
+                specs:"4 Beds | 3 Baths | 2,500 Sq Ft", beds:4, location:"Beverly Hills",
+                address:"123 Maple Drive, Beverly Hills, CA", category:"Villa",
+                img:"images/luxury.jpg", agentName:"Sarah Jenkins",
+                agentPhone:"+254712345678", agentImg:"images/u.jpg",
+                isNew:true, isVerified:true
             },
             {
-                id: "h2",
-                title: "1 Bed Apartment with En Suite at Ondiek Highway",
-                category: "Apartment",
-                location: "Ondiek Highway",
-                price: 42000000,
-                bedrooms: 1,
-                bathrooms: 1,
-                area: "75 m²",
-                coords: [-0.0985, 34.7625],
-                img: "images/p.webp",
-                gallery: ["images/p4.webp", "images/p5.webp", "images/p6.webp", "images/p7.jpg"],
-                desc: "1 bedroom luxury apartment with en-suite bathroom at Anderson Park Residence.",
-                features: ["Piped Gas", "Gym", "Security Intercom", "En-suite Bath"],
-                isStarred: true,
-                isFav: false
+                id:"h2", title:"Modern City Apartment", price:"$890,000", priceNum:890000,
+                specs:"3 Beds | 2 Baths | 1,800 Sq Ft", beds:3, location:"Austin",
+                address:"456 Oak Street, Austin, TX", category:"Apartment",
+                img:"images/e4.jpg", agentName:"Elena Vance",
+                agentPhone:"+254722987654", agentImg:"images/u4.jpg",
+                isNew:true, isVerified:true
             },
             {
-                id: "h3",
-                title: "2 Bed Apartment with Parking in Kisumu",
-                category: "Apartment",
-                location: "Nubian Estate",
-                price: 23000000,
-                bedrooms: 5,
-                bathrooms: 5,
-                area: "180 m²",
-                coords: [-0.1020, 34.7590],
-                img: "images/e.jpg",
-                gallery: ["images/e4.jpg", "images/e5.jpg", "images/e6.jpg", "images/e7.webp"],
-                desc: "Strategically placed apartment building housing 9 units in Nubian Estate with electric fence.",
-                features: ["Electric Fence", "High Perimeter Wall", "Dedicated Parking", "Water Storage"],
-                isStarred: true,
-                isFav: false
+                id:"h3", title:"5 Bed Villa with Lake Views", price:"$1,450,000", priceNum:1450000,
+                specs:"5 Beds | 4 Baths | 3,200 Sq Ft", beds:5, location:"Riat Hills",
+                address:"789 Riat Hills Ridge, Kisumu", category:"Waterfront",
+                img:"images/riat6.jpeg", agentName:"Amina Otieno",
+                agentPhone:"+254700112233", agentImg:"images/u5.jpg",
+                isNew:true, isVerified:true
             },
             {
-                id: "h4",
-                title: "Residential Land at Riat",
-                category: "Land",
-                location: "Riat",
-                price: 2000000,
-                coords: [-0.0450, 34.7800],
-                img: "images/c.jpeg",
-                gallery: ["images/c4.jpeg", "images/c5.jpeg"],
-                desc: "Riat hills plots in Kisumu located 6.5km from Kisumu International Airport with serene views.",
-                features: ["Ready Title Deed", "6.5km to Airport", "Panoramic Lake View", "Electricity Access"],
-                isStarred: true,
-                isFav: false
-            },
-            {
-                id: "h5",
-                title: "Residential Land at Maseno",
-                category: "Land",
-                location: "Maseno",
-                price: 12000000,
-                coords: [-0.0030, 34.6000],
-                img: "images/u.jpg",
-                gallery: ["images/u5.jpg", "images/u4.jpg", "images/u6.jpg"],
-                desc: "1/4 acre plot fronting Siriba Road with 2 residential houses opposite Maseno University.",
-                isStarred: true,
-                isFav: false
-            },
-            {
-                id: "h6",
-                title: "5 Bed Villa with Swimming Pool",
-                category: "Villa",
-                location: "Riat Hills",
-                price: 48000000,
-                bedrooms: 5,
-                bathrooms: 5,
-                area: "350 m²",
-                coords: [-0.0420, 34.7820],
-                img: "images/RiatV.jpeg",
-                gallery: ["images/RiatV2.jpeg", "images/RiatV.jpeg", "images/riat4.webp", "images/riat5.webp", "images/riat6.jpeg"],
-                desc: "Scandinavian-inspired gated community overlooking Lake Victoria in front and Nandi Hills in back.",
-                features: ["Lake View", "Clubhouse", "Swimming Pool", "Gated Security", "Solar Water Heating"],
-                isStarred: true,
-                isFav: false
-            },
-            {
-                id: "h7",
-                title: "4 Bed House in Milimani",
-                category: "Bungalow",
-                location: "Milimani",
-                price: 20000000,
-                bedrooms: 4,
-                bathrooms: 1,
-                area: "101 m²",
-                coords: [-0.1080, 34.7520],
-                img: "images/milimani/m6.jpg",
-                gallery: ["images/milimani/m.jpg", "images/milimani/m4.webp", "images/milimani/m5.webp"],
-                desc: "Prime Milimani estate bungalow featuring tiled floors, garden, and private parking.",
-                features: ["Prime Estate", "Spacious Yard", "Tiled Floors", "Staff Quarters"],
-                isStarred: true,
-                isFav: true
-            },
-            {
-                id: "h8",
-                title: "10 Bed Multi-unit in Milimani",
-                category: "Multi-unit",
-                location: "Milimani",
-                price: 300000000,
-                bedrooms: 10,
-                bathrooms: 10,
-                area: "0.8 ha",
-                coords: [-0.1090, 34.7530],
-                img: "images/milimani/suite.jpeg",
-                gallery: ["images/milimani/s.jpeg", "images/milimani/s4.jpeg", "images/milimani/s6.jpeg"],
-                desc: "Multi-unit investment property with 3 residential blocks in one acre stone walled plot.",
-                features: ["Stone Walled", "3 Blocks", "Rental Income", "1 Acre Plot"],
-                isStarred: false,
-                isFav: false
-            },
-            {
-                id: "h9",
-                title: "4 Bed House with Gym at Dairy Farm",
-                category: "Bungalow",
-                location: "Gem Yala",
-                price: 23000000,
-                bedrooms: 4,
-                bathrooms: 4,
-                area: "1.6 ha",
-                coords: [-0.0980, 34.5380],
-                img: "images/dairy/3a4873e1-9856-459c-a240-e597e95665e9.webp",
-                gallery: ["images/dairy/d.jpeg", "images/dairy/d4.jpeg", "images/dairy/d5.webp", "images/dairy/d6.jpeg"],
-                desc: "Dairy farm with 4 bedroom house, gym, and complete farming infrastructure.",
-                features: ["Private Gym", "Farming Setup", "Water Supply", "Electricity"],
-                isStarred: true,
-                isFav: true
+                id:"h4", title:"Cozy Milimani Bungalow", price:"$650,000", priceNum:650000,
+                specs:"2 Beds | 2 Baths | 1,400 Sq Ft", beds:2, location:"Milimani",
+                address:"102 Milimani Heights, Kisumu", category:"Villa",
+                img:"images/makasembo.webp", agentName:"David Ochieng",
+                agentPhone:"+254733445566", agentImg:"images/u6.jpg",
+                isNew:true, isVerified:true
             }
         ];
 
-        let selectedComparison = [];
-        let leafletMap = null;
-        let leafletMarkers = [];
-
-        // KSh Mortgage Repayment Calculator
-        function calculateMortgage(price, downPaymentPct = 20, years = 15, interestRatePct = 12) {
-            const downPayment = price * (downPaymentPct / 100);
-            const loanAmount = price - downPayment;
-            const monthlyRate = (interestRatePct / 100) / 12;
-            const totalMonths = years * 12;
-            const monthlyPayment = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / (Math.pow(1 + monthlyRate, totalMonths) - 1);
-            return {
-                downPayment: Math.round(downPayment),
-                loanAmount: Math.round(loanAmount),
-                monthlyPayment: Math.round(monthlyPayment)
-            };
-        }
-
-        function updatePriceSlider(val) {
-            const display = document.getElementById('maxPriceDisplay');
-            const hidden = document.getElementById('maxPrice');
-            if (!val || val == "300000000") {
-                display.innerText = "No Limit";
-                hidden.value = "";
-            } else {
-                display.innerText = "KSh " + parseInt(val).toLocaleString();
-                hidden.value = val;
-            }
-            filterHouses();
-        }
-
-        function calculateSmartScore(house, filters) {
+        /* Smart relevance scoring — always on, invisible to user */
+        function smartScore(h, query) {
+            if (!query) return 0;
             let score = 0;
-            let activeFiltersCount = 0;
+            const q = query.toLowerCase();
+            const words = q.split(/\s+/).filter(Boolean);
 
-            if (filters.category && filters.category !== "Favorite") {
-                activeFiltersCount++;
-                if (house.category.toLowerCase() === filters.category.toLowerCase()) score += 35;
-            }
-            if (filters.location) {
-                activeFiltersCount++;
-                if (house.location.toLowerCase().includes(filters.location.toLowerCase())) score += 35;
-            }
-            if (filters.maxPrice && !isNaN(filters.maxPrice) && filters.maxPrice > 0) {
-                activeFiltersCount++;
-                const diffRatio = Math.abs(house.price - filters.maxPrice) / filters.maxPrice;
-                if (diffRatio <= 0.2) score += 30;
-                else if (diffRatio <= 0.5) score += 20;
-                else if (diffRatio <= 1.0) score += 10;
-            }
-            if (filters.bedrooms && !isNaN(filters.bedrooms) && filters.bedrooms > 0) {
-                activeFiltersCount++;
-                if (house.bedrooms >= filters.bedrooms) score += 10;
-            }
-            if (filters.bathrooms && !isNaN(filters.bathrooms) && filters.bathrooms > 0) {
-                activeFiltersCount++;
-                if (house.bathrooms >= filters.bathrooms) score += 10;
-            }
+            // Searchable fields with weights
+            const fields = [
+                { val: h.address, weight: 30 },
+                { val: h.category, weight: 25 },
+                { val: h.location, weight: 25 },
+                { val: h.title, weight: 20 },
+                { val: h.specs, weight: 15 },
+                { val: h.price, weight: 10 }
+            ];
 
-            const percentage = activeFiltersCount > 0 ? Math.min(100, Math.round((score / 120) * 100)) : 0;
-            return { score, percentage, activeFiltersCount };
-        }
-
-        function renderHouses(list, activeFiltersCount = 0) {
-            const container = document.getElementById('housesList');
-            container.innerHTML = '';
-
-            if (list.length === 0) {
-                container.innerHTML = '<div class="alert alert-light text-center p-5 border rounded-3 fs-6">No properties match your current search criteria. Try adjusting your filters.</div>';
-                return;
-            }
-
-            list.forEach((house, idx) => {
-                const allImgs = [house.img, ...(house.gallery || [])];
-                const slideshowId = `slideshow-${idx}`;
-                const card = document.createElement('div');
-                card.className = 'card-property mb-4 position-relative';
-                card.id = `house-card-${house.id}`;
-
-                const mortgage = calculateMortgage(house.price);
-
-                const relevanceBadgeHTML = (activeFiltersCount > 0 && house.smartPercentage !== undefined)
-                    ? `<span class="badge-relevance ms-2">${house.smartPercentage}% Relevance Match</span>`
-                    : '';
-
-                const isChecked = selectedComparison.some(c => c.id === house.id);
-
-                card.innerHTML = `
-                    <button class="fav-toggle-btn ${house.isFav ? 'active' : ''}" title="Favorite" data-idx="${idx}">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.78-8.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                        </svg>
-                    </button>
-                    
-                    <div class="row g-0">
-                        <div class="col-md-5 position-relative bg-secondary-subtle">
-                            <img class="property-img" id="${slideshowId}-img" src="${allImgs[0]}" alt="${house.title}">
-                            <div class="position-absolute top-50 start-0 end-0 translate-middle-y d-flex justify-content-between px-2 pointer-events-none">
-                                <button class="btn btn-dark btn-sm rounded-circle opacity-75" onclick="prevSlide('${slideshowId}', ${allImgs.length}); event.stopPropagation();">&#10094;</button>
-                                <button class="btn btn-dark btn-sm rounded-circle opacity-75" onclick="nextSlide('${slideshowId}', ${allImgs.length}); event.stopPropagation();">&#10095;</button>
-                            </div>
-                            <div class="position-absolute bottom-0 start-0 m-3">
-                                <span class="badge-status">${house.category}</span>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-7">
-                            <div class="p-4 d-flex flex-column justify-content-between h-100">
-                                <div>
-                                    <div class="d-flex justify-content-between align-items-start mb-1">
-                                        <div class="d-flex align-items-center">
-                                            <h5 class="fw-bold mb-0">${house.title}</h5>
-                                            ${relevanceBadgeHTML}
-                                        </div>
-                                        <div class="form-check ms-2">
-                                            <input class="form-check-input" type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleCompare('${house.id}')" id="chk-${house.id}">
-                                            <label class="form-check-label small text-secondary fw-semibold" for="chk-${house.id}">Compare</label>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="text-secondary small mb-3">📍 ${house.location}</div>
-
-                                    <div class="d-flex flex-wrap gap-2 mb-3">
-                                        <span class="spec-chip">${house.bedrooms || 0} Beds</span>
-                                        <span class="spec-chip">${house.bathrooms || 0} Baths</span>
-                                        ${house.area ? `<span class="spec-chip">${house.area}</span>` : ''}
-                                    </div>
-
-                                    <p class="text-secondary small mb-3">${house.desc}</p>
-
-                                    <!-- Mortgage Quick Preview -->
-                                    <div class="bg-light p-2 rounded-2 small text-secondary mb-3 border">
-                                        <span class="fw-bold text-dark">Est. Monthly Mortgage:</span> KSh ${mortgage.monthlyPayment.toLocaleString()}/mo <span class="text-muted">(20% down, 15 yrs)</span>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex justify-content-between align-items-center pt-3 border-top">
-                                    <div>
-                                        <div class="small text-muted">Asking Price</div>
-                                        <div class="fs-4 fw-bold text-dark">KSh ${house.price.toLocaleString()}</div>
-                                    </div>
-                                    <div class="d-flex gap-2">
-                                        <button class="btn btn-outline-dark btn-sm fw-semibold" onclick="openDetailsModal('${house.id}')">
-                                            View Details
-                                        </button>
-                                        <button class="btn btn-outline-primary btn-sm fw-semibold" onclick="openTourModal('${house.title}')">
-                                            Book Tour
-                                        </button>
-                                        <a href="https://wa.me/254746672821?text=${encodeURIComponent('Hi, inquiring about: ' + house.title)}" target="_blank" class="btn btn-emerald btn-sm fw-semibold text-white bg-success">
-                                            WhatsApp
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                card.dataset.slideshowIdx = "0";
-                card.dataset.slideshowImgs = JSON.stringify(allImgs);
-                card.dataset.slideshowId = slideshowId;
-
-                const favBtn = card.querySelector('.fav-toggle-btn');
-                favBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    house.isFav = !house.isFav;
-                    let favorites = JSON.parse(localStorage.getItem('favoriteHouses')) || [];
-                    if (house.isFav) {
-                        if (!favorites.some(h => h.title === house.title && h.location === house.location)) {
-                            favorites.push(house);
-                        }
-                    } else {
-                        favorites = favorites.filter(h => !(h.title === house.title && h.location === house.location));
-                    }
-                    localStorage.setItem('favoriteHouses', JSON.stringify(favorites));
-                    filterHouses();
+            words.forEach(w => {
+                fields.forEach(f => {
+                    if (f.val && f.val.toLowerCase().includes(w)) score += f.weight;
                 });
-
-                container.appendChild(card);
+                // Bed count matching: "3 bed", "4bed"
+                const bedMatch = w.match(/^(\d+)\s*bed/i);
+                if (bedMatch && h.beds === parseInt(bedMatch[1])) score += 30;
             });
 
-            updateMapMarkers(list);
+            // Price proximity: if query looks like a number, boost nearby prices
+            const numQ = parseFloat(q.replace(/[^0-9.]/g, ''));
+            if (numQ > 1000) {
+                const diff = Math.abs(h.priceNum - numQ) / numQ;
+                if (diff <= 0.2) score += 40;
+                else if (diff <= 0.5) score += 20;
+            }
+
+            return score;
+        }
+
+        function renderHouses(list) {
+            const el = document.getElementById('housesList');
+            if (!el) return;
+            el.innerHTML = '';
+            if (list.length === 0) {
+                el.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px 0">No properties match your search. Try different terms.</p>';
+                return;
+            }
+            list.forEach(h => {
+                el.innerHTML += `
+                <article class="feed-property-card">
+                    <div class="feed-card-img-wrap">
+                        <img src="${h.img}" alt="${h.address}">
+                        <div class="feed-badge-row">
+                            ${h.isNew ? '<span class="feed-badge-new">New</span>' : ''}
+                            ${h.isVerified ? '<span class="feed-badge-verified">Verified</span>' : ''}
+                        </div>
+                        <button type="button" class="feed-card-fav" onclick="this.classList.toggle('inactive')">
+                            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        </button>
+                    </div>
+                    <div class="feed-card-body">
+                        <div class="feed-card-price-row">
+                            <div class="feed-card-price">${h.price}</div>
+                            <div class="feed-agent-mini" onclick="showAgent('${h.agentName}','${h.agentPhone}','${h.agentImg}')">
+                                <img src="${h.agentImg}" alt="${h.agentName}" class="feed-agent-avatar">
+                                <div class="feed-agent-label"><span>Listing</span><strong>Agent</strong></div>
+                            </div>
+                        </div>
+                        <div class="feed-card-specs">${h.specs}</div>
+                        <p class="feed-card-address">${h.address}</p>
+                    </div>
+                </article>`;
+            });
         }
 
         function filterHouses() {
-            const category = document.getElementById('category').value;
-            const location = document.getElementById('location').value.trim();
-            const maxPrice = parseInt(document.getElementById('maxPrice').value);
-            const bedrooms = parseInt(document.getElementById('bedrooms').value);
-            const bathrooms = parseInt(document.getElementById('bathrooms').value);
-            const sortBy = document.getElementById('sortBy').value;
+            const q = (document.getElementById('searchInput')?.value || '').trim();
+            if (!q) { renderHouses(houses); return; }
 
-            const favorites = JSON.parse(localStorage.getItem('favoriteHouses')) || [];
-            houses.forEach(h => {
-                h.isFav = favorites.some(fav => fav.title === h.title && fav.location === h.location);
-            });
+            // Score every listing and sort by relevance
+            const scored = houses
+                .map(h => ({ ...h, _score: smartScore(h, q) }))
+                .filter(h => h._score > 0)
+                .sort((a, b) => b._score - a._score);
 
-            const filters = { category, location, maxPrice, bedrooms, bathrooms };
-
-            let list = houses.filter(h => category === "Favorite" ? h.isFav : true);
-
-            let scoredList = list.map(house => {
-                const { score, percentage, activeFiltersCount } = calculateSmartScore(house, filters);
-                return { ...house, smartScore: score, smartPercentage: percentage, activeFiltersCount };
-            });
-
-            const activeCount = scoredList[0] ? scoredList[0].activeFiltersCount : 0;
-
-            if (sortBy === 'priceAsc') {
-                scoredList.sort((a, b) => a.price - b.price);
-            } else if (sortBy === 'priceDesc') {
-                scoredList.sort((a, b) => b.price - a.price);
-            } else if (activeCount > 0) {
-                scoredList.sort((a, b) => b.smartScore - a.smartScore);
-            }
-
-            renderHouses(scoredList, activeCount);
+            renderHouses(scored);
         }
 
-        // View Mode Switch (List / Leaflet Map)
-        function switchView(mode) {
-            const listBtn = document.getElementById('btnListView');
-            const mapBtn = document.getElementById('btnMapView');
-            const mapSec = document.getElementById('mapSection');
-
-            if (mode === 'map') {
-                listBtn.classList.remove('active', 'btn-primary');
-                listBtn.classList.add('btn-outline-light');
-                mapBtn.classList.add('active', 'btn-primary');
-                mapBtn.classList.remove('btn-outline-light');
-                mapSec.classList.remove('d-none');
-                initLeafletMap();
-            } else {
-                mapBtn.classList.remove('active', 'btn-primary');
-                mapBtn.classList.add('btn-outline-light');
-                listBtn.classList.add('active', 'btn-primary');
-                listBtn.classList.remove('btn-outline-light');
-                mapSec.classList.add('d-none');
-            }
+        function filterByCategory(cat) {
+            document.getElementById('searchInput').value = '';
+            renderHouses(houses.filter(h => h.category.toLowerCase() === cat.toLowerCase()));
         }
 
-        // Leaflet Map Initialization
-        function initLeafletMap() {
-            if (!leafletMap) {
-                leafletMap = L.map('mapContainer').setView([-0.0917, 34.7680], 11);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; OpenStreetMap contributors'
-                }).addTo(leafletMap);
-                updateMapMarkers(houses);
-            } else {
-                setTimeout(() => leafletMap.invalidateSize(), 200);
-            }
+        function showAgent(name, phone, img) {
+            document.getElementById('modalAgentName').textContent = name;
+            document.getElementById('modalAgentImg').src = img;
+            document.getElementById('modalAgentCall').href = 'tel:' + phone;
+            document.getElementById('modalAgentWhatsapp').href = 'https://wa.me/' + phone.replace(/[^0-9]/g, '');
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('agentModal')).show();
         }
 
-        function updateMapMarkers(list) {
-            if (!leafletMap) return;
-            leafletMarkers.forEach(m => leafletMap.removeLayer(m));
-            leafletMarkers = [];
-
-            list.forEach(h => {
-                if (h.coords) {
-                    const marker = L.marker(h.coords).addTo(leafletMap);
-                    marker.bindPopup(`
-                        <div style="max-width:200px;">
-                            <img src="${h.img}" style="width:100%;height:100px;object-fit:cover;border-radius:4px;" alt="thumb">
-                            <strong style="display:block;margin-top:6px;">${h.title}</strong>
-                            <span style="color:#1d4ed8;font-weight:bold;">KSh ${h.price.toLocaleString()}</span><br>
-                            <a href="#house-card-${h.id}" onclick="switchView('list')" style="font-size:0.8rem;color:#0b192c;font-weight:bold;">View Listing Card &rarr;</a>
-                        </div>
-                    `);
-                    leafletMarkers.push(marker);
-                }
-            });
-        }
-
-        // Side-by-Side Property Comparison Matrix Logic
-        function toggleCompare(id) {
-            const item = houses.find(h => h.id === id);
-            const exists = selectedComparison.some(c => c.id === id);
-            if (exists) {
-                selectedComparison = selectedComparison.filter(c => c.id !== id);
-            } else {
-                if (selectedComparison.length >= 3) {
-                    alert("You can compare up to 3 properties at a time.");
-                    document.getElementById(`chk-${id}`).checked = false;
-                    return;
-                }
-                selectedComparison.push(item);
-            }
-            updateComparisonBar();
-        }
-
-        function updateComparisonBar() {
-            const bar = document.getElementById('comparisonToolbar');
-            const txt = document.getElementById('comparisonCountText');
-            if (selectedComparison.length > 0) {
-                bar.classList.remove('d-none');
-                txt.innerText = `${selectedComparison.length} Properties Selected for Comparison`;
-            } else {
-                bar.classList.add('d-none');
-            }
-        }
-
-        function clearComparison() {
-            selectedComparison = [];
-            document.querySelectorAll('.form-check-input').forEach(chk => chk.checked = false);
-            updateComparisonBar();
-        }
-
-        function openComparisonModal() {
-            if (selectedComparison.length < 1) return;
-            const modalBody = document.getElementById('comparisonModalBody');
-            
-            let tableHTML = `
-                <div class="table-responsive">
-                    <table class="table table-bordered align-middle">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Feature</th>
-                                ${selectedComparison.map(h => `<th>${h.title}</th>`).join('')}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="fw-bold">Asking Price</td>
-                                ${selectedComparison.map(h => `<td class="fs-5 fw-bold text-primary">KSh ${h.price.toLocaleString()}</td>`).join('')}
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Category</td>
-                                ${selectedComparison.map(h => `<td><span class="badge bg-dark">${h.category}</span></td>`).join('')}
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Location</td>
-                                ${selectedComparison.map(h => `<td>📍 ${h.location}</td>`).join('')}
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Bedrooms / Bathrooms</td>
-                                ${selectedComparison.map(h => `<td>${h.bedrooms || 0} Beds / ${h.bathrooms || 0} Baths</td>`).join('')}
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Property Area</td>
-                                ${selectedComparison.map(h => `<td>${h.area || 'N/A'}</td>`).join('')}
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Key Amenities</td>
-                                ${selectedComparison.map(h => `<td>${(h.features || []).join(', ') || 'Standard'}</td>`).join('')}
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Est. Monthly Mortgage</td>
-                                ${selectedComparison.map(h => `<td class="fw-bold">KSh ${calculateMortgage(h.price).monthlyPayment.toLocaleString()}/mo</td>`).join('')}
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            `;
-            modalBody.innerHTML = tableHTML;
-            const modal = new bootstrap.Modal(document.getElementById('comparisonModal'));
-            modal.show();
-        }
-
-        // Full Property Quick View Modal
-        function openDetailsModal(id) {
-            const h = houses.find(item => item.id === id);
-            if (!h) return;
-            const mortgage = calculateMortgage(h.price);
-
-            document.getElementById('detailsModalTitle').innerText = h.title;
-            const modalBody = document.getElementById('detailsModalBody');
-
-            modalBody.innerHTML = `
-                <div class="row g-4">
-                    <div class="col-md-6">
-                        <img src="${h.img}" class="img-fluid rounded-3 mb-3 shadow-sm" alt="main">
-                        <div class="d-flex gap-2 flex-wrap">
-                            ${(h.gallery || []).map(g => `<img src="${g}" style="width:70px;height:55px;object-fit:cover;border-radius:4px;cursor:pointer;" onclick="this.parentNode.previousElementSibling.src='${g}'">`).join('')}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="badge bg-dark mb-2">${h.category}</div>
-                        <h4 class="fw-bold mb-1">${h.title}</h4>
-                        <div class="text-secondary small mb-3">📍 ${h.location}</div>
-                        <div class="fs-3 fw-bold text-primary mb-3">KSh ${h.price.toLocaleString()}</div>
-
-                        <div class="d-flex gap-2 mb-3">
-                            <span class="spec-chip">${h.bedrooms || 0} Bedrooms</span>
-                            <span class="spec-chip">${h.bathrooms || 0} Bathrooms</span>
-                            ${h.area ? `<span class="spec-chip">${h.area}</span>` : ''}
-                        </div>
-
-                        <p class="text-secondary small mb-3">${h.desc}</p>
-
-                        <h6 class="fw-bold mb-2">Verified Property Features</h6>
-                        <div class="d-flex flex-wrap gap-1 mb-4">
-                            ${(h.features || ["Water Supply", "Security"]).map(f => `<span class="badge bg-light text-dark border">${f}</span>`).join('')}
-                        </div>
-
-                        <!-- Mortgage Calculator Breakdown -->
-                        <div class="card p-3 bg-light border mb-4">
-                            <h6 class="fw-bold mb-2">🧮 KSh Mortgage Calculation Breakdown</h6>
-                            <div class="small text-secondary d-flex justify-content-between mb-1">
-                                <span>20% Down Payment:</span>
-                                <span class="fw-bold text-dark">KSh ${mortgage.downPayment.toLocaleString()}</span>
-                            </div>
-                            <div class="small text-secondary d-flex justify-content-between mb-1">
-                                <span>Loan Principal Amount:</span>
-                                <span class="fw-bold text-dark">KSh ${mortgage.loanAmount.toLocaleString()}</span>
-                            </div>
-                            <div class="small text-secondary d-flex justify-content-between border-top pt-1 mt-1">
-                                <span class="fw-bold text-dark">Est. Monthly Repayment (15 yrs @ 12%):</span>
-                                <span class="fw-bold text-primary">KSh ${mortgage.monthlyPayment.toLocaleString()}/mo</span>
-                            </div>
-                        </div>
-
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-brand w-100 fw-bold" onclick="openTourModal('${h.title}')">Book Tour Visit</button>
-                            <a href="https://wa.me/254746672821?text=${encodeURIComponent('Hi, inquiring about property details for: ' + h.title)}" target="_blank" class="btn btn-success fw-semibold">WhatsApp</a>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            const modal = new bootstrap.Modal(document.getElementById('detailsModal'));
-            modal.show();
-        }
-
-        function nextSlide(slideshowId, total) {
-            const card = Array.from(document.querySelectorAll('.card-property'))
-                .find(c => c.dataset.slideshowId === slideshowId);
-            if (!card) return;
-            let idx = parseInt(card.dataset.slideshowIdx) || 0;
-            const imgs = JSON.parse(card.dataset.slideshowImgs);
-            idx = (idx + 1) % imgs.length;
-            card.dataset.slideshowIdx = idx;
-            document.getElementById(`${slideshowId}-img`).src = imgs[idx];
-        }
-
-        function prevSlide(slideshowId, total) {
-            const card = Array.from(document.querySelectorAll('.card-property'))
-                .find(c => c.dataset.slideshowId === slideshowId);
-            if (!card) return;
-            let idx = parseInt(card.dataset.slideshowIdx) || 0;
-            const imgs = JSON.parse(card.dataset.slideshowImgs);
-            idx = (idx - 1 + imgs.length) % imgs.length;
-            card.dataset.slideshowIdx = idx;
-            document.getElementById(`${slideshowId}-img`).src = imgs[idx];
-        }
-
-        function openTourModal(title) {
-            document.getElementById('tourModalTitle').innerText = "Schedule Tour: " + title;
-            const modal = new bootstrap.Modal(document.getElementById('tourModal'));
-            modal.show();
-        }
-
-        function submitTour() {
-            const modalEl = document.getElementById('tourModal');
-            const modal = bootstrap.Modal.getInstance(modalEl);
-            modal.hide();
-            alert("Thank you. Your tour request has been received.");
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const params = new URLSearchParams(window.location.search);
-            const category = params.get('category');
-            const location = params.get('location');
-            const bedrooms = params.get('bedrooms');
-            const bathrooms = params.get('bathrooms');
-            const maxPrice = params.get('maxprice') || params.get('budget');
-
-            if (category) document.getElementById('category').value = category;
-            if (location) document.getElementById('location').value = location;
-            if (bedrooms) document.getElementById('bedrooms').value = bedrooms;
-            if (bathrooms) document.getElementById('bathrooms').value = bathrooms;
-            if (maxPrice) {
-                document.getElementById('maxPriceSlider').value = maxPrice;
-                updatePriceSlider(maxPrice);
-            } else {
-                filterHouses();
-            }
-        });
+        document.addEventListener('DOMContentLoaded', () => renderHouses(houses));
     </script>
 </body>
 </html>

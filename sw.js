@@ -1,22 +1,6 @@
-const CACHE_NAME = 'kisumu-realty-v1';
-const ASSETS_TO_CACHE = [
-    './',
-    './index.html',
-    './house.html',
-    './liked.html',
-    './login.html',
-    './signup.html',
-    './assets/css/main.css',
-    './assets/js/pwa.js',
-    './manifest.json'
-];
+const CACHE_NAME = 'kisumu-realty-v2';
 
 self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(ASSETS_TO_CACHE);
-        })
-    );
     self.skipWaiting();
 });
 
@@ -24,21 +8,19 @@ self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((keys) => {
             return Promise.all(
-                keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+                keys.map((key) => caches.delete(key))
             );
         })
     );
     self.clients.claim();
 });
 
+// Network-First strategy: always fetch fresh from network, fall back to cache if offline
 self.addEventListener('fetch', (event) => {
     if (event.request.method !== 'GET') return;
     event.respondWith(
-        caches.match(event.request).then((cachedResponse) => {
-            if (cachedResponse) {
-                return cachedResponse;
-            }
-            return fetch(event.request).then((networkResponse) => {
+        fetch(event.request)
+            .then((networkResponse) => {
                 if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
                     const responseToCache = networkResponse.clone();
                     caches.open(CACHE_NAME).then((cache) => {
@@ -46,11 +28,16 @@ self.addEventListener('fetch', (event) => {
                     });
                 }
                 return networkResponse;
-            }).catch(() => {
-                if (event.request.headers.get('accept').includes('text/html')) {
-                    return caches.match('./index.html');
-                }
-            });
-        })
+            })
+            .catch(() => {
+                return caches.match(event.request).then((cachedResponse) => {
+                    if (cachedResponse) {
+                        return cachedResponse;
+                    }
+                    if (event.request.headers.get('accept')?.includes('text/html')) {
+                        return caches.match('./index.html');
+                    }
+                });
+            })
     );
 });
