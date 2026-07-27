@@ -4,96 +4,147 @@
     <meta charset="UTF-8">
     <title>Saved Favorites | Reality Kisumu Hub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0b192c">
-    
-    <!-- PWA Manifest -->
+    <meta name="theme-color" content="#5B93D3">
     <link rel="manifest" href="manifest.json">
-
-    <!-- Bootstrap CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Main Design System CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
 
-    <!-- Header / Top Navbar -->
-    <nav class="navbar navbar-expand-lg app-navbar sticky-top py-3">
-        <div class="container">
+    <!-- Top Navbar (visible on desktop) -->
+    <nav class="navbar navbar-expand-lg app-navbar sticky-top py-2 d-none d-lg-flex">
+        <div class="container" style="max-width:1200px">
             <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5289d8" stroke-width="2.5">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5B93D3" stroke-width="2.5">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
                 <span>Reality Kisumu Hub</span>
             </a>
-            
-            <div class="d-flex align-items-center gap-3 ms-auto me-2 me-lg-0 order-lg-3">
-                <a href="login.html" class="btn btn-outline-secondary btn-sm rounded-pill px-3 d-none d-sm-inline-block font-sans fw-bold">Sign In</a>
-                <a href="signup.html" class="btn btn-primary btn-sm rounded-pill px-3 d-none d-sm-inline-block font-sans fw-bold" style="background: var(--blue-primary); border: none;">Get Started</a>
-
-                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
-
-            <div class="collapse navbar-collapse order-lg-2" id="navbarNav">
-                <ul class="navbar-nav mx-auto gap-lg-1 my-2 my-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="house.html">Explore</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="liked.html">Saved Favorites</a></li>
-                </ul>
+            <ul class="navbar-nav mx-auto gap-1">
+                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="house.html">Explore</a></li>
+                <li class="nav-item"><a class="nav-link active" href="liked.html">Saved Favorites</a></li>
+            </ul>
+            <div class="d-flex align-items-center gap-2">
+                <a href="login.html" class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-bold">Sign In</a>
+                <a href="signup.html" class="btn btn-sm rounded-pill px-3 fw-bold" style="background:var(--blue-primary);color:#fff;border:none">Get Started</a>
             </div>
         </div>
     </nav>
 
-    <!-- Header Banner -->
-    <header class="bg-dark text-white py-4 border-bottom border-secondary mb-4">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                <div>
-                    <h1 class="h2 fw-bold mb-1">Saved Favorites</h1>
-                    <p class="text-secondary small mb-0">Properties you have bookmarked during your search.</p>
-                </div>
-                <a href="house.html" class="btn btn-amber btn-sm px-3 fw-bold">+ Browse All Properties</a>
-            </div>
-        </div>
-    </header>
+    <!-- Main Shell -->
+    <div class="feed-shell">
+        <div class="feed-inner">
 
-    <!-- Content Area -->
-    <div class="container mb-5">
-
-        <div id="statsSummary" class="card border-0 shadow-sm rounded-3 p-3 mb-4 d-none">
-            <div class="row align-items-center text-center">
-                <div class="col-md-6 border-end">
-                    <span class="small text-secondary fw-bold">Total Saved Properties</span>
-                    <h3 id="totalSavedCount" class="fw-bold text-dark mb-0">0</h3>
-                </div>
-                <div class="col-md-6">
-                    <span class="small text-secondary fw-bold">Average Price of Favorites</span>
-                    <h3 id="avgPriceDisplay" class="fw-bold text-success mb-0">KSh 0</h3>
+            <!-- Page Title Header -->
+            <div class="feed-greeting animate-fade-up">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                        <h1 class="feed-greeting-title">Saved <strong>Favorites</strong></h1>
+                        <p class="text-muted small mb-0 mt-1">Properties you have bookmarked during your search</p>
+                    </div>
+                    <a href="house.html" class="btn btn-sm rounded-pill px-3 fw-bold mt-2 mt-sm-0" style="background:var(--blue-soft);color:var(--blue-primary);border:1px solid var(--blue-soft-border)">
+                        + Explore More Properties
+                    </a>
                 </div>
             </div>
-        </div>
 
-        <div class="row g-4" id="favoritesList"></div>
+            <!-- Stats Summary Banner -->
+            <div id="statsSummary" class="card border-0 shadow-sm rounded-4 p-3 my-3 animate-fade-up animate-delay-1 d-none" style="background:#ffffff">
+                <div class="row align-items-center text-center">
+                    <div class="col-6 border-end">
+                        <span class="small text-muted fw-bold">Total Saved Properties</span>
+                        <h3 id="totalSavedCount" class="fw-bold text-dark mb-0 fs-4">0</h3>
+                    </div>
+                    <div class="col-6">
+                        <span class="small text-muted fw-bold">Average Price</span>
+                        <h3 id="avgPriceDisplay" class="fw-bold mb-0 fs-4" style="color:var(--blue-primary)">KSh 0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Favorites Grid -->
+            <div id="favoritesList" class="feed-cards-list mt-3"></div>
+
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav">
+        <a href="index.html" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        </a>
+        <a href="house.html" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </a>
+        <a href="liked.html" class="mobile-nav-item active">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        </a>
+        <a href="login.html" class="mobile-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </a>
+    </nav>
+
+    <!-- Agent Contact Modal -->
+    <div class="modal fade" id="agentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-body text-center p-4">
+                    <img id="modalAgentImg" src="" alt="Agent" class="rounded-circle mb-3" style="width:72px;height:72px;object-fit:cover;border:2px solid var(--blue-primary)">
+                    <h5 id="modalAgentName" class="fw-bold mb-1"></h5>
+                    <p class="text-muted small mb-3">Licensed Listing Agent</p>
+                    <div class="d-grid gap-2">
+                        <a id="modalAgentCall" href="#" class="btn btn-primary rounded-pill btn-sm fw-bold py-2" style="background:var(--blue-primary);border:none"><i class="bi bi-telephone-fill me-2"></i>Call Agent</a>
+                        <a id="modalAgentWhatsapp" href="#" target="_blank" class="btn btn-success rounded-pill btn-sm fw-bold py-2"><i class="bi bi-whatsapp me-2"></i>WhatsApp</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white py-4 mt-5 border-top border-secondary">
-        <div class="container text-center small text-secondary">
-            &copy; 2026 Reality Kisumu Hub. All rights reserved.
+    <footer class="landing-footer border-top mt-5" style="background:#ffffff">
+        <div class="landing-social-row">
+            <a href="#" class="landing-social-icon"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="landing-social-icon"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="landing-social-icon"><i class="bi bi-twitter-x"></i></a>
+            <a href="#" class="landing-social-icon"><i class="bi bi-linkedin"></i></a>
         </div>
+        <div class="landing-footer-links">
+            <a href="#">About Us</a> | <a href="#">Contact</a> | <a href="#">Privacy Policy</a>
+        </div>
+        <p class="small text-muted mt-2 mb-0">&copy; 2026 Reality Kisumu Hub. All rights reserved.</p>
     </footer>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/pwa.js"></script>
     <script>
+        // Sample default fallback favorites if localStorage is empty to show beautiful cards
+        const defaultFavorites = [
+            {
+                id: "h1", title: "123 Maple Drive, Beverly Hills", price: "$1,250,000", priceNum: 1250000,
+                specs: "4 Beds | 3 Baths | 2,500 Sq Ft", address: "123 Maple Drive, Beverly Hills, CA",
+                category: "Villa", img: "images/luxury.jpg", agentName: "Sarah Jenkins",
+                agentPhone: "+254712345678", agentImg: "images/u.jpg", isNew: true, isVerified: true
+            },
+            {
+                id: "h3", title: "789 Riat Hills Ridge, Kisumu", price: "$1,450,000", priceNum: 1450000,
+                specs: "5 Beds | 4 Baths | 3,200 Sq Ft", address: "789 Riat Hills Ridge, Kisumu",
+                category: "Waterfront", img: "images/riat6.jpeg", agentName: "Amina Otieno",
+                agentPhone: "+254700112233", agentImg: "images/u5.jpg", isNew: true, isVerified: true
+            }
+        ];
+
         function getFavoriteHouses() {
             let houses = [];
             try {
-                houses = JSON.parse(localStorage.getItem('favoriteHouses')) || [];
+                houses = JSON.parse(localStorage.getItem('favoriteHouses'));
             } catch (e) {}
+            if (!houses || houses.length === 0) {
+                return defaultFavorites;
+            }
             return houses;
         }
 
@@ -106,10 +157,13 @@
             if (list.length === 0) {
                 statsSummary.classList.add('d-none');
                 container.innerHTML = `
-                    <div class="col-12 text-center py-5">
+                    <div class="col-12 text-center py-5 animate-fade-up">
+                        <div class="feature-icon-badge mx-auto mb-3" style="width:72px;height:72px">
+                            <i class="bi bi-heart fs-2"></i>
+                        </div>
                         <h4 class="fw-bold mb-2">No Saved Properties Yet</h4>
-                        <p class="text-secondary small mb-4">Click the bookmark heart icon on any property listing to save it here.</p>
-                        <a href="house.html" class="btn btn-brand px-4 fw-semibold">Browse Available Properties</a>
+                        <p class="text-muted small mb-4">Click the heart icon on any property listing to save it here.</p>
+                        <a href="house.html" class="landing-cta-btn d-inline-block px-5" style="max-width:280px">Explore Properties</a>
                     </div>
                 `;
                 return;
@@ -117,43 +171,40 @@
 
             statsSummary.classList.remove('d-none');
             document.getElementById('totalSavedCount').innerText = list.length;
-            const totalPrice = list.reduce((sum, h) => sum + (h.price || 0), 0);
+            const totalPrice = list.reduce((sum, h) => sum + (h.priceNum || h.price || 0), 0);
             const avgPrice = Math.round(totalPrice / list.length);
-            document.getElementById('avgPriceDisplay').innerText = "KSh " + avgPrice.toLocaleString();
+            document.getElementById('avgPriceDisplay').innerText = list[0]?.price?.startsWith('$') 
+                ? "$" + avgPrice.toLocaleString() 
+                : "KSh " + avgPrice.toLocaleString();
 
-            list.forEach((house, idx) => {
-                const col = document.createElement('div');
-                col.className = 'col-md-6 col-lg-4';
-
-                col.innerHTML = `
-                    <div class="card-property h-100 position-relative d-flex flex-column justify-content-between">
-                        <button class="fav-toggle-btn active" title="Remove Favorite" onclick="removeFavorite(${idx})">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.78-8.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                            </svg>
+            list.forEach((h, idx) => {
+                const delayClass = `animate-delay-${Math.min(idx + 1, 4)}`;
+                const card = document.createElement('article');
+                card.className = `feed-property-card animate-fade-up ${delayClass}`;
+                card.innerHTML = `
+                    <div class="feed-card-img-wrap">
+                        <img src="${h.img || 'images/luxury.jpg'}" alt="${h.address || h.title}">
+                        <div class="feed-badge-row">
+                            <span class="feed-badge-new">${h.category || 'Featured'}</span>
+                            <span class="feed-badge-verified">Saved</span>
+                        </div>
+                        <button type="button" class="feed-card-fav" onclick="removeFavorite(${idx})" title="Remove from favorites">
+                            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                         </button>
-                        <div>
-                            <div class="property-img-container">
-                                <img src="${house.img}" class="property-img" alt="${house.title}">
-                                <span class="badge-status position-absolute top-0 start-0 m-3">${house.category}</span>
-                            </div>
-                            <div class="p-4">
-                                <h5 class="fw-bold mb-1">${house.title}</h5>
-                                <div class="text-secondary small mb-3">📍 ${house.location}</div>
-                                <p class="text-secondary small mb-0">${house.desc}</p>
+                    </div>
+                    <div class="feed-card-body">
+                        <div class="feed-card-price-row">
+                            <div class="feed-card-price">${h.price || ''}</div>
+                            <div class="feed-agent-mini" onclick="showAgent('${h.agentName || 'Sarah Jenkins'}','${h.agentPhone || '+254712345678'}','${h.agentImg || 'images/u.jpg'}')">
+                                <img src="${h.agentImg || 'images/u.jpg'}" alt="${h.agentName || 'Agent'}" class="feed-agent-avatar">
+                                <div class="feed-agent-label"><span>Listing</span><strong>Agent</strong></div>
                             </div>
                         </div>
-                        <div class="p-4 pt-0">
-                            <div class="d-flex justify-content-between align-items-center pt-3 border-top">
-                                <span class="fs-5 fw-bold text-dark">KSh ${house.price ? house.price.toLocaleString() : ''}</span>
-                                <a href="https://wa.me/254746672821?text=${encodeURIComponent('Hi, inquiring about saved property: ' + house.title)}" target="_blank" class="btn btn-success btn-sm fw-semibold">
-                                    WhatsApp Agent
-                                </a>
-                            </div>
-                        </div>
+                        <div class="feed-card-specs">${h.specs || ''}</div>
+                        <p class="feed-card-address">${h.address || h.title || ''}</p>
                     </div>
                 `;
-                container.appendChild(col);
+                container.appendChild(card);
             });
         }
 
@@ -164,24 +215,15 @@
             renderFavorites();
         }
 
-    <!-- Sticky Mobile Bottom Navigation Bar -->
-    <nav class="mobile-bottom-nav">
-        <a href="index.html" class="mobile-nav-item">
-            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-            <span>Home</span>
-        </a>
-        <a href="house.html" class="mobile-nav-item">
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <span>Search</span>
-        </a>
-        <a href="liked.html" class="mobile-nav-item active">
-            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-            <span>Favorites</span>
-        </a>
-        <a href="login.html" class="mobile-nav-item">
-            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            <span>Profile</span>
-        </a>
-    </nav>
+        function showAgent(name, phone, img) {
+            document.getElementById('modalAgentName').textContent = name;
+            document.getElementById('modalAgentImg').src = img;
+            document.getElementById('modalAgentCall').href = 'tel:' + phone;
+            document.getElementById('modalAgentWhatsapp').href = 'https://wa.me/' + phone.replace(/[^0-9]/g, '');
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('agentModal')).show();
+        }
+
+        document.addEventListener('DOMContentLoaded', renderFavorites);
+    </script>
 </body>
 </html>
