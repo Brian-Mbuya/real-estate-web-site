@@ -12,7 +12,7 @@
    and JS were never available offline.
    ============================================================ */
 
-const VERSION = 'v4';
+const VERSION = 'v5';
 const SHELL_CACHE = `rk-shell-${VERSION}`;
 const RUNTIME_CACHE = `rk-runtime-${VERSION}`;
 const DATA_CACHE = `rk-data-${VERSION}`;
