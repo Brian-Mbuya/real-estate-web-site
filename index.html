@@ -82,63 +82,8 @@
         <!-- Featured Listings -->
         <div class="landing-inner">
             <h3 class="landing-section-title animate-fade-up animate-delay-3">Featured Listings</h3>
-            <div class="landing-cards-row">
-                <!-- Card 1 -->
-                <div class="landing-property-card animate-fade-up animate-delay-1">
-                    <div class="landing-card-img-wrap">
-                        <img src="images/luxury.jpg" alt="123 Maple Drive">
-                        <button type="button" class="landing-card-fav" onclick="toggleFav(this)">
-                            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                        </button>
-                    </div>
-                    <div class="landing-card-body">
-                        <div class="landing-card-price" data-usd="1250000" data-ksh="162500000">$1,250,000</div>
-                        <div class="landing-card-specs">4 Beds &nbsp;|&nbsp; 3 Baths &nbsp;|&nbsp; 2,500 Sq Ft</div>
-                        <p class="landing-card-address">123 Maple Drive, Beverly Hills, CA</p>
-                    </div>
-                </div>
-                <!-- Card 2 -->
-                <div class="landing-property-card animate-fade-up animate-delay-2">
-                    <div class="landing-card-img-wrap">
-                        <img src="images/e4.jpg" alt="456 Oak Street">
-                        <button type="button" class="landing-card-fav inactive" onclick="toggleFav(this)">
-                            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                        </button>
-                    </div>
-                    <div class="landing-card-body">
-                        <div class="landing-card-price" data-usd="890000" data-ksh="115700000">$890,000</div>
-                        <div class="landing-card-specs">3 Beds &nbsp;|&nbsp; 2 Baths &nbsp;|&nbsp; 1,800 Sq Ft</div>
-                        <p class="landing-card-address">456 Oak Street, Austin, TX</p>
-                    </div>
-                </div>
-                <!-- Card 3 -->
-                <div class="landing-property-card animate-fade-up animate-delay-3">
-                    <div class="landing-card-img-wrap">
-                        <img src="images/riat6.jpeg" alt="789 Riat Hills Ridge">
-                        <button type="button" class="landing-card-fav inactive" onclick="toggleFav(this)">
-                            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                        </button>
-                    </div>
-                    <div class="landing-card-body">
-                        <div class="landing-card-price" data-usd="1450000" data-ksh="188500000">$1,450,000</div>
-                        <div class="landing-card-specs">5 Beds &nbsp;|&nbsp; 4 Baths &nbsp;|&nbsp; 3,200 Sq Ft</div>
-                        <p class="landing-card-address">789 Riat Hills Ridge, Kisumu</p>
-                    </div>
-                </div>
-                <!-- Card 4 -->
-                <div class="landing-property-card animate-fade-up animate-delay-4">
-                    <div class="landing-card-img-wrap">
-                        <img src="images/makasembo.webp" alt="102 Milimani Heights">
-                        <button type="button" class="landing-card-fav inactive" onclick="toggleFav(this)">
-                            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                        </button>
-                    </div>
-                    <div class="landing-card-body">
-                        <div class="landing-card-price" data-usd="650000" data-ksh="84500000">$650,000</div>
-                        <div class="landing-card-specs">2 Beds &nbsp;|&nbsp; 2 Baths &nbsp;|&nbsp; 1,400 Sq Ft</div>
-                        <p class="landing-card-address">102 Milimani Heights, Kisumu</p>
-                    </div>
-                </div>
+            <div id="featuredListings" class="landing-cards-row">
+                <p style="text-align:center;width:100%;color:var(--text-muted);padding:20px;">Loading Featured Properties...</p>
             </div>
 
             <!-- CTA Button -->
@@ -166,7 +111,80 @@
     <script src="assets/js/auth.js"></script>
     <script src="assets/js/pwa.js"></script>
     <script>
-        function toggleFav(btn) { btn.classList.toggle('inactive'); }
+        // Store favorites locally
+        function toggleFavoriteProperty(btn, event, houseObj) {
+            event.stopPropagation(); // Prevent card click
+            btn.classList.toggle('inactive');
+            try {
+                let favorites = JSON.parse(localStorage.getItem('favoriteHouses')) || [];
+                const existsIdx = favorites.findIndex(item => item.id === houseObj.id);
+                if (existsIdx > -1) {
+                    favorites.splice(existsIdx, 1);
+                } else {
+                    favorites.push(houseObj);
+                }
+                localStorage.setItem('favoriteHouses', JSON.stringify(favorites));
+            } catch(e) {}
+        }
+
+        async function fetchFeaturedProperties() {
+            if (!window.SupabaseHub || !SupabaseHub.client) {
+                document.getElementById('featuredListings').innerHTML = '<p style="text-align:center;width:100%;">Database disconnected.</p>';
+                return;
+            }
+            try {
+                // Fetch top 4 properties randomly or latest
+                const { data, error } = await SupabaseHub.client
+                    .from('properties')
+                    .select('*')
+                    .limit(4);
+                
+                if (error) throw error;
+                
+                const container = document.getElementById('featuredListings');
+                container.innerHTML = '';
+                
+                let favorites = [];
+                try { favorites = JSON.parse(localStorage.getItem('favoriteHouses')) || []; } catch(e){}
+
+                data.forEach((dbRow, idx) => {
+                    const delayClass = `animate-delay-${Math.min(idx + 1, 4)}`;
+                    
+                    const h = {
+                        id: dbRow.id,
+                        title: dbRow.title,
+                        price: `$${Number(dbRow.price_usd).toLocaleString()}`,
+                        priceNum: Number(dbRow.price_usd),
+                        specs: `${dbRow.beds > 0 ? dbRow.beds + ' Beds &nbsp;|&nbsp; ' : ''}${dbRow.baths > 0 ? dbRow.baths + ' Baths &nbsp;|&nbsp; ' : ''}${dbRow.sqft} Sq Ft`,
+                        address: dbRow.location,
+                        img: dbRow.image_url,
+                    };
+                    
+                    const isFav = favorites.some(fav => fav.id === h.id);
+
+                    // We make the whole card clickable to route to the main feed
+                    container.innerHTML += `
+                    <div class="landing-property-card animate-fade-up ${delayClass}" style="cursor:pointer;" onclick="window.location.href='house.html'">
+                        <div class="landing-card-img-wrap">
+                            <img src="${h.img}" alt="${h.title}" loading="lazy">
+                            <button type="button" class="landing-card-fav ${isFav ? '' : 'inactive'}" onclick='toggleFavoriteProperty(this, event, ${JSON.stringify(h).replace(/'/g, "&#39;")})'>
+                                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            </button>
+                        </div>
+                        <div class="landing-card-body">
+                            <div class="landing-card-price">${h.price}</div>
+                            <div class="landing-card-specs">${h.specs}</div>
+                            <p class="landing-card-address">${h.title} <br><span style="font-size:0.85em;color:var(--text-muted);">${h.address}</span></p>
+                        </div>
+                    </div>`;
+                });
+            } catch(e) {
+                console.error("Error fetching featured properties:", e);
+                document.getElementById('featuredListings').innerHTML = '<p style="text-align:center;width:100%;">Failed to load featured properties.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchFeaturedProperties);
     </script>
 </body>
 </html>
