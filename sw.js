@@ -12,7 +12,7 @@
    and JS were never available offline.
    ============================================================ */
 
-const VERSION = 'v5';
+const VERSION = 'v6';
 const SHELL_CACHE = `rk-shell-${VERSION}`;
 const RUNTIME_CACHE = `rk-runtime-${VERSION}`;
 const DATA_CACHE = `rk-data-${VERSION}`;
@@ -22,6 +22,7 @@ const SHELL_ASSETS = [
     'index.html',
     'house.html',
     'liked.html',
+    'account.html',
     'listing.html',
     'login.html',
     'signup.html',

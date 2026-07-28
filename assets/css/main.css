@@ -1193,6 +1193,97 @@ a { color: var(--deep); }
 .stat-value.accent { color: var(--deep); }
 @media (min-width: 768px) { .stat-value { font-size: 1.32rem; } }
 
+/* ═══ 13b. ACCOUNT PAGE ═══════════════════════════════════ */
+.account-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+}
+.account-card.is-signed-out { flex-direction: column; align-items: stretch; gap: 18px; }
+
+.account-avatar {
+    width: 58px; height: 58px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    box-shadow: var(--sh-sm);
+}
+.account-identity { min-width: 0; }
+.account-identity strong {
+    display: block;
+    font-size: 1.06rem;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+}
+.account-identity span {
+    display: block;
+    font-size: 0.86rem;
+    color: var(--text-mid);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.account-cta { display: flex; gap: 10px; }
+.account-cta > * { flex: 1; }
+
+/* Grouped rows, iOS-settings style: one bordered block per group
+   with hairline dividers rather than a card per row. */
+.settings-list {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    overflow: hidden;
+}
+
+.settings-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    min-height: 64px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: none;
+    border-top: 1px solid var(--line);
+    text-align: left;
+    text-decoration: none;
+    color: var(--text);
+    cursor: pointer;
+    transition: background-color var(--t-fast) ease;
+}
+.settings-row:first-child { border-top: none; }
+.settings-row:hover { background: var(--surface-sunk); color: var(--text); }
+.settings-row.is-static { cursor: default; }
+.settings-row.is-static:hover { background: var(--surface); }
+
+.settings-icon {
+    width: 38px; height: 38px;
+    flex-shrink: 0;
+    display: grid; place-items: center;
+    border-radius: var(--r-sm);
+    background: var(--shallow-lift);
+    color: var(--deep);
+    font-size: 1.02rem;
+}
+
+.settings-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.settings-text strong { font-size: 0.94rem; font-weight: 700; color: var(--ink); }
+.settings-text small { font-size: 0.79rem; color: var(--text-mid); }
+
+.settings-value {
+    flex-shrink: 0;
+    font-size: 0.86rem;
+    font-weight: 800;
+    color: var(--text-mid);
+    font-variant-numeric: tabular-nums;
+}
+.settings-value.is-warn { color: var(--sun); }
+
+.settings-chevron { flex-shrink: 0; color: var(--text-soft); font-size: 0.8rem; }
+
 /* ═══ 14. LISTING DETAIL ══════════════════════════════════ */
 .detail-hero {
     position: relative;

@@ -173,8 +173,32 @@
     window.addEventListener('beforeinstallprompt', function (event) {
         event.preventDefault();
         deferredPrompt = event;
+        /* Lets the account page reveal its Install row the moment
+           installing becomes possible. */
+        window.dispatchEvent(new CustomEvent('rk:installavailable'));
         window.setTimeout(showInstallBanner, SHOW_AFTER_MS);
     });
+
+    /* Can this device actually install right now? iOS never fires
+       beforeinstallprompt, so it counts as installable via the
+       manual Share > Add to Home Screen route. */
+    function canInstall() {
+        if (isStandalone()) return false;
+        return Boolean(deferredPrompt) || isIos();
+    }
+
+    /* Triggered from the account page. Falls back to instructions on
+       iOS, where there is no programmatic prompt. */
+    function promptInstall() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(function () { deferredPrompt = null; });
+            return;
+        }
+        if (window.RK && window.RK.toast) {
+            RK.toast('Tap Share, then "Add to Home Screen"', 'info');
+        }
+    }
 
     window.addEventListener('appinstalled', function () {
         deferredPrompt = null;
@@ -198,6 +222,8 @@
 
     window.RKPwa = {
         isStandalone: isStandalone,
-        showInstallBanner: showInstallBanner
+        showInstallBanner: showInstallBanner,
+        canInstall: canInstall,
+        promptInstall: promptInstall
     };
 })(window, document);

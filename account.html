@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Account | Reality Kisumu Hub</title>
+    <meta name="description" content="Your Reality Kisumu Hub account, saved property count, currency preference and support options.">
+    <meta name="theme-color" content="#10454f">
+
+    <link rel="icon" type="image/png" href="images/favicon-32.png">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ══ Desktop navbar ══════════════════════════════════ -->
+<nav class="app-navbar sticky-top" aria-label="Main">
+    <div class="nav-wrap">
+        <a class="navbar-brand" href="index.html">
+            <i class="bi bi-water brand-mark" aria-hidden="true"></i>
+            <span>Reality Kisumu Hub</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html" data-nav="index.html">Home</a></li>
+            <li><a href="house.html" data-nav="house.html">Explore</a></li>
+            <li><a href="liked.html" data-nav="liked.html">Saved <span class="nav-count" data-fav-count hidden>0</span></a></li>
+        </ul>
+        <div class="nav-auth" data-auth-area></div>
+    </div>
+</nav>
+
+<div class="page-shell">
+    <main id="main" class="page-inner" style="max-width:760px">
+
+        <header class="page-header animate-fade-up">
+            <h1 class="page-title">Your <strong>account</strong></h1>
+        </header>
+
+        <!-- ══ Identity ═══════════════════════════════════ -->
+        <!-- Swapped by JS: profile card when signed in, sign-in
+             prompt when not. Both states are useful; the page never
+             becomes a dead end. -->
+        <section id="identity" class="animate-fade-up animate-delay-1"></section>
+
+        <!-- ══ Activity ═══════════════════════════════════ -->
+        <span class="eyebrow" style="margin-top:34px">Your activity</span>
+        <div class="settings-list">
+            <a class="settings-row" href="liked.html">
+                <span class="settings-icon"><i class="bi bi-heart" aria-hidden="true"></i></span>
+                <span class="settings-text">
+                    <strong>Saved properties</strong>
+                    <small id="savedSummary">Nothing saved yet</small>
+                </span>
+                <span class="settings-value" data-fav-count-plain>0</span>
+                <i class="bi bi-chevron-right settings-chevron" aria-hidden="true"></i>
+            </a>
+            <a class="settings-row" href="house.html">
+                <span class="settings-icon"><i class="bi bi-compass" aria-hidden="true"></i></span>
+                <span class="settings-text">
+                    <strong>Browse listings</strong>
+                    <small><span id="listingTotal">&mdash;</span> properties across Kisumu County</small>
+                </span>
+                <i class="bi bi-chevron-right settings-chevron" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <!-- ══ Preferences ════════════════════════════════ -->
+        <span class="eyebrow" style="margin-top:34px">Preferences</span>
+        <div class="settings-list">
+            <div class="settings-row is-static">
+                <span class="settings-icon"><i class="bi bi-cash-stack" aria-hidden="true"></i></span>
+                <span class="settings-text">
+                    <strong>Currency</strong>
+                    <small>Shown on all prices</small>
+                </span>
+                <span class="currency-toggle" role="group" aria-label="Currency">
+                    <button type="button" data-currency="KES" aria-pressed="true">KSh</button>
+                    <button type="button" data-currency="USD" aria-pressed="false">USD</button>
+                </span>
+            </div>
+        </div>
+
+        <!-- ══ App ════════════════════════════════════════ -->
+        <span class="eyebrow" style="margin-top:34px">This app</span>
+        <div class="settings-list">
+            <button type="button" class="settings-row" id="installRow" hidden>
+                <span class="settings-icon"><i class="bi bi-download" aria-hidden="true"></i></span>
+                <span class="settings-text">
+                    <strong>Install app</strong>
+                    <small>Add to your home screen for offline browsing</small>
+                </span>
+                <i class="bi bi-chevron-right settings-chevron" aria-hidden="true"></i>
+            </button>
+            <div class="settings-row is-static">
+                <span class="settings-icon"><i class="bi bi-wifi" aria-hidden="true"></i></span>
+                <span class="settings-text">
+                    <strong>Connection</strong>
+                    <small>Saved listings work with no signal</small>
+                </span>
+                <span class="settings-value" id="connectionState">Online</span>
+            </div>
+        </div>
+
+        <!-- ══ Support ════════════════════════════════════ -->
+        <span class="eyebrow" style="margin-top:34px">Support</span>
+        <div class="settings-list">
+            <button type="button" class="settings-row" data-open-modal="contact">
+                <span class="settings-icon"><i class="bi bi-headset" aria-hidden="true"></i></span>
+                <span class="settings-text">
+                    <strong>Contact support</strong>
+                    <small>WhatsApp, phone or email</small>
+                </span>
+                <i class="bi bi-chevron-right settings-chevron" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="settings-row" data-open-modal="about">
+                <span class="settings-icon"><i class="bi bi-buildings" aria-hidden="true"></i></span>
+                <span class="settings-text"><strong>About us</strong></span>
+                <i class="bi bi-chevron-right settings-chevron" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="settings-row" data-open-modal="privacy">
+                <span class="settings-icon"><i class="bi bi-shield-check" aria-hidden="true"></i></span>
+                <span class="settings-text"><strong>Privacy policy</strong></span>
+                <i class="bi bi-chevron-right settings-chevron" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div id="signOutWrap" style="margin-top:28px" hidden>
+            <button type="button" class="btn-ghost-pill btn-block" data-logout style="color:var(--clay);border-color:var(--clay-soft)">
+                <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Sign out
+            </button>
+        </div>
+
+        <p class="footer-legal" style="margin:30px 0 0;text-align:center;color:var(--text-soft)">
+            Reality Kisumu Hub &middot; Riat Hills, Kisumu
+        </p>
+    </main>
+</div>
+
+<!-- ══ Mobile bottom navigation ═══════════════════════════ -->
+<nav class="mobile-bottom-nav" aria-label="Main">
+    <a href="index.html" class="mobile-nav-item" data-nav="index.html">
+        <i class="bi bi-house-door" aria-hidden="true"></i>
+        <span class="mobile-nav-label">Home</span>
+    </a>
+    <a href="house.html" class="mobile-nav-item" data-nav="house.html">
+        <i class="bi bi-search" aria-hidden="true"></i>
+        <span class="mobile-nav-label">Explore</span>
+    </a>
+    <a href="liked.html" class="mobile-nav-item" data-nav="liked.html">
+        <i class="bi bi-heart" aria-hidden="true"></i>
+        <span class="nav-count" data-fav-count hidden>0</span>
+        <span class="mobile-nav-label">Saved</span>
+    </a>
+    <a href="account.html" class="mobile-nav-item" data-nav="account.html">
+        <i class="bi bi-person" aria-hidden="true"></i>
+        <span class="mobile-nav-label">Account</span>
+    </a>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/pwa.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    var identity = document.getElementById('identity');
+
+    function renderIdentity() {
+        var user = AuthHub.getCurrentUser();
+
+        if (user) {
+            identity.innerHTML =
+                '<div class="account-card">' +
+                    '<img class="account-avatar" src="' + RK.escapeHtml(user.avatar || RK.avatarDataUri(user.fullName)) + '" alt="">' +
+                    '<div class="account-identity">' +
+                        '<strong>' + RK.escapeHtml(user.fullName) + '</strong>' +
+                        '<span>' + RK.escapeHtml(user.email || 'Signed in on this device') + '</span>' +
+                    '</div>' +
+                '</div>';
+            document.getElementById('signOutWrap').hidden = false;
+        } else {
+            identity.innerHTML =
+                '<div class="account-card is-signed-out">' +
+                    '<div class="account-identity">' +
+                        '<strong>You&rsquo;re browsing as a guest</strong>' +
+                        '<span>Sign in to keep your saved properties tied to your account.</span>' +
+                    '</div>' +
+                    '<div class="account-cta">' +
+                        '<a class="btn-primary-pill btn-sm-pill" href="login.html">Sign in</a>' +
+                        '<a class="btn-ghost-pill btn-sm-pill" href="signup.html">Create account</a>' +
+                    '</div>' +
+                '</div>';
+            document.getElementById('signOutWrap').hidden = true;
+        }
+    }
+
+    function renderSavedSummary() {
+        var count = RK.Favorites.count();
+        document.querySelectorAll('[data-fav-count-plain]').forEach(function (el) {
+            el.textContent = count;
+        });
+        document.getElementById('savedSummary').textContent = count === 0
+            ? 'Nothing saved yet'
+            : count === 1 ? '1 property, available offline'
+                          : count + ' properties, available offline';
+    }
+
+    function renderConnection() {
+        var el = document.getElementById('connectionState');
+        el.textContent = navigator.onLine ? 'Online' : 'Offline';
+        el.classList.toggle('is-warn', !navigator.onLine);
+    }
+
+    /* Install row only appears when installing is actually possible —
+       never advertise an action that cannot happen. */
+    function renderInstall() {
+        var row = document.getElementById('installRow');
+        row.hidden = !(window.RKPwa && RKPwa.canInstall());
+    }
+
+    document.getElementById('installRow').addEventListener('click', function () {
+        if (window.RKPwa) RKPwa.promptInstall();
+    });
+
+    async function loadListingCount() {
+        var client = window.SupabaseHub && SupabaseHub.client;
+        if (!client) { document.getElementById('listingTotal').textContent = '—'; return; }
+        try {
+            var res = await client.from('properties').select('id', { count: 'exact', head: true });
+            document.getElementById('listingTotal').textContent = res.count != null ? res.count : '—';
+        } catch (e) {
+            document.getElementById('listingTotal').textContent = '—';
+        }
+    }
+
+    window.addEventListener('rk:favoriteschange', renderSavedSummary);
+    window.addEventListener('rk:sessionchange', renderIdentity);
+    window.addEventListener('online', renderConnection);
+    window.addEventListener('offline', renderConnection);
+    window.addEventListener('rk:installavailable', renderInstall);
+
+    renderIdentity();
+    renderSavedSummary();
+    renderConnection();
+    renderInstall();
+    loadListingCount();
+})();
+</script>
+</body>
+</html>

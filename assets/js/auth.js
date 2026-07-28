@@ -57,11 +57,16 @@
             /* Storage unavailable — the session just won't persist. */
         }
         updatePersonalizedUI();
+        /* Pages showing session-dependent content (the account page's
+           identity card) re-render on this rather than needing a reload. */
+        window.dispatchEvent(new CustomEvent('rk:sessionchange', { detail: { user: user } }));
         return user;
     }
 
     function logoutUser() {
         try { window.localStorage.removeItem(USER_KEY); } catch (e) {}
+        updatePersonalizedUI();
+        window.dispatchEvent(new CustomEvent('rk:sessionchange', { detail: { user: null } }));
         window.location.href = 'index.html';
     }
 
@@ -121,21 +126,20 @@
 
         /* 3. Mobile bottom-nav account tab.
 
-           Both branches are required: without the `else`, signing out
-           without a full page load left the tab still showing the old
-           user's name and still pointing at their saved list. */
-        document.querySelectorAll('[data-nav="login.html"]').forEach(function (link) {
+           The href is NOT rewritten here. An earlier version pointed
+           signed-in users at liked.html, which made Account and Saved
+           two adjacent tabs leading to the same page. The tab always
+           goes to account.html; only its label and icon change. */
+        document.querySelectorAll('[data-nav="account.html"]').forEach(function (link) {
             var label = link.querySelector('.mobile-nav-label');
             var icon = link.querySelector('i');
 
             if (user) {
-                link.setAttribute('href', 'liked.html');
-                link.setAttribute('aria-label', 'Your account, signed in as ' + user.fullName);
+                link.setAttribute('aria-label', 'Account, signed in as ' + user.fullName);
                 if (label) label.textContent = firstName(user);
                 if (icon) icon.className = 'bi bi-person-fill';
             } else {
-                link.setAttribute('href', 'login.html');
-                link.setAttribute('aria-label', 'Sign in');
+                link.setAttribute('aria-label', 'Account');
                 if (label) label.textContent = 'Account';
                 if (icon) icon.className = 'bi bi-person';
             }
